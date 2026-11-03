@@ -25,3 +25,31 @@ export const VOICE_CLIPS: Array<{from: number; to: number; at: number; text: str
 
 /** Margen para no cortar ataques ni colas de respiración (s). */
 export const VOICE_PAD = {before: 0.08, after: 0.14};
+
+/**
+ * Música de fondo. Arranca desde el segundo 8 del tema y queda como colchón:
+ * el tema viene a −9 LUFS y la voz a −22, así que la música va ~15 dB por debajo
+ * de la voz mientras habla (ducking) y un poco más arriba en los silencios.
+ */
+export const MUSIC = {
+  file: 'audio/musica.mp3',
+  startAt: 8, // s del tema que suenan en el frame 0
+  volSpeech: 0.04, // ≈ −28 dB: debajo de la voz
+  volGap: 0.08, // ≈ −22 dB: en los silencios
+  duckRamp: 0.3, // s de rampa al bajar/subir
+  fadeIn: 0.4,
+  fadeOut: 2.0,
+};
+
+/** 0..1: cuánto está hablando la voz en el segundo `t` (con rampas suaves). */
+export const speechAmount = (t: number) => {
+  let a = 0;
+  for (const c of VOICE_CLIPS) {
+    const s = c.at - 0.15;
+    const e = c.at + (c.to - c.from) + 0.2;
+    const r = MUSIC.duckRamp;
+    const k = Math.min(1, Math.max(0, (t - (s - r)) / r), Math.max(0, (e + r - t) / r));
+    a = Math.max(a, k);
+  }
+  return a;
+};

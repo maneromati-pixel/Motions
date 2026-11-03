@@ -10,7 +10,8 @@ import {HookAndCondition} from './scenes/HookAndCondition';
 import {Instrument} from './scenes/Instrument';
 import {C, PALETTES, SAFE, setPalette} from './theme';
 import {T} from './timeline';
-import {VOICE_CLIPS, VOICE_FILE, VOICE_PAD} from './voice';
+import {MUSIC, speechAmount, VOICE_CLIPS, VOICE_FILE, VOICE_PAD} from './voice';
+import {DURATION_S} from './theme';
 
 ensureFonts();
 
@@ -61,6 +62,24 @@ const Voice: React.FC = () => {
   );
 };
 
+/** Música de fondo, baja y con ducking bajo la voz. */
+const Music: React.FC = () => {
+  const {fps} = useVideoConfig();
+  return (
+    <Audio
+      src={staticFile(MUSIC.file)}
+      trimBefore={Math.round(MUSIC.startAt * fps)}
+      volume={(f) => {
+        const t = f / fps;
+        const duck = speechAmount(t);
+        const v = MUSIC.volGap + (MUSIC.volSpeech - MUSIC.volGap) * duck;
+        const fade = Math.min(1, t / MUSIC.fadeIn, (DURATION_S - t) / MUSIC.fadeOut);
+        return Math.max(0, v * fade);
+      }}
+    />
+  );
+};
+
 const Film: React.FC<{mode: keyof typeof PALETTES}> = ({mode}) => {
   setPalette(mode);
   return (
@@ -72,6 +91,7 @@ const Film: React.FC<{mode: keyof typeof PALETTES}> = ({mode}) => {
     <Chart />
     <Finale />
     <Disclaimer />
+    <Music />
     <Voice />
   </AbsoluteFill>
   );
