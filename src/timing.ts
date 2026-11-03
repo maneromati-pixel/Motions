@@ -36,8 +36,9 @@ export const SCENES = {
 /** Mezcla de audio (volúmenes lineales sobre archivos normalizados a -16 LUFS). */
 export const AUDIO = {
   voice: 1,
-  musicUnderVoice: 0.13, // ~ -18 dB debajo de la voz
-  musicOutro: 0.38, // sube cuando termina la voz
+  musicUnderVoice: 0.2, // ~ -14 dB debajo de la voz
+  musicOutro: 0.5, // sube cuando termina la voz
+  musicStartAt: 8 * 30, // la canción arranca desde su segundo 8
   voiceEnd: Math.round(52.6 * 30), // frame donde termina la voz
   musicFadeIn: 12,
   musicFadeOut: 36,

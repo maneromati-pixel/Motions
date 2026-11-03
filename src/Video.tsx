@@ -41,7 +41,7 @@ const musicVolume = (f: number) =>
 export const ClientePerfecto: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: C.paper }}>
     <Audio src={staticFile("audio/voz.mp3")} volume={AUDIO.voice} />
-    <Audio src={staticFile("audio/musica.mp3")} volume={musicVolume} />
+    <Audio src={staticFile("audio/musica.mp3")} volume={musicVolume} startFrom={AUDIO.musicStartAt} />
     <Series>
       {ORDER.map(([key, Comp]) => (
         <Series.Sequence key={key} durationInFrames={SCENES[key]}>
