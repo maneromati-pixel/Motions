@@ -35,8 +35,10 @@ export const TOTAL_FRAMES = Object.values(SCENES).reduce((a, b) => a + b, 0);
 /** Beats internos de cada escena (frames relativos al inicio de la escena). */
 export const BEATS = {
   hook: {
-    subtitle: 45, // "Y NO ERES TÚ" a los 1,5 s
-    twinklePeriod: 18,
+    // título palabra por palabra: "Alguien" ya está en el frame 0, el resto entra rápido
+    titleWords: [0, 3, 6, 9, 12], // Alguien · gana · con · TU · SUELDO
+    titleStep: 4, // frames entre palabras del remate
+    subtitle: 45, // "y no eres tú." a los 1,5 s
   },
   sueldo: {
     title: 0,
