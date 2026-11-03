@@ -42,4 +42,4 @@ El logo está dibujado a mano (letras globo con contorno), no es una fuente desc
 
 ## Productos representados
 
-Aros, carteras, collares, lentes, relojes, anillos, pulseras, hebillas y perfumes, como **ilustraciones vectoriales en la paleta rosa** (`src/components/Products.tsx`). No había fotos reales del catálogo. Si las pasan, se reemplazan ahí.
+Aros, carteras, collares, lentes, perfumes, anillos, pulseras, hebillas y body splash, como **ilustraciones semirrealistas** (oro metálico, perlas, vidrio, cuero acolchado, brillos y sombras) (`src/components/Products.tsx`). No había fotos reales del catálogo. Si las pasan, se reemplazan ahí.

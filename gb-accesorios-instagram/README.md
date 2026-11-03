@@ -24,7 +24,7 @@ npx remotion still GBInstagram stills/frame.png --frame=120
 |---|---|---|---|---|
 | 1 · Logo | 0–2 s | 0–59 | Cuadriculado ondulado, el logo entra rebotando como un globo, saltan corazones, brillo y *"accesorios & moda / que enamoran 💖"* | intro filtrada + pop + burbujas + shimmer |
 | 2 · Perfil | 2–4 s | 60–119 | *"encontranos en IG 💕"*: maqueta del perfil, se tipea `gb.accesorios_moda`, avatar con el logo, bio, botón **Seguir**, destacados y grilla | entra el beat (drop) + whoosh |
-| 3 · Productos | 4–6,5 s | 120–194 | *"lo nuevo 💖"*: grilla 3×3 de stickers que gira tile por tile → carrusel *"tu favorito 💕"* que avanza a tempo | whoosh + shimmer |
+| 3 · Productos | 4–6,5 s | 120–194 | *"lo nuevo 💖"*: grilla 3×3 de stickers que gira tile por tile → carrusel *"tu favorito 💕"* (Perfumes → Carteras → Aros) que avanza a tempo | whoosh + shimmer |
 | 4 · Mensaje | 6,5–8 s | 195–239 | *"tu estilo, en cada detalle"* en letras globo sobre magenta, corazón que late · NOVEDADES QUE ENAMORAN 💖 | whoosh |
 | 5 · Cierre | 8–10 s | 240–299 | Logo + *"Seguinos en @gb.accesorios_moda"*, un dedo toca **+ Seguir** → **Siguiendo ✓** con corazones | whoosh + tap + burbujas + ding, fade-out |
 
@@ -54,7 +54,7 @@ Ver [`BRAND.md`](BRAND.md). Colores y fuentes centralizados en [`src/theme.ts`](
 src/
   Root.tsx, index.ts, GBInstagram.tsx   composición + audio
   theme.ts, fonts.ts, timeline.json     marca, fuentes locales, tiempos
-  components/  Logo (PNG oficial + brillo), CheckerBg (cuadriculado ondulado), Heart, Products (9 ilustraciones), Sparkle, Wipe
+  components/  Logo (PNG oficial + brillo), CheckerBg (cuadriculado ondulado), Heart, Products (9 ilustraciones semirrealistas), Sparkle, Wipe
   scenes/      Scene1Logo … Scene5CTA
 scripts/generate-audio.mjs              síntesis de audio
 scripts/extract-logo.py                 recorta el logo del fondo (brand/ → public/logo-gb.png)

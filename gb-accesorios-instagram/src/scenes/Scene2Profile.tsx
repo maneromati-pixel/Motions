@@ -15,14 +15,14 @@ const useIn = (start: number, dur = 12) => {
   return {opacity: p, transform: `translateY(${(1 - p) * 26}px)`};
 };
 
-const BIO = ['🎀 Accesorios que enamoran', '💖 Aros · Collares · Carteras · Lentes', '📦 Envíos · Consultas por DM 💌'];
+const BIO = ['🎀 Accesorios que enamoran', '💖 Aros · Carteras · Lentes · Perfumes', '📦 Envíos · Consultas por DM 💌'];
 
 const HIGHLIGHTS: Array<{label: string; art: number}> = [
   {label: 'Novedades', art: 2},
   {label: 'Aros', art: 0},
   {label: 'Carteras', art: 1},
   {label: 'Lentes', art: 3},
-  {label: 'Relojes', art: 4},
+  {label: 'Perfumes', art: 4},
 ];
 
 // PLACA 2 (2–4 s): maqueta del perfil de Instagram con el logo y los colores de la marca.

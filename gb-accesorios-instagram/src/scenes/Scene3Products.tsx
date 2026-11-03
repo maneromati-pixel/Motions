@@ -7,11 +7,11 @@ import {bubbleText, colors, fonts} from '../theme';
 
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
-const TILE = 300;
+const TILE = 322;
 const GAP = 18;
-const CARD = 640;
+const CARD = 760;
 const CARD_GAP = 60;
-const CAROUSEL = [1, 0, 3, 6, 5]; // Carteras, Aros, Lentes, Pulseras, Anillos
+const CAROUSEL = [4, 1, 0, 3, 8]; // Perfumes, Carteras, Aros, Lentes, Body splash
 
 // PLACA 3 (4–6.5 s): grilla 3x3 que gira tile por tile, se dispersa y da paso a un carrusel
 // que avanza a tiempo con la música (cada 15 frames = 1 negra a 120 BPM).
@@ -47,7 +47,7 @@ export const Scene3Products: React.FC = () => {
           </div>
         </div>
         <div style={{fontFamily: fonts.round, fontWeight: 600, letterSpacing: 6, fontSize: 34, color: colors.hot, marginTop: 6}}>
-          AROS · COLLARES · CARTERAS · LENTES
+          AROS · CARTERAS · LENTES · PERFUMES
         </div>
       </div>
 
@@ -57,7 +57,7 @@ export const Scene3Products: React.FC = () => {
           style={{
             position: 'absolute',
             left: (1080 - gridW) / 2,
-            top: 600,
+            top: 560,
             width: gridW,
             display: 'grid',
             gridTemplateColumns: `repeat(3, ${TILE}px)`,
@@ -111,7 +111,7 @@ export const Scene3Products: React.FC = () => {
 
       {/* CARRUSEL */}
       {frame >= 28 ? (
-        <div style={{position: 'absolute', top: 610, left: 0, width: 1080, height: 1000, transform: `translateX(${carouselX}px)`}}>
+        <div style={{position: 'absolute', top: 540, left: 0, width: 1080, height: 1000, transform: `translateX(${carouselX}px)`}}>
           {CAROUSEL.map((idx, k) => {
             const dist = k - pos;
             const x = 540 - CARD / 2 + dist * (CARD + CARD_GAP);
