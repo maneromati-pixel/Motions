@@ -2,7 +2,9 @@ import React from "react";
 import { interpolateColors, useCurrentFrame } from "remotion";
 import { Arrow } from "../components/Arrow";
 import { OutlineBox } from "../components/OutlineBox";
+import { Ground } from "../components/Ground";
 import { PersonIcon } from "../components/PersonIcon";
+import { Spotlight } from "../components/Spotlight";
 import { Scene } from "../components/Scene";
 import { Title } from "../components/Text";
 import { C, enter, GLOW, pop, progress, type } from "../theme";
@@ -68,22 +70,16 @@ export const Scene07Mismo: React.FC = () => {
         <Title>MISMO SUELDO</Title>
       </div>
 
-      <div
-        style={{
-          position: "absolute",
-          left: 540 - 380 * line,
-          top: LINE_Y,
-          width: 760 * line,
-          height: 2,
-          background: C.gray,
-        }}
-      />
+      {/* después, la luz queda solo sobre el de la derecha */}
+      <Spotlight cx={LEFT_X} top={330} bottom={LINE_Y} width={240} intensity={0.8 * pl.opacity * (1 - dim)} />
+      <Spotlight cx={RIGHT_X} top={330} bottom={LINE_Y} width={240} intensity={pr.opacity * (0.8 + 0.2 * dim)} />
+      <Ground y={LINE_Y} x1={160} x2={920} progress={line} />
 
-      <div style={{ position: "absolute", left: LEFT_X - 55, top: LINE_Y - 128, opacity: pl.opacity, transform: pl.transform }}>
-        <PersonIcon size={110} color={leftColor} glow={dim < 0.5} />
+      <div style={{ position: "absolute", left: LEFT_X - 55, top: LINE_Y - 126.5, opacity: pl.opacity, transform: pl.transform }}>
+        <PersonIcon size={110} color={leftColor} glow={dim < 0.5} halo={0.6 * (1 - dim)} />
       </div>
-      <div style={{ position: "absolute", left: RIGHT_X - 55, top: LINE_Y - 128, opacity: pr.opacity, transform: pr.transform }}>
-        <PersonIcon size={110} glow />
+      <div style={{ position: "absolute", left: RIGHT_X - 55, top: LINE_Y - 126.5, opacity: pr.opacity, transform: pr.transform }}>
+        <PersonIcon size={110} glow halo={0.6 + 0.4 * dim} />
       </div>
 
       <Flow cx={LEFT_X} steps={["COBRO", "GASTOS", "AHORRO"]} dim={dim} frame={frame} />
