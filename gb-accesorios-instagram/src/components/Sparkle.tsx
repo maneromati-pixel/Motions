@@ -9,7 +9,7 @@ export const Sparkle: React.FC<{
   progress: number; // 0..1 ciclo de vida (aparece, brilla, se va)
   color?: string;
   rotate?: number;
-}> = ({x, y, size, progress, color = colors.gold, rotate = 0}) => {
+}> = ({x, y, size, progress, color = colors.hot, rotate = 0}) => {
   if (progress <= 0 || progress >= 1) return null;
   const s = Math.sin(Math.PI * progress);
   return (

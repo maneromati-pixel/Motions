@@ -1,42 +1,45 @@
 # GB Accesorios & Moda — resumen de marca
 
-## Investigación y fuentes
+## Fuentes
 
-- **Instagram (`instagram.com/gb.accesorios_moda`)**: no se pudo abrir: el dominio está bloqueado por la red de este entorno, y además pide login.
-- **Búsqueda web** (`"gb.accesorios_moda"`, `"GB Accesorios & Moda"`, `"GB Accesorios y Moda"` + Argentina): no hay publicaciones indexadas, web, tienda online, Facebook ni Linktree de esta cuenta. El único resultado parecido, *GB Wear* (gbwear.com.ar: cinturones, ojotas), es otra marca y **no** se usó.
-- Por eso, **la identidad de abajo es una propuesta inferida** a partir del nombre, el rubro (accesorios y moda) y el voseo del @ (Argentina). Está centralizada en `src/theme.ts` y en `src/components/Logo.tsx` para que se pueda ajustar en minutos apenas tengamos la foto de perfil o capturas del feed.
-
-## Paleta (propuesta)
-
-| Rol | HEX |
-|---|---|
-| Carbón (texto / fondo oscuro) | `#1B1717` |
-| Crema (fondo principal) | `#F7F1EB` |
-| Nude rosado | `#EBD5CB` |
-| Rosa empolvado | `#D9A9A1` |
-| Rose gold (acentos) | `#B9776E` |
-| Dorado champagne (logo, botones) | `#C8A165` |
-| Dorado profundo | `#9C7A43` |
-
-Nudes + dorado + negro: la combinación más típica en cuentas de bijou y accesorios femeninos (fotos sobre fondos claros, piezas doradas).
-
-## Tipografía
-
-- **Playfair Display** (titulares y monograma): serif de alto contraste, estilo editorial de revista de moda, con una itálica muy elegante para "& Moda" y frases destacadas.
-- **Montserrat** (handle, bio, botones, etiquetas en mayúsculas espaciadas): sans geométrica, limpia, la que más se parece a la interfaz de Instagram y a las placas de tiendas online.
-- Las dos están empaquetadas en local (`@fontsource`, en `public/fonts`), así el render no depende de internet.
+- **Logo oficial**: lo pasó la clienta (`brand/logo-original.png`, 1080×1350). De ahí salen la paleta, el estilo tipográfico y el fondo.
+- **Instagram** (`instagram.com/gb.accesorios_moda`): no se pudo abrir desde este entorno (dominio bloqueado por la red y la página pide login).
+- **Búsqueda web**: no hay publicaciones indexadas, web, tienda, Facebook ni Linktree de la cuenta. *GB Wear* (gbwear.com.ar) es otra marca y se descartó.
 
 ## Logo
 
-No hay una versión pública disponible, así que lo **recreé en SVG** (`src/components/Logo.tsx`): monograma **G*B*** (G recta + B itálica) en dorado degradé, dentro de un aro doble, con "ACCESORIOS & MODA" en curva y un rombo como detalle. Si nos pasan el logo real (PNG o SVG), se reemplaza en ese componente.
+- `public/logo-gb.png`: el logo original recortado con transparencia mediante `scripts/extract-logo.py`. El script rellena desde los bordes todo lo claro hasta el contorno magenta y suaviza el borde. Queda en 681×472 px y en el video se usa a 820 px de ancho como máximo.
+- Estilo: letras **"globo"** G + B, relleno rosa, contorno magenta grueso, brillos blancos y dos corazones (uno sobre la G y otro dentro de su curva).
+- Fondo de la pieza original: **cuadriculado ondulado** rosa. Lo recreé como fondo animado (`src/components/CheckerBg.tsx`).
+
+## Paleta (medida sobre el logo)
+
+| Rol | HEX |
+|---|---|
+| Magenta del contorno (color principal) | `#E30364` |
+| Magenta oscuro (volumen / sombras) | `#B0024E` |
+| Frambuesa (texto oscuro, derivado) | `#8A0A42` |
+| Rosa corazón | `#FB81C4` |
+| Rosa globo (relleno de letras) | `#FBAEDB` |
+| Rosa cuadros oscuros | `#FBD3EE` |
+| Rosa cuadros claros | `#FDECF5` |
+| Blanco (brillos) | `#FFFFFF` |
+
+## Tipografía
+
+El logo está dibujado a mano (letras globo con contorno), no es una fuente descargable. Elegí las Google Fonts más parecidas:
+
+- **Titan One** para titulares: gruesa, redondeada y con terminaciones blandas, la más parecida a las letras globo. En el video se usa con relleno rosa, contorno magenta y sombra dura (`bubbleText()` en `src/theme.ts`), igual que el logo. Limitación: el archivo no trae la "í", así que en los títulos con Titan One evité palabras con tilde.
+- **Fredoka** para textos de interfaz, bio y botones: redondeada y amigable, combina con el logo y se lee bien en tamaños chicos.
 
 ## Tono de comunicación
 
-- **Cercano y femenino, con voseo rioplatense**: "Seguinos", "Elegí tu favorito", "Mirá todos los productos".
-- **Chic pero accesible**: frases cortas y aspiracionales ("Tu estilo, en cada detalle", "Novedades que enamoran").
-- **Emojis moderados y de rubro**: ✨ 💍 📦 💌.
-- **Hashtags**: `#GBAccesorios #AccesoriosDeModa`.
+- Estética **Y2K / girly / kawaii**: corazones, brillos, cuadriculado, rosa total.
+- Cercano y juvenil, con voseo: "Seguinos", "encontranos en IG", "Mirá todos los productos".
+- Frases cortas y afectivas: "accesorios que enamoran", "tu estilo, en cada detalle".
+- Emojis rosas y tiernos: 💖 💕 🎀 ✨ 💌 📦.
+- Hashtags: `#GBAccesorios #AccesoriosDeModa`.
 
 ## Productos representados
 
-Aros, carteras, collares, lentes de sol, relojes, anillos, pulseras, hebillas y perfumes, como **ilustraciones vectoriales** (sin fotos reales disponibles). Estética: fondos nude claros, piezas doradas y negras, brillos sutiles.
+Aros, carteras, collares, lentes, relojes, anillos, pulseras, hebillas y perfumes, como **ilustraciones vectoriales en la paleta rosa** (`src/components/Products.tsx`). No había fotos reales del catálogo. Si las pasan, se reemplazan ahí.

@@ -1,8 +1,10 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {CheckerBg} from '../components/CheckerBg';
+import {Heart} from '../components/Heart';
 import {Logo} from '../components/Logo';
 import {ProductArt} from '../components/Products';
-import {colors, fonts, goldGradient, HANDLE} from '../theme';
+import {bubbleText, colors, fonts, hotGradient, HANDLE} from '../theme';
 
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -13,11 +15,7 @@ const useIn = (start: number, dur = 12) => {
   return {opacity: p, transform: `translateY(${(1 - p) * 26}px)`};
 };
 
-const BIO = [
-  '✨ Accesorios que completan tu look',
-  '💍 Bijou · Carteras · Lentes · Relojes',
-  '📦 Envíos · Consultas por DM 💌',
-];
+const BIO = ['🎀 Accesorios que enamoran', '💖 Aros · Collares · Carteras · Lentes', '📦 Envíos · Consultas por DM 💌'];
 
 const HIGHLIGHTS: Array<{label: string; art: number}> = [
   {label: 'Novedades', art: 2},
@@ -27,19 +25,20 @@ const HIGHLIGHTS: Array<{label: string; art: number}> = [
   {label: 'Relojes', art: 4},
 ];
 
-// PLACA 2 (2–4 s): maqueta del perfil de Instagram con los colores de la marca.
+// PLACA 2 (2–4 s): maqueta del perfil de Instagram con el logo y los colores de la marca.
 export const Scene2Profile: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
-  const rise = spring({frame, fps, config: {damping: 15, mass: 0.8}});
+  const rise = spring({frame, fps, config: {damping: 14, mass: 0.8}});
   const tilt = interpolate(rise, [0, 1], [18, 0]);
-  const drift = interpolate(frame, [0, 60], [1, 1.035], clamp); // zoom lento
+  const drift = interpolate(frame, [0, 60], [1, 1.035], clamp);
   const ring = interpolate(frame, [4, 22], [0, 1], {...clamp, easing: Easing.inOut(Easing.cubic)});
   const typed = Math.round(interpolate(frame, [6, 22], [0, HANDLE.length], clamp));
-  const followPulse = 1 + 0.04 * Math.max(0, Math.sin(((frame - 34) / 10) * Math.PI)) * (frame > 34 ? 1 : 0);
+  const followPulse = frame > 34 ? 1 + 0.05 * Math.max(0, Math.sin(((frame - 34) / 10) * Math.PI)) : 1;
 
   const s = {
+    title: useIn(0, 10),
     status: useIn(2),
     header: useIn(4),
     name: useIn(10),
@@ -49,47 +48,40 @@ export const Scene2Profile: React.FC = () => {
   };
 
   return (
-    <AbsoluteFill
-      style={{
-        background: `linear-gradient(160deg, ${colors.nude} 0%, ${colors.blush} 55%, ${colors.roseGold} 120%)`,
-        alignItems: 'center',
-        perspective: 2200,
-      }}
-    >
-      {/* círculos decorativos de fondo */}
-      <div style={{position: 'absolute', width: 900, height: 900, borderRadius: '50%', border: `2px solid ${colors.ivory}55`, left: -420, top: -260}} />
-      <div style={{position: 'absolute', width: 700, height: 700, borderRadius: '50%', border: `2px solid ${colors.ivory}55`, right: -380, bottom: -160}} />
+    <AbsoluteFill style={{alignItems: 'center', perspective: 2200, overflow: 'hidden'}}>
+      <CheckerBg light={colors.bubble} dark={colors.heart} amp={30} speed={0.8} />
 
-      <div
-        style={{
-          position: 'absolute',
-          top: 70,
-          fontFamily: fonts.sans,
-          fontWeight: 600,
-          fontSize: 34,
-          letterSpacing: 8,
-          color: colors.carbon,
-          ...useIn(0, 10),
-        }}
-      >
-        ENCONTRANOS EN INSTAGRAM
+      <div style={{position: 'absolute', top: 52, fontSize: 64, ...bubbleText(10, colors.white), ...s.title}}>
+        encontranos en IG 💕
       </div>
 
+      {/* corazones flotando junto al teléfono */}
+      {[
+        {x: 10, y: 700, s: 150, d: 20},
+        {x: 920, y: 1150, s: 140, d: 26},
+      ].map((h, i) => {
+        const p = spring({frame: frame - h.d, fps, config: {damping: 9}});
+        return (
+          <div key={i} style={{position: 'absolute', left: h.x, top: h.y + Math.sin((frame + i * 20) / 8) * 14, transform: `scale(${p}) rotate(${i ? 14 : -14}deg)`}}>
+            <Heart size={h.s} fill={i ? colors.white : colors.bubble} />
+          </div>
+        );
+      })}
       {/* TELÉFONO */}
       <div
         style={{
           position: 'absolute',
-          top: 170,
+          top: 190,
           width: 900,
           height: 1600,
           borderRadius: 80,
           background: colors.white,
-          boxShadow: '0 60px 120px rgba(80,40,30,0.35), 0 0 0 14px #1B1717',
+          boxShadow: `0 50px 100px rgba(176,2,78,0.35), 0 0 0 14px ${colors.hot}`,
           overflow: 'hidden',
           transform: `translateY(${(1 - rise) * 900}px) rotateX(${tilt}deg) scale(${drift})`,
           transformOrigin: '50% 0%',
-          fontFamily: fonts.sans,
-          color: colors.carbon,
+          fontFamily: fonts.round,
+          color: colors.ink,
         }}
       >
         {/* status bar */}
@@ -101,28 +93,28 @@ export const Scene2Profile: React.FC = () => {
         {/* header */}
         <div style={{display: 'flex', alignItems: 'center', padding: '30px 50px 10px', gap: 18, ...s.header}}>
           <span style={{fontSize: 46, fontWeight: 600}}>‹</span>
-          <span style={{fontSize: 40, fontWeight: 600, letterSpacing: 0.5}}>
+          <span style={{fontSize: 42, fontWeight: 600}}>
             {HANDLE.slice(0, typed)}
-            <span style={{opacity: frame % 16 < 8 && typed < HANDLE.length ? 1 : 0, color: colors.gold}}>|</span>
+            <span style={{opacity: frame % 16 < 8 && typed < HANDLE.length ? 1 : 0, color: colors.hot}}>|</span>
           </span>
           <span style={{marginLeft: 'auto', fontSize: 40, letterSpacing: 4}}>⋯</span>
         </div>
 
         {/* avatar + nombre */}
-        <div style={{display: 'flex', alignItems: 'center', gap: 40, padding: '24px 50px 10px'}}>
-          <div style={{position: 'relative', width: 230, height: 230, flexShrink: 0}}>
-            <svg width="230" height="230" viewBox="0 0 230 230" style={{position: 'absolute', inset: 0}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: 36, padding: '24px 50px 10px'}}>
+          <div style={{position: 'relative', width: 240, height: 240, flexShrink: 0}}>
+            <svg width="240" height="240" viewBox="0 0 240 240" style={{position: 'absolute', inset: 0}}>
               <defs>
                 <linearGradient id="avatarRing" x1="0" y1="1" x2="1" y2="0">
-                  <stop offset="0%" stopColor={colors.gold} />
-                  <stop offset="55%" stopColor={colors.roseGold} />
-                  <stop offset="100%" stopColor={colors.blush} />
+                  <stop offset="0%" stopColor={colors.hot} />
+                  <stop offset="60%" stopColor={colors.heart} />
+                  <stop offset="100%" stopColor={colors.bubble} />
                 </linearGradient>
               </defs>
               <circle
-                cx="115" cy="115" r="108" fill="none" stroke="url(#avatarRing)" strokeWidth="9"
-                strokeDasharray={2 * Math.PI * 108} strokeDashoffset={2 * Math.PI * 108 * (1 - ring)}
-                transform={`rotate(${-90 + frame * 2} 115 115)`} strokeLinecap="round"
+                cx="120" cy="120" r="113" fill="none" stroke="url(#avatarRing)" strokeWidth="9"
+                strokeDasharray={2 * Math.PI * 113} strokeDashoffset={2 * Math.PI * 113 * (1 - ring)}
+                transform={`rotate(${-90 + frame * 2} 120 120)`} strokeLinecap="round"
               />
             </svg>
             <div
@@ -130,28 +122,31 @@ export const Scene2Profile: React.FC = () => {
                 position: 'absolute',
                 inset: 18,
                 borderRadius: '50%',
-                background: colors.ivory,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transform: `scale(${spring({frame: frame - 4, fps, config: {damping: 12}})})`,
+                overflow: 'hidden',
+                transform: `scale(${spring({frame: frame - 4, fps, config: {damping: 10}})})`,
               }}
             >
-              <Logo size={170} id="avatar" />
+              {/* el cuadriculado en miniatura, como la foto de perfil */}
+              <div style={{position: 'absolute', width: 1080, height: 1920, transform: 'scale(0.2)', transformOrigin: '0 0'}}>
+                <CheckerBg cell={200} amp={30} />
+              </div>
+              <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <Logo width={170} />
+              </div>
             </div>
           </div>
           <div style={s.name}>
-            <div style={{fontFamily: fonts.serif, fontWeight: 700, fontSize: 52, lineHeight: 1.1}}>
+            <div style={{fontFamily: fonts.display, fontSize: 54, lineHeight: 1.1, color: colors.hot}}>
               GB Accesorios
               <br />
-              <span style={{fontStyle: 'italic', color: colors.roseGold}}>&amp; Moda</span>
+              <span style={{color: colors.heart}}>&amp; Moda</span>
             </div>
-            <div style={{fontSize: 28, color: '#8a7a74', marginTop: 12, fontWeight: 500}}>Tienda de accesorios</div>
+            <div style={{fontSize: 30, color: '#B36A8C', marginTop: 10, fontWeight: 500}}>Tienda de accesorios</div>
           </div>
         </div>
 
         {/* bio */}
-        <div style={{padding: '18px 50px 0', fontSize: 33, lineHeight: 1.6, fontWeight: 500}}>
+        <div style={{padding: '18px 50px 0', fontSize: 35, lineHeight: 1.55, fontWeight: 500}}>
           {BIO.map((line, i) => (
             <div key={line} style={s.bio[i]}>
               {line}
@@ -164,25 +159,25 @@ export const Scene2Profile: React.FC = () => {
           <div
             style={{
               flex: 1.3,
-              height: 84,
-              borderRadius: 20,
-              background: goldGradient,
+              height: 86,
+              borderRadius: 43,
+              background: hotGradient,
               color: colors.white,
               fontWeight: 600,
-              fontSize: 34,
+              fontSize: 36,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               transform: `scale(${followPulse})`,
-              boxShadow: '0 10px 24px rgba(156,122,67,0.35)',
+              boxShadow: '0 10px 24px rgba(227,3,100,0.35)',
             }}
           >
             Seguir
           </div>
-          <div style={{flex: 1, height: 84, borderRadius: 20, background: colors.nude, fontWeight: 600, fontSize: 34, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div style={{flex: 1, height: 86, borderRadius: 43, background: colors.cream, fontWeight: 600, fontSize: 36, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             Mensaje
           </div>
-          <div style={{width: 84, height: 84, borderRadius: 20, background: colors.nude, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 34}}>
+          <div style={{width: 86, height: 86, borderRadius: 43, background: colors.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 34}}>
             ⌄
           </div>
         </div>
@@ -190,22 +185,22 @@ export const Scene2Profile: React.FC = () => {
         {/* historias destacadas */}
         <div style={{display: 'flex', justifyContent: 'space-between', padding: '40px 46px 0'}}>
           {HIGHLIGHTS.map((h, i) => {
-            const p = spring({frame: frame - 24 - i * 3, fps, config: {damping: 11, stiffness: 160}});
+            const p = spring({frame: frame - 24 - i * 3, fps, config: {damping: 10, stiffness: 160}});
             return (
               <div key={h.label} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, transform: `scale(${p})`, opacity: Math.min(1, p * 1.5)}}>
-                <div style={{width: 138, height: 138, borderRadius: '50%', border: `4px solid ${colors.nude}`, padding: 6, boxSizing: 'border-box'}}>
+                <div style={{width: 138, height: 138, borderRadius: '50%', border: `4px solid ${colors.bubble}`, padding: 6, boxSizing: 'border-box'}}>
                   <ProductArt index={h.art} size={118} rounded={60} t={frame} />
                 </div>
-                <span style={{fontSize: 24, fontWeight: 500}}>{h.label}</span>
+                <span style={{fontSize: 25, fontWeight: 500}}>{h.label}</span>
               </div>
             );
           })}
         </div>
 
         {/* pestañas */}
-        <div style={{display: 'flex', marginTop: 34, borderBottom: '2px solid #eee', ...s.tabs}}>
+        <div style={{display: 'flex', marginTop: 34, borderBottom: `2px solid ${colors.cream}`, ...s.tabs}}>
           {['▦', '▶', '◎'].map((ic, i) => (
-            <div key={ic} style={{flex: 1, textAlign: 'center', fontSize: 40, padding: '16px 0', color: i === 0 ? colors.carbon : '#b9aaa4', borderBottom: i === 0 ? `4px solid ${colors.carbon}` : 'none'}}>
+            <div key={ic} style={{flex: 1, textAlign: 'center', fontSize: 40, padding: '16px 0', color: i === 0 ? colors.hot : '#E3A9C4', borderBottom: i === 0 ? `4px solid ${colors.hot}` : 'none'}}>
               {ic}
             </div>
           ))}
@@ -223,6 +218,7 @@ export const Scene2Profile: React.FC = () => {
           })}
         </div>
       </div>
+
     </AbsoluteFill>
   );
 };

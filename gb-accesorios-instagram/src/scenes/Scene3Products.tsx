@@ -2,7 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 import {PRODUCTS, ProductArt} from '../components/Products';
 import {Sparkle} from '../components/Sparkle';
-import {colors, fonts} from '../theme';
+import {CheckerBg} from '../components/CheckerBg';
+import {bubbleText, colors, fonts} from '../theme';
 
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -33,19 +34,20 @@ export const Scene3Products: React.FC = () => {
   const carouselX = (1 - enter) * 1100;
 
   return (
-    <AbsoluteFill style={{background: `linear-gradient(180deg, ${colors.ivory} 0%, ${colors.nude} 100%)`, overflow: 'hidden'}}>
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      <CheckerBg amp={30} speed={0.9} />
       {/* títulos (cambian de "grilla" a "carrusel") */}
       <div style={{position: 'absolute', top: 170, width: '100%', textAlign: 'center', opacity: titleIn, transform: `translateY(${(1 - titleIn) * 30}px)`}}>
         <div style={{position: 'relative', height: 150}}>
           <div style={{position: 'absolute', width: '100%', opacity: 1 - titleSwap, transform: `translateY(${-titleSwap * 40}px)`}}>
-            <div style={{fontFamily: fonts.serif, fontStyle: 'italic', fontSize: 96, color: colors.carbon}}>Lo nuevo ✨</div>
+            <div style={{fontSize: 104, ...bubbleText(14)}}>lo nuevo 💖</div>
           </div>
           <div style={{position: 'absolute', width: '100%', opacity: titleSwap, transform: `translateY(${(1 - titleSwap) * 40}px)`}}>
-            <div style={{fontFamily: fonts.serif, fontStyle: 'italic', fontSize: 96, color: colors.carbon}}>Elegí tu favorito</div>
+            <div style={{fontSize: 96, ...bubbleText(14, colors.white)}}>tu favorito 💕</div>
           </div>
         </div>
-        <div style={{fontFamily: fonts.sans, fontWeight: 600, letterSpacing: 9, fontSize: 30, color: colors.roseGold}}>
-          BIJOU · CARTERAS · LENTES · RELOJES
+        <div style={{fontFamily: fonts.round, fontWeight: 600, letterSpacing: 6, fontSize: 34, color: colors.hot, marginTop: 6}}>
+          AROS · COLLARES · CARTERAS · LENTES
         </div>
       </div>
 
@@ -79,21 +81,22 @@ export const Scene3Products: React.FC = () => {
                   opacity: Math.min(1, flip * 2) * (1 - gridExit),
                   borderRadius: 28,
                   overflow: 'hidden',
-                  boxShadow: '0 16px 30px rgba(120,70,50,0.18)',
+                  boxShadow: '0 12px 0 rgba(176,2,78,0.35)',
+                  border: `6px solid ${colors.hot}`,
                 }}
               >
-                <ProductArt index={i} size={TILE} t={frame} />
+                <ProductArt index={i} size={TILE - 12} t={frame} />
                 <div
                   style={{
                     position: 'absolute',
                     left: 18,
                     bottom: 16,
-                    fontFamily: fonts.sans,
+                    fontFamily: fonts.round,
                     fontWeight: 600,
-                    fontSize: 22,
-                    letterSpacing: 3,
-                    color: colors.carbon,
-                    background: '#ffffffcc',
+                    fontSize: 24,
+                    letterSpacing: 2,
+                    color: colors.white,
+                    background: colors.hot,
                     padding: '6px 14px',
                     borderRadius: 30,
                   }}
@@ -127,12 +130,12 @@ export const Scene3Products: React.FC = () => {
                   opacity: interpolate(Math.abs(dist), [0, 1.6], [1, 0.35], clamp),
                 }}
               >
-                <div style={{borderRadius: 44, overflow: 'hidden', boxShadow: '0 30px 60px rgba(120,70,50,0.28)', border: `6px solid ${colors.white}`}}>
-                  <ProductArt index={idx} size={CARD - 12} t={frame} />
+                <div style={{borderRadius: 56, overflow: 'hidden', boxShadow: `0 18px 0 ${colors.hotDark}`, border: `12px solid ${colors.hot}`, outline: `10px solid ${colors.white}`}}>
+                  <ProductArt index={idx} size={CARD - 24} t={frame} />
                 </div>
                 <div style={{textAlign: 'center', marginTop: 34}}>
-                  <div style={{fontFamily: fonts.serif, fontWeight: 700, fontSize: 70, color: colors.carbon}}>{p.name}</div>
-                  <div style={{fontFamily: fonts.sans, fontWeight: 500, fontSize: 30, letterSpacing: 4, color: colors.roseGold, marginTop: 6}}>
+                  <div style={{fontSize: 84, ...bubbleText(12, colors.white)}}>{p.name}</div>
+                  <div style={{fontFamily: fonts.round, fontWeight: 600, fontSize: 34, letterSpacing: 4, color: colors.hot, marginTop: 10}}>
                     NUEVOS MODELOS
                   </div>
                 </div>
@@ -146,12 +149,12 @@ export const Scene3Products: React.FC = () => {
       <div style={{position: 'absolute', bottom: 240, width: '100%', display: 'flex', justifyContent: 'center', gap: 16, opacity: enter}}>
         {CAROUSEL.map((_, k) => {
           const active = 1 - Math.min(1, Math.abs(k - pos));
-          return <div key={k} style={{width: 18 + 36 * active, height: 18, borderRadius: 9, background: active > 0.5 ? colors.gold : '#d8c3b8'}} />;
+          return <div key={k} style={{width: 18 + 36 * active, height: 18, borderRadius: 9, background: active > 0.5 ? colors.hot : colors.white, border: `3px solid ${colors.hot}`}} />;
         })}
       </div>
 
       <Sparkle x={860} y={560} size={70} progress={(frame - 36) / 24} />
-      <Sparkle x={200} y={1180} size={50} progress={(frame - 40) / 24} color={colors.roseGold} />
+      <Sparkle x={200} y={1180} size={50} progress={(frame - 40) / 24} color={colors.white} />
       <Sparkle x={840} y={1260} size={44} progress={(frame - 52) / 22} />
     </AbsoluteFill>
   );

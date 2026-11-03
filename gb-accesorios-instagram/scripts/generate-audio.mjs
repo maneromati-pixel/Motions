@@ -3,10 +3,10 @@
 //
 //   node scripts/generate-audio.mjs
 //
-// Música: loop "chic house" de 10 s a 120 BPM (5 compases de 4/4).
+// Música: loop pop/house "dulce" de 10 s a 120 BPM (5 compases de 4/4), en Do mayor.
 //   - Compás 1 (0–2 s): intro sólo con piano eléctrico + arpegio filtrado (entra el logo).
 //   - Desde 2 s (corte a la placa 2): entra el bombo four-on-the-floor, bajo, hi-hats y snaps.
-// Efectos: whoosh, pop, shimmer (brillo), tap (clic de "Seguir") y ding (confirmación).
+// Efectos: whoosh, pop, shimmer (brillo), bubble (corazones), tap (clic de "Seguir") y ding (confirmación).
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -201,13 +201,13 @@ function music() {
   const buf = makeBuf(LEN);
   const arpBuf = makeBuf(LEN);
 
-  // Progresión (La menor, chic/nocturna): Am9 – Fmaj7 – Cmaj7 – G6 – Am9
+  // Progresión pop luminosa (Do mayor): Cmaj9 – Am9 – Fmaj9 – G6 – Cmaj9
   const chords = [
-    {root: 45, notes: [57, 60, 64, 67, 71]}, // Am9
-    {root: 41, notes: [57, 60, 64, 65, 69]}, // Fmaj7 (voicing cercano)
-    {root: 48, notes: [55, 59, 60, 64, 67]}, // Cmaj7
+    {root: 48, notes: [55, 59, 62, 64, 67]}, // Cmaj9
+    {root: 45, notes: [55, 59, 60, 64, 67]}, // Am9
+    {root: 41, notes: [57, 60, 64, 67, 69]}, // Fmaj9
     {root: 43, notes: [55, 59, 62, 64, 67]}, // G6
-    {root: 45, notes: [57, 60, 64, 67, 71]}, // Am9
+    {root: 48, notes: [55, 59, 62, 64, 67]}, // Cmaj9
   ];
 
   for (let bar = 0; bar < 5; bar++) {
@@ -310,7 +310,7 @@ function pop() {
 function shimmer() {
   const dur = 1.6;
   const buf = makeBuf(dur);
-  // Campanitas agudas en notas de La menor pentatónica, con entradas escalonadas
+  // Campanitas agudas en Do mayor pentatónica, con entradas escalonadas
   const notes = [93, 96, 100, 103, 105, 108, 100, 112, 105, 108];
   notes.forEach((m, k) => {
     const t0 = k * 0.055 + rand() * 0.02;
@@ -365,7 +365,26 @@ function ding() {
   writeWav('ding.wav', buf, -2);
 }
 
+// "Burbujas": tres blips senoidales ascendentes (corazones que saltan)
+function bubble() {
+  const dur = 0.4;
+  const buf = makeBuf(dur);
+  [[0, 700, -0.4], [0.07, 950, 0.3], [0.13, 1300, 0]].forEach(([t0, f0, pan]) => {
+    const s0 = Math.round(t0 * SR);
+    let ph = 0;
+    for (let i = 0; i < 0.12 * SR; i++) {
+      const t = i / SR;
+      const f = f0 * (1 + 1.2 * (1 - Math.exp(-t * 35)));
+      ph += (TAU * f) / SR;
+      const env = Math.min(1, t / 0.003) * Math.exp(-t * 30);
+      put(buf, s0 + i, Math.sin(ph) * env, pan);
+    }
+  });
+  writeWav('bubble.wav', buf, -3);
+}
+
 music();
+bubble();
 whoosh();
 pop();
 shimmer();

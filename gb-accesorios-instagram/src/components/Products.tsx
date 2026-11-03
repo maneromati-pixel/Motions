@@ -1,15 +1,15 @@
 import React from 'react';
 import {colors} from '../theme';
 
-// Ilustraciones vectoriales de productos (estilo flat chic, paleta de marca).
+// Ilustraciones vectoriales de productos (estilo flat, paleta rosa de la marca).
 // Reemplazables por fotos reales: ver README.
 
 type P = {t?: number}; // t: frame relativo para micro-animaciones (brillos, balanceo)
 
-const G = colors.gold;
-const GD = colors.goldDark;
-const C = colors.carbon;
-const RG = colors.roseGold;
+const G = colors.hot; // piezas principales
+const GD = colors.hotDark;
+const C = colors.ink; // piezas oscuras (carteras, lentes)
+const RG = colors.heart;
 
 const Shine: React.FC<{x: number; y: number; s?: number; t?: number}> = ({x, y, s = 10, t = 0}) => {
   const k = 0.6 + 0.4 * Math.sin(t / 4 + x);
@@ -32,7 +32,7 @@ export const Aros: React.FC<P> = ({t = 0}) => {
           <circle cx={cx} cy="46" r="6" fill={G} />
           <line x1={cx} y1="50" x2={cx} y2="66" stroke={G} strokeWidth="4" />
           <circle cx={cx} cy="106" r="42" fill="none" stroke={G} strokeWidth="9" />
-          <circle cx={cx} cy="106" r="42" fill="none" stroke="#F3DFB0" strokeWidth="2.5" strokeDasharray="30 240" strokeDashoffset={-20} />
+          <circle cx={cx} cy="106" r="42" fill="none" stroke="#FFD0E8" strokeWidth="2.5" strokeDasharray="30 240" strokeDashoffset={-20} />
         </g>
       ))}
       <Shine x={40} y={96} t={t} />
@@ -55,8 +55,8 @@ export const Cartera: React.FC<P> = ({t = 0}) => (
   <g>
     <path d="M62 78 C 62 30 138 30 138 78" fill="none" stroke={C} strokeWidth="8" strokeLinecap="round" />
     <rect x="32" y="74" width="136" height="98" rx="16" fill={C} />
-    <path d="M32 96 L168 96" stroke="#3a3232" strokeWidth="2" />
-    <path d="M32 90 Q100 132 168 90 L168 90 L168 86 Q100 126 32 86 Z" fill="#2c2525" />
+    <path d="M32 96 L168 96" stroke="#a3285c" strokeWidth="2" />
+    <path d="M32 90 Q100 132 168 90 L168 90 L168 86 Q100 126 32 86 Z" fill="#741035" />
     <rect x="88" y="104" width="24" height="18" rx="4" fill={G} />
     <rect x="94" y="109" width="12" height="7" rx="2" fill={GD} />
     <Shine x={150} y={150} t={t} s={8} />
@@ -85,7 +85,7 @@ export const Reloj: React.FC<P> = ({t = 0}) => {
       <rect x="78" y="14" width="44" height="54" rx="8" fill={RG} />
       <rect x="78" y="132" width="44" height="54" rx="8" fill={RG} />
       <circle cx="100" cy="100" r="46" fill={G} />
-      <circle cx="100" cy="100" r="37" fill={colors.ivory} />
+      <circle cx="100" cy="100" r="37" fill={colors.cream} />
       {[0, 90, 180, 270].map((d) => (
         <rect key={d} x="98.5" y="68" width="3" height="8" fill={C} transform={`rotate(${d} 100 100)`} />
       ))}
@@ -121,7 +121,7 @@ export const Pulsera: React.FC<P> = ({t = 0}) => (
 export const Hebillas: React.FC<P> = ({t = 0}) => (
   <g>
     <rect x="34" y="60" width="132" height="22" rx="11" fill={G} />
-    <rect x="44" y="66" width="100" height="10" rx="5" fill="#E7CF98" />
+    <rect x="44" y="66" width="100" height="10" rx="5" fill="#FFC2E0" />
     <rect x="34" y="112" width="132" height="22" rx="11" fill={RG} />
     <circle cx="60" cy="123" r="5" fill="#fff" />
     <circle cx="82" cy="123" r="5" fill="#fff" />
@@ -136,9 +136,9 @@ export const Perfume: React.FC<P> = ({t = 0}) => (
   <g>
     <rect x="86" y="30" width="28" height="22" rx="4" fill={G} />
     <rect x="92" y="52" width="16" height="12" fill={GD} />
-    <rect x="50" y="62" width="100" height="112" rx="22" fill={colors.blush} opacity="0.85" stroke={G} strokeWidth="4" />
-    <rect x="72" y="100" width="56" height="34" rx="4" fill={colors.ivory} />
-    <text x="100" y="124" textAnchor="middle" fontFamily="Playfair Display" fontWeight={700} fontSize="20" fill={GD}>GB</text>
+    <rect x="50" y="62" width="100" height="112" rx="22" fill={colors.bubble} opacity="0.9" stroke={G} strokeWidth="4" />
+    <rect x="72" y="100" width="56" height="34" rx="4" fill={colors.cream} />
+    <text x="100" y="124" textAnchor="middle" fontFamily="Titan One" fontSize="20" fill={GD}>GB</text>
     <path d="M62 80 L62 150" stroke="#fff" strokeWidth="5" opacity="0.4" strokeLinecap="round" />
     <Shine x={136} y={78} t={t} s={9} />
   </g>
@@ -147,15 +147,15 @@ export const Perfume: React.FC<P> = ({t = 0}) => (
 export type ProductDef = {name: string; bg: string; El: React.FC<P>};
 
 export const PRODUCTS: ProductDef[] = [
-  {name: 'Aros', bg: '#F3E3DA', El: Aros},
-  {name: 'Carteras', bg: '#EAD7C9', El: Cartera},
-  {name: 'Collares', bg: '#F7EEE6', El: Collar},
-  {name: 'Lentes', bg: '#E9CFC4', El: Lentes},
-  {name: 'Relojes', bg: '#F5E9DD', El: Reloj},
-  {name: 'Anillos', bg: '#EFDCD3', El: Anillos},
-  {name: 'Pulseras', bg: '#F6EBE2', El: Pulsera},
-  {name: 'Hebillas', bg: '#E8D2C6', El: Hebillas},
-  {name: 'Perfumes', bg: '#F2E4DA', El: Perfume},
+  {name: 'Aros', bg: '#FFE3F1', El: Aros},
+  {name: 'Carteras', bg: '#FDD5EA', El: Cartera},
+  {name: 'Collares', bg: '#FFEAF5', El: Collar},
+  {name: 'Lentes', bg: '#FBCFE6', El: Lentes},
+  {name: 'Relojes', bg: '#FFE0F0', El: Reloj},
+  {name: 'Anillos', bg: '#FDDCEE', El: Anillos},
+  {name: 'Pulseras', bg: '#FFE8F4', El: Pulsera},
+  {name: 'Hebillas', bg: '#FBD3EA', El: Hebillas},
+  {name: 'Perfumes', bg: '#FFE4F2', El: Perfume},
 ];
 
 export const ProductArt: React.FC<{index: number; size: number; t?: number; rounded?: number; style?: React.CSSProperties}> = ({

@@ -11,8 +11,8 @@ import {Scene5CTA} from './scenes/Scene5CTA';
 const {scenes, cuts, sfx, durationInFrames} = timeline;
 
 // Duración aproximada (en frames) de cada efecto, para calcular el "ducking" de la música
-const sfxLength: Record<string, number> = {pop: 8, shimmer: 30, whoosh: 18, tap: 6, ding: 30};
-const sfxVolume: Record<string, number> = {pop: 0.9, shimmer: 0.55, whoosh: 0.7, tap: 1, ding: 0.75};
+const sfxLength: Record<string, number> = {pop: 8, shimmer: 30, whoosh: 18, bubble: 10, tap: 6, ding: 30};
+const sfxVolume: Record<string, number> = {pop: 0.9, shimmer: 0.55, whoosh: 0.7, bubble: 0.5, tap: 1, ding: 0.75};
 
 // Volumen de la música: fade-in corto, baja ~40% mientras suena un efecto, fade-out final.
 const musicVolume = (f: number) => {
@@ -34,7 +34,7 @@ const musicVolume = (f: number) => {
 
 export const GBInstagram: React.FC = () => {
   return (
-    <AbsoluteFill style={{backgroundColor: '#F7F1EB'}}>
+    <AbsoluteFill style={{backgroundColor: '#FDECF5'}}>
       <Sequence from={scenes.logo.from} durationInFrames={scenes.logo.duration} name="1 · Logo">
         <Scene1Logo />
       </Sequence>

@@ -1,19 +1,15 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {CheckerBg} from '../components/CheckerBg';
+import {Heart} from '../components/Heart';
 import {Logo} from '../components/Logo';
 import {Sparkle} from '../components/Sparkle';
-import {colors, fonts, goldGradient, HANDLE} from '../theme';
+import {bubbleText, colors, fonts, hotGradient, HANDLE} from '../theme';
 import timeline from '../timeline.json';
 
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 // frame (local a la placa) en el que el dedo toca "Seguir" — sincronizado con el sfx "tap"
 const TAP = timeline.sfx.tap[0] - timeline.scenes.cierre.from;
-
-const Heart: React.FC<{color: string; size: number}> = ({color, size}) => (
-  <svg width={size} height={size} viewBox="0 0 24 24">
-    <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.1 1.7-1.9 3.2-3.1 5.3-3.1 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill={color} />
-  </svg>
-);
 
 // Mano/cursor que presiona el botón
 const Finger: React.FC = () => (
@@ -21,7 +17,7 @@ const Finger: React.FC = () => (
     <path
       d="M22 4c3 0 5 2 5 5v18l2-.4c3-.6 5 1 5.6 2.6l1.2-.2c3-.4 5 1.4 5.4 3l1.6-.2c3.4-.2 5.4 2 5.4 5V48c0 9-6 16-15 16h-4c-6 0-10-3-13-8L8 44c-1.6-2.6-.6-5.6 2-6.6 2.2-.8 4.4 0 5.8 1.8L17 41V9c0-3 2-5 5-5z"
       fill={colors.white}
-      stroke={colors.carbon}
+      stroke={colors.hot}
       strokeWidth="2.6"
       strokeLinejoin="round"
     />
@@ -50,32 +46,33 @@ export const Scene5CTA: React.FC = () => {
   const footer = interpolate(frame, [TAP + 6, TAP + 16], [0, 1], {...clamp, easing: Easing.out(Easing.cubic)});
 
   const hearts = [
-    {dx: -220, c: colors.roseGold, s: 70, d: 0},
-    {dx: -90, c: colors.gold, s: 54, d: 2},
-    {dx: 40, c: colors.blush, s: 84, d: 1},
-    {dx: 170, c: colors.roseGold, s: 58, d: 3},
-    {dx: 260, c: colors.gold, s: 46, d: 5},
+    {dx: -230, c: colors.bubble, s: 110, d: 0},
+    {dx: -100, c: colors.white, s: 84, d: 2},
+    {dx: 40, c: colors.heart, s: 130, d: 1},
+    {dx: 180, c: colors.bubble, s: 92, d: 3},
+    {dx: 270, c: colors.white, s: 74, d: 5},
   ];
 
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(circle at 50% 38%, ${colors.white} 0%, ${colors.ivory} 45%, ${colors.nude} 110%)`,
         alignItems: 'center',
-        fontFamily: fonts.sans,
+        fontFamily: fonts.round,
+        overflow: 'hidden',
       }}
     >
-      <div style={{position: 'absolute', top: 210, transform: `scale(${(0.7 + 0.3 * logoIn) * breathe})`, opacity: logoIn}}>
-        <Logo size={460} ring={logoIn} id="l5" />
+      <CheckerBg />
+      <div style={{position: 'absolute', width: 1100, height: 1100, top: 0, borderRadius: '50%', background: `radial-gradient(circle, ${colors.white}CC 0%, ${colors.white}00 65%)`}} />
+      <div style={{position: 'absolute', top: 230, transform: `scale(${(0.6 + 0.4 * logoIn) * breathe}) rotate(${Math.sin(frame / 8) * 2}deg)`, opacity: Math.min(1, logoIn * 2)}}>
+        <Logo width={640} shine={interpolate(frame, [12, 28], [-0.2, 1.2], clamp)} />
       </div>
 
       <div style={{position: 'absolute', top: 760, width: '100%', textAlign: 'center'}}>
-        <div style={{fontFamily: fonts.serif, fontStyle: 'italic', fontSize: 92, color: colors.carbon, opacity: t1, transform: `translateY(${(1 - t1) * 30}px)`}}>
+        <div style={{fontFamily: fonts.round, fontWeight: 700, fontSize: 84, color: colors.hot, opacity: t1, transform: `translateY(${(1 - t1) * 30}px)`}}>
           Seguinos en
         </div>
         <div style={{display: 'inline-block', marginTop: 14, opacity: t2, transform: `translateY(${(1 - t2) * 30}px)`}}>
-          <div style={{fontWeight: 600, fontSize: 70, color: colors.carbon, letterSpacing: 0.5}}>@{HANDLE}</div>
-          <div style={{height: 5, marginTop: 10, background: goldGradient, transform: `scaleX(${t2})`, borderRadius: 3}} />
+          <div style={{fontSize: 64, ...bubbleText(11, colors.white)}}>@{HANDLE}</div>
         </div>
       </div>
 
@@ -88,7 +85,7 @@ export const Scene5CTA: React.FC = () => {
               position: 'absolute',
               inset: 0,
               borderRadius: 70,
-              border: `4px solid ${colors.gold}`,
+              border: `6px solid ${colors.hot}`,
               transform: `scale(${1 + ripple * 0.35})`,
               opacity: 1 - ripple,
             }}
@@ -99,8 +96,8 @@ export const Scene5CTA: React.FC = () => {
             width: 600,
             height: 140,
             borderRadius: 70,
-            background: followed ? colors.white : goldGradient,
-            border: followed ? `4px solid ${colors.gold}` : '4px solid transparent',
+            background: followed ? colors.white : hotGradient,
+            border: followed ? `6px solid ${colors.hot}` : `6px solid ${colors.white}`,
             boxSizing: 'border-box',
             display: 'flex',
             alignItems: 'center',
@@ -108,16 +105,16 @@ export const Scene5CTA: React.FC = () => {
             gap: 18,
             fontWeight: 600,
             fontSize: 58,
-            color: followed ? colors.carbon : colors.white,
+            color: followed ? colors.hot : colors.white,
             transform: `scale(${btnScale})`,
-            boxShadow: followed ? '0 10px 30px rgba(156,122,67,0.18)' : `0 ${22 - 14 * press}px 44px rgba(156,122,67,0.45)`,
+            boxShadow: followed ? `0 8px 0 ${colors.bubble}` : `0 ${16 - 12 * press}px 0 ${colors.hotDark}`,
           }}
         >
           {followed ? (
             <>
               Siguiendo
               <svg width="54" height="54" viewBox="0 0 24 24" style={{transform: `scale(${pop})`}}>
-                <circle cx="12" cy="12" r="11" fill={colors.gold} />
+                <circle cx="12" cy="12" r="11" fill={colors.hot} />
                 <path d="M7 12.5 L10.5 16 L17 9" stroke="#fff" strokeWidth="2.6" fill="none" strokeLinecap="round" />
               </svg>
             </>
@@ -142,7 +139,7 @@ export const Scene5CTA: React.FC = () => {
                     transform: `scale(${0.4 + 0.8 * Math.sin(Math.PI * Math.min(1, p * 1.6))}) rotate(${h.dx / 12}deg)`,
                   }}
                 >
-                  <Heart color={h.c} size={h.s} />
+                  <Heart fill={h.c} size={h.s * 1.4} />
                 </div>
               );
             })
@@ -170,9 +167,9 @@ export const Scene5CTA: React.FC = () => {
           top: 1380,
           width: '100%',
           textAlign: 'center',
-          fontSize: 40,
-          fontWeight: 500,
-          color: colors.carbon,
+          fontSize: 44,
+          fontWeight: 600,
+          color: colors.ink,
           opacity: footer,
           transform: `translateY(${(1 - footer) * 24}px)`,
         }}
@@ -184,9 +181,9 @@ export const Scene5CTA: React.FC = () => {
           position: 'absolute',
           bottom: 210,
           fontWeight: 600,
-          fontSize: 28,
-          letterSpacing: 8,
-          color: colors.roseGold,
+          fontSize: 32,
+          letterSpacing: 4,
+          color: colors.hot,
           opacity: footer,
         }}
       >
@@ -194,9 +191,9 @@ export const Scene5CTA: React.FC = () => {
       </div>
 
       <Sparkle x={230} y={300} size={60} progress={(frame - 6) / 26} />
-      <Sparkle x={860} y={560} size={48} progress={(frame - 12) / 24} color={colors.roseGold} />
+      <Sparkle x={860} y={560} size={48} progress={(frame - 12) / 24} color={colors.white} />
       <Sparkle x={820} y={1120} size={60} progress={(frame - TAP) / 22} />
-      <Sparkle x={250} y={1260} size={44} progress={(frame - TAP - 4) / 22} color={colors.roseGold} />
+      <Sparkle x={250} y={1260} size={44} progress={(frame - TAP - 4) / 22} color={colors.white} />
     </AbsoluteFill>
   );
 };
