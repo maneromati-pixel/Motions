@@ -1,0 +1,30 @@
+{
+  "name": "reel-ahorro-doble",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "remotion studio",
+    "transcribe": "NODE_USE_ENV_PROXY=1 node scripts/transcribe.mjs",
+    "render": "remotion render Video video_final.mp4",
+    "portada": "remotion still Video portada.png --frame=0",
+    "muestras": "node scripts/samples.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/montserrat": "^5.1.0",
+    "@remotion/bundler": "^4.0.540",
+    "@remotion/captions": "4.0.540",
+    "@remotion/cli": "4.0.540",
+    "@remotion/install-whisper-cpp": "4.0.540",
+    "@remotion/media-utils": "4.0.540",
+    "@remotion/renderer": "^4.0.540",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "4.0.540"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "typescript": "5.7.3"
+  }
+}

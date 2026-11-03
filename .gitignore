@@ -1,0 +1,9 @@
+node_modules/
+whisper.cpp/
+out/
+.cache/
+*.wav
+# Generados a partir de la voz (se regeneran con npm run transcribe / render)
+public/voz.mp3
+public/captions.json
+video_final.mp4
