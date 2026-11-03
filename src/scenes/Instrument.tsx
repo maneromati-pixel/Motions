@@ -30,7 +30,7 @@ export const Instrument: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const t = frame / fps;
-  if (t < T.work || t >= T.cut) return null; // el corte a las 32 s es seco, a propósito
+  if (t < T.work || t >= T.cut) return null; // el corte de T.cut es seco, a propósito
 
   const W = T.work;
   const S = T.split;
@@ -64,11 +64,11 @@ export const Instrument: React.FC = () => {
   const goldW = Math.max(0, interest * K - gap);
   const goldX = BAR.x + whiteW + gap;
 
-  const vosIn = p(t, S + 0.95, 0.8);
-  const intIn = p(t, S + 1.15, 0.9);
-  const vosCount = p(t, S + 0.95, 0.9);
-  const intCount = p(t, S + 1.15, 1.1);
-  const soloIn = p(t, S + 2.6, 0.9);
+  const vosIn = p(t, T.splitVos, 0.8);
+  const intIn = p(t, T.splitInt, 0.9);
+  const vosCount = p(t, T.splitVos, 0.9);
+  const intCount = p(t, T.splitInt, 1.1);
+  const soloIn = p(t, T.splitSolo, 0.9);
 
   const header = (
     <span style={{display: 'inline-flex', alignItems: 'center', gap: 22}}>

@@ -28,14 +28,14 @@ export const Comparison: React.FC = () => {
   const out = (d: number) => p(t, OUT + d, 0.5);
   const drop = (d: number) => 22 * out(d);
 
-  const aporteL = inOut(t, X + 1.0, 0.6);
-  const aporteR = inOut(t, X + 1.08, 0.6);
-  const resL = p(t, X + 2.0, 0.6);
-  const resR = p(t, X + 2.25, 0.6);
-  const cntL = p(t, X + 2.0, 1.3);
-  const cntR = p(t, X + 2.25, 1.3);
-  const esperaIn = p(t, X + 4.5, 0.8);
-  const costIn = p(t, X + 4.65, 0.9);
+  const aporteL = inOut(t, T.cmpAporte, 0.6);
+  const aporteR = inOut(t, T.cmpAporte + 0.08, 0.6);
+  const resL = p(t, T.cmpResult, 0.6);
+  const resR = p(t, T.cmpResult + 0.25, 0.6);
+  const cntL = p(t, T.cmpResult, 1.3);
+  const cntR = p(t, T.cmpResult + 0.25, 1.3);
+  const esperaIn = p(t, T.cmpEspera, 0.8);
+  const costIn = p(t, T.cmpEspera + 0.15, 0.9);
 
   const col = (x: number, d: number, children: React.ReactNode, y: number, op: number, rise = 0) => (
     <At x={x} y={y + rise + drop(d)} style={{opacity: op * (1 - out(d))}}>

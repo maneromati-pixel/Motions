@@ -1,8 +1,8 @@
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
 export const FPS = 60;
-export const DURATION_S = 62;
-export const DURATION_FRAMES = DURATION_S * FPS; // 3720
+export const DURATION_S = 63;
+export const DURATION_FRAMES = DURATION_S * FPS; // 3780
 
 export type Palette = {
   bgCenter: string;

@@ -81,8 +81,8 @@ export const Chart: React.FC = () => {
   const head = curveHead(t);
   const d = pathTo(head.m);
 
-  const abandonOp = inOut(t, T.curveStart + 2.0, 0.8, T.climb + 0.1, 0.5);
-  const abandonY = 12 * p(t, T.climb + 0.1, 0.5) + 12 * (1 - p(t, T.curveStart + 2.0, 0.8));
+  const abandonOp = inOut(t, T.abandon, 0.8, T.climb + 0.1, 0.5);
+  const abandonY = 12 * p(t, T.climb + 0.1, 0.5) + 12 * (1 - p(t, T.abandon, 0.8));
   const millonOp = inOut(t, T.climbEnd + 0.2, 0.8, T.close, 0.45);
   const millonY = 14 * (1 - p(t, T.climbEnd + 0.2, 0.8)) - 12 * p(t, T.close, 0.45);
 

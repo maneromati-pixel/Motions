@@ -67,10 +67,10 @@ export const Finale: React.FC = () => {
   const r = lerp(9, 2.5, morph);
 
   // ── Textos de decisión
-  const l1 = inOut(t, T.close + 0.5, 0.8, T.pill, 0.5);
-  const l2 = inOut(t, T.close + 0.6, 0.8, T.pill + 0.04, 0.5);
-  const dim = p(t, T.close + 1.9, 0.6);
-  const hoy = inOut(t, T.close + 1.9, 0.8, T.pill + 0.1, 0.5);
+  const l1 = inOut(t, T.close + 0.4, 0.8, T.pill, 0.5);
+  const l2 = inOut(t, T.close + 0.5, 0.8, T.pill + 0.04, 0.5);
+  const dim = p(t, T.closeHoy, 0.6);
+  const hoy = inOut(t, T.closeHoy, 0.8, T.pill + 0.1, 0.5);
   const up = (k: number) => -26 * p(t, T.pill + k, 0.5);
   const firstColor = mixColor(C.text, C.text2, dim);
 

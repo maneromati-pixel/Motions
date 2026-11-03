@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {p} from './anim';
 import {At, Background, Micro} from './components/primitives';
 import {ensureFonts} from './fonts';
@@ -10,6 +10,7 @@ import {HookAndCondition} from './scenes/HookAndCondition';
 import {Instrument} from './scenes/Instrument';
 import {C, PALETTES, SAFE, setPalette} from './theme';
 import {T} from './timeline';
+import {VOICE_CLIPS, VOICE_FILE, VOICE_PAD} from './voice';
 
 ensureFonts();
 
@@ -35,6 +36,31 @@ const Disclaimer: React.FC = () => {
   );
 };
 
+/** Voz en off: cada frase recortada del archivo y ubicada sobre su imagen. */
+const Voice: React.FC = () => {
+  const {fps} = useVideoConfig();
+  return (
+    <>
+      {VOICE_CLIPS.map((c) => {
+        const pre = Math.min(VOICE_PAD.before, c.from, c.at);
+        const from = Math.round((c.from - pre) * fps);
+        const to = Math.round((c.to + VOICE_PAD.after) * fps);
+        const fade = 3; // frames, evita clics en los cortes
+        return (
+          <Sequence key={c.at} from={Math.round((c.at - pre) * fps)} durationInFrames={to - from} layout="none">
+            <Audio
+              src={staticFile(VOICE_FILE)}
+              trimBefore={from}
+              trimAfter={to}
+              volume={(f) => Math.min(1, f / fade, (to - from - f) / fade)}
+            />
+          </Sequence>
+        );
+      })}
+    </>
+  );
+};
+
 const Film: React.FC<{mode: keyof typeof PALETTES}> = ({mode}) => {
   setPalette(mode);
   return (
@@ -46,6 +72,7 @@ const Film: React.FC<{mode: keyof typeof PALETTES}> = ({mode}) => {
     <Chart />
     <Finale />
     <Disclaimer />
+    <Voice />
   </AbsoluteFill>
   );
 };
