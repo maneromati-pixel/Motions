@@ -18,20 +18,30 @@ for (const weight of ["500", "600", "800"]) {
   });
 }
 
+/**
+ * Paleta "papel": fondo claro (igual al del gancho) y elementos en tinta negra.
+ * Todas las escenas leen estos tokens; para volver a la versión oscura alcanza con
+ * cambiar estos valores (y GLOW).
+ */
 export const C = {
-  bg: "#0A0A0A",
-  bgCenter: "#151515",
-  bgEdge: "#050505",
-  white: "#FFFFFF",
-  gray: "#8A8A8A",
-  dim: "#3A3A3A",
-  black: "#000000",
-  nightTop: "#0B1020",
-  nightBottom: "#141B33",
+  /** fondo (centro → bordes) */
+  paper: "#E6E5DC",
+  paperEdge: "#BDBCB2",
+  grid: "rgba(40,40,30,0.07)",
+  line: "rgba(70,70,60,0.45)",
+  /** elementos activos y texto principal */
+  ink: "#1C1C1A",
+  /** secundario */
+  gray: "#6E6E66",
+  /** apagado / inactivo */
+  dim: "#A9A89F",
+  /** tinta suave para texto grande del gancho */
+  inkSoft: "#3E3E3A",
 };
 
+/** Énfasis de lo activo: sombra suave (en fondo claro reemplaza al glow blanco). */
 export const GLOW =
-  "drop-shadow(0 0 8px rgba(255,255,255,.6)) drop-shadow(0 0 20px rgba(255,255,255,.25))";
+  "drop-shadow(0 2px 3px rgba(0,0,0,.16)) drop-shadow(0 10px 18px rgba(0,0,0,.14))";
 
 /** Zona segura: TikTok tapa ~140px a la derecha y ~400px abajo. */
 export const SAFE = {

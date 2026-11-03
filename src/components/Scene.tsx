@@ -4,16 +4,17 @@ import { SCENE_FADE } from "../timing";
 import { Background } from "./Background";
 
 /**
- * Contenedor de escena: fondo + contenido, con fade a negro de SCENE_FADE frames
+ * Contenedor de escena: fondo + contenido, con fundido a blanco (papel) de SCENE_FADE frames
  * al final. `fadeIn` opcional (nunca en la escena 1: el gancho se ve desde el frame 0).
  */
 export const Scene: React.FC<{
   duration: number;
   children: React.ReactNode;
-  bg?: "dark" | "night";
+  /** el gancho dibuja su propio fondo con diagonales y billetes */
+  diagonals?: boolean;
   fadeIn?: boolean;
   fadeOut?: boolean;
-}> = ({ duration, children, bg = "dark", fadeIn = false, fadeOut = true }) => {
+}> = ({ duration, children, diagonals = false, fadeIn = false, fadeOut = true }) => {
   const frame = useCurrentFrame();
   let opacity = 1;
   if (fadeOut) {
@@ -30,7 +31,7 @@ export const Scene: React.FC<{
   }
   return (
     <AbsoluteFill style={{ opacity }}>
-      <Background variant={bg} />
+      <Background diagonals={diagonals} />
       {children}
     </AbsoluteFill>
   );

@@ -26,8 +26,8 @@ export const Diamond: React.FC<{
     <svg width={width} height={height} style={{ position: "absolute", overflow: "visible", filter: GLOW }}>
       <polygon
         points={`${width / 2},2 ${width - 2},${height / 2} ${width / 2},${height - 2} 2,${height / 2}`}
-        fill="rgba(255,255,255,0.03)"
-        stroke={C.white}
+        fill="rgba(0,0,0,0.03)"
+        stroke={C.ink}
         strokeWidth={3}
         strokeLinejoin="round"
       />
@@ -43,7 +43,7 @@ export const Diamond: React.FC<{
         fontSize,
         letterSpacing: "0.2em",
         paddingLeft: "0.2em",
-        color: C.white,
+        color: C.ink,
       }}
     >
       {label}

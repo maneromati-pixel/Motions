@@ -44,14 +44,14 @@ export const Radar: React.FC<{
               <path
                 key={i}
                 d={`M${cx},${cy} L${x1},${y1} A${r},${r} 0 0 1 ${x2},${y2} Z`}
-                fill={C.white}
+                fill={C.ink}
                 opacity={0.16 * (1 - i / slices)}
               />
             );
           })}
           {(() => {
             const [x, y] = pt(cx, cy, sweep, r);
-            return <line x1={cx} y1={cy} x2={x} y2={y} stroke={C.white} strokeWidth={3} style={{ filter: GLOW }} />;
+            return <line x1={cx} y1={cy} x2={x} y2={y} stroke={C.ink} strokeWidth={3} style={{ filter: GLOW }} />;
           })()}
         </g>
         {blips.map((b) => {
@@ -59,8 +59,8 @@ export const Radar: React.FC<{
           const [x, y] = pt(cx, cy, b.angle, b.r);
           return (
             <g key={b.label} opacity={b.seen} style={{ filter: GLOW }}>
-              <circle cx={x} cy={y} r={8} fill={C.white} />
-              <circle cx={x} cy={y} r={8 + 22 * (1 - b.seen)} fill="none" stroke={C.white} strokeOpacity={1 - b.seen} strokeWidth={2} />
+              <circle cx={x} cy={y} r={8} fill={C.ink} />
+              <circle cx={x} cy={y} r={8 + 22 * (1 - b.seen)} fill="none" stroke={C.ink} strokeOpacity={1 - b.seen} strokeWidth={2} />
             </g>
           );
         })}
@@ -80,7 +80,7 @@ export const Radar: React.FC<{
               ...type.micro,
               fontSize: 18,
               letterSpacing: "0.22em",
-              color: C.white,
+              color: C.ink,
               fontWeight: 600,
               whiteSpace: "nowrap",
               opacity: b.seen,

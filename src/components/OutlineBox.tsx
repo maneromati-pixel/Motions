@@ -12,7 +12,7 @@ export const OutlineBox: React.FC<{
   style?: React.CSSProperties;
 }> = ({ label, variant = "normal", width = 440, height = 90, fontSize = 30, style }) => {
   const dim = variant === "dim";
-  const color = dim ? C.dim : C.white;
+  const color = dim ? C.dim : C.ink;
   const ls = type.label.letterSpacing;
   return (
     <div
@@ -30,7 +30,7 @@ export const OutlineBox: React.FC<{
         fontSize,
         paddingLeft: ls,
         filter: variant === "active" ? GLOW : undefined,
-        background: variant === "active" ? "rgba(255,255,255,0.04)" : "transparent",
+        background: variant === "active" ? "rgba(0,0,0,0.04)" : "transparent",
         ...style,
       }}
     >

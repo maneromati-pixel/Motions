@@ -9,7 +9,7 @@ export const ProgressBar: React.FC<{
   color?: string;
   glow?: boolean;
   style?: React.CSSProperties;
-}> = ({ value, width = 640, height = 34, color = C.white, glow = true, style }) => {
+}> = ({ value, width = 640, height = 34, color = C.ink, glow = true, style }) => {
   const pad = 6;
   const inner = width - pad * 2 - 6;
   return (

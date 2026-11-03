@@ -67,8 +67,8 @@ export const Scene07Piensan: React.FC = () => {
 
       <svg width={1080} height={1920} style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}>
         {/* rama NO → izquierda */}
-        <line x1={leftEdge} y1={D_CY} x2={leftEdge - (leftEdge - ahRight - 6) * noLine} y2={D_CY} stroke={C.white} strokeWidth={2} />
-        {noLine > 0.9 && <polyline points={`${ahRight + 16},${D_CY - 8} ${ahRight + 6},${D_CY} ${ahRight + 16},${D_CY + 8}`} fill="none" stroke={C.white} strokeWidth={2} />}
+        <line x1={leftEdge} y1={D_CY} x2={leftEdge - (leftEdge - ahRight - 6) * noLine} y2={D_CY} stroke={C.ink} strokeWidth={2} />
+        {noLine > 0.9 && <polyline points={`${ahRight + 16},${D_CY - 8} ${ahRight + 6},${D_CY} ${ahRight + 16},${D_CY + 8}`} fill="none" stroke={C.ink} strokeWidth={2} />}
         {/* vuelta punteada */}
         <path d={retPath} fill="none" stroke={C.gray} strokeWidth={2} strokeDasharray="5 8" pathLength={1} strokeDashoffset={0} opacity={ret} />
         {/* enlace punteado hacia la persona que lo hace */}
@@ -83,7 +83,7 @@ export const Scene07Piensan: React.FC = () => {
       <div style={{ position: "absolute", left: CX - 12, top: D_CY + D_H / 2 + 6 }}>
         <Arrow length={RESTO_Y - D_CY - D_H / 2 - 16} progress={progress(frame, B.si, B.si + 8)} />
       </div>
-      <Micro x={CX + 22} y={D_CY + D_H / 2 + 8} opacity={progress(frame, B.si, B.si + 8)} color={C.white}>SÍ</Micro>
+      <Micro x={CX + 22} y={D_CY + D_H / 2 + 8} opacity={progress(frame, B.si, B.si + 8)} color={C.ink}>SÍ</Micro>
 
       <div style={{ position: "absolute", left: CX - 180, top: RESTO_Y, opacity: resto.opacity, transform: resto.transform }}>
         <OutlineBox label="GASTA EL RESTO" width={360} height={76} fontSize={22} />
@@ -99,7 +99,7 @@ export const Scene07Piensan: React.FC = () => {
       <div style={{ position: "absolute", left: LEFT_P - 150, width: 300, top: GROUND_Y + 26, textAlign: "center", ...type.micro, color: C.dim, opacity: people.opacity }}>
         LA MAYORÍA
       </div>
-      <div style={{ position: "absolute", left: RIGHT_P - 150, width: 300, top: GROUND_Y + 26, textAlign: "center", ...type.micro, color: C.white, filter: GLOW, opacity: people.opacity }}>
+      <div style={{ position: "absolute", left: RIGHT_P - 150, width: 300, top: GROUND_Y + 26, textAlign: "center", ...type.micro, color: C.ink, filter: GLOW, opacity: people.opacity }}>
         POCOS
       </div>
     </Scene>

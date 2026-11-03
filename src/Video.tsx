@@ -11,6 +11,7 @@ import { Scene08Mismo } from "./scenes/Scene08Mismo";
 import { Scene09Numeros } from "./scenes/Scene09Numeros";
 import { Scene10Curva } from "./scenes/Scene10Curva";
 import { Scene11Cierre } from "./scenes/Scene11Cierre";
+import { C } from "./theme";
 import { SCENES, SceneKey } from "./timing";
 
 const ORDER: [SceneKey, React.FC][] = [
@@ -29,7 +30,7 @@ const ORDER: [SceneKey, React.FC][] = [
 
 /** Sin <Audio>: el video sale mudo (la voz se agrega en edición). */
 export const ClientePerfecto: React.FC = () => (
-  <AbsoluteFill style={{ backgroundColor: "#000" }}>
+  <AbsoluteFill style={{ backgroundColor: C.paper }}>
     <Series>
       {ORDER.map(([key, Comp]) => (
         <Series.Sequence key={key} durationInFrames={SCENES[key]}>

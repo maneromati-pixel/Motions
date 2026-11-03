@@ -72,7 +72,7 @@ export const Scene04Radar: React.FC = () => {
       {/* contador de detecciones */}
       <div style={{ position: "absolute", right: 150, top: CY + R - 20, textAlign: "right", opacity: draw }}>
         <div style={{ ...type.micro, fontSize: 18 }}>DETECTADO</div>
-        <div style={{ ...type.figure, fontSize: 72, color: C.white, filter: GLOW, lineHeight: 1.05 }}>{detected}</div>
+        <div style={{ ...type.figure, fontSize: 72, color: C.ink, filter: GLOW, lineHeight: 1.05 }}>{detected}</div>
       </div>
 
       <Text variant="label" y={GROUND_Y + 70} glow size={28} style={{ opacity: txt.opacity, transform: txt.transform }}>

@@ -11,7 +11,7 @@ export const PersonIcon: React.FC<{
   glow?: boolean;
   halo?: number; // 0..1 intensidad del halo
   style?: React.CSSProperties;
-}> = ({ size = 100, color = C.white, glow = false, halo = 0, style }) => {
+}> = ({ size = 100, color = C.ink, glow = false, halo = 0, style }) => {
   const id = "h" + useId().replace(/[^a-zA-Z0-9]/g, "");
   return (
     <svg
@@ -24,9 +24,9 @@ export const PersonIcon: React.FC<{
         <>
           <defs>
             <radialGradient id={id}>
-              <stop offset="0%" stopColor="#fff" stopOpacity={0.22 * halo} />
-              <stop offset="45%" stopColor="#fff" stopOpacity={0.07 * halo} />
-              <stop offset="100%" stopColor="#fff" stopOpacity={0} />
+              <stop offset="0%" stopColor="#000" stopOpacity={0.10 * halo} />
+              <stop offset="45%" stopColor="#000" stopOpacity={0.035 * halo} />
+              <stop offset="100%" stopColor="#000" stopOpacity={0} />
             </radialGradient>
           </defs>
           <ellipse cx={50} cy={70} rx={130} ry={110} fill={`url(#${id})`} />

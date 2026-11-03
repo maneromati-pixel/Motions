@@ -17,7 +17,7 @@ export const BarMeter: React.FC<{
         width,
         height,
         boxSizing: "border-box",
-        border: `3px solid ${C.white}`,
+        border: `3px solid ${C.ink}`,
         borderRadius: 14,
         position: "relative",
         filter: GLOW,
@@ -31,7 +31,7 @@ export const BarMeter: React.FC<{
           right: pad,
           bottom: pad,
           height: h,
-          background: C.white,
+          background: C.ink,
           borderRadius: 6,
         }}
       />

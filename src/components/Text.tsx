@@ -21,7 +21,7 @@ export const Text: React.FC<{
   children,
   variant = "title",
   y,
-  color = C.white,
+  color = C.ink,
   glow = false,
   size,
   width = SAFE.maxCenteredWidth,

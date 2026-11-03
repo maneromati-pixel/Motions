@@ -10,8 +10,8 @@ export const Pill: React.FC<{ text: string; fontSize?: number; style?: React.CSS
   <div
     style={{
       display: "inline-block",
-      background: C.white,
-      color: C.black,
+      background: C.ink,
+      color: C.paper,
       borderRadius: 999,
       padding: `${fontSize * 0.6}px ${fontSize * 1.1}px ${fontSize * 0.6}px ${fontSize * 1.1 + fontSize * 0.25}px`,
       fontFamily,

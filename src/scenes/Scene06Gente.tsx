@@ -61,8 +61,8 @@ export const Scene06Gente: React.FC = () => {
         {/* tu punto: arriba del 10% */}
         {you.p > 0 && (
           <g style={{ filter: GLOW }} opacity={you.opacity}>
-            <circle cx={xOf(YOU_PCT)} cy={AXIS_Y - 22} r={DOT + 4} fill={C.white} />
-            <circle cx={xOf(YOU_PCT)} cy={AXIS_Y - 22} r={DOT + 4 + 24 * (1 - you.p)} fill="none" stroke={C.white} strokeWidth={2} opacity={1 - you.p} />
+            <circle cx={xOf(YOU_PCT)} cy={AXIS_Y - 22} r={DOT + 4} fill={C.ink} />
+            <circle cx={xOf(YOU_PCT)} cy={AXIS_Y - 22} r={DOT + 4 + 24 * (1 - you.p)} fill="none" stroke={C.ink} strokeWidth={2} opacity={1 - you.p} />
           </g>
         )}
       </svg>

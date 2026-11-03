@@ -14,12 +14,12 @@ export const Spotlight: React.FC<{
     <svg width={1080} height={1920} style={{ position: "absolute", left: 0, top: 0, pointerEvents: "none", opacity: intensity }}>
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fff" stopOpacity={0.02} />
-          <stop offset="100%" stopColor="#fff" stopOpacity={0.16} />
+          <stop offset="0%" stopColor="#000" stopOpacity={0.01} />
+          <stop offset="100%" stopColor="#000" stopOpacity={0.09} />
         </linearGradient>
         <radialGradient id={id + "e"}>
-          <stop offset="0%" stopColor="#fff" stopOpacity={0.22} />
-          <stop offset="100%" stopColor="#fff" stopOpacity={0} />
+          <stop offset="0%" stopColor="#000" stopOpacity={0.14} />
+          <stop offset="100%" stopColor="#000" stopOpacity={0} />
         </radialGradient>
       </defs>
       <path d={`M${cx - tw / 2},${top} L${cx + tw / 2},${top} L${cx + width / 2},${bottom} L${cx - width / 2},${bottom} Z`} fill={`url(#${id})`} />

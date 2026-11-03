@@ -18,7 +18,7 @@ const W = 260;
 const H = 64;
 
 const Flow: React.FC<{ cx: number; steps: string[]; dim: number; frame: number }> = ({ cx, steps, dim, frame }) => {
-  const color = interpolateColors(dim, [0, 1], [C.white, C.dim]);
+  const color = interpolateColors(dim, [0, 1], [C.ink, C.dim]);
   return (
     <>
       {steps.map((s, i) => {
@@ -63,7 +63,7 @@ export const Scene08Mismo: React.FC = () => {
   const dim = progress(frame, B.dimLeft, B.dimLeft + 14);
   const pl = pop(frame, B.people);
   const pr = pop(frame, B.people + STAGGER);
-  const leftColor = interpolateColors(dim, [0, 1], [C.white, C.dim]);
+  const leftColor = interpolateColors(dim, [0, 1], [C.ink, C.dim]);
   return (
     <Scene duration={SCENES.mismo}>
       <div style={{ opacity: t.opacity, transform: t.transform }}>
@@ -96,7 +96,7 @@ export const Scene08Mismo: React.FC = () => {
         }}
       >
         <div style={{ position: "absolute", left: LEFT_X - 150, width: 300, textAlign: "center", color: C.dim }}>NO QUEDA NADA</div>
-        <div style={{ position: "absolute", left: RIGHT_X - 150, width: 300, textAlign: "center", color: C.white, filter: GLOW }}>
+        <div style={{ position: "absolute", left: RIGHT_X - 150, width: 300, textAlign: "center", color: C.ink, filter: GLOW }}>
           SIEMPRE QUEDA
         </div>
       </div>

@@ -12,7 +12,7 @@ export const Arrow: React.FC<{
   progress?: number;
   angle?: number;
   style?: React.CSSProperties;
-}> = ({ length = 70, color = C.white, glow = false, progress = 1, angle = 0, style }) => {
+}> = ({ length = 70, color = C.ink, glow = false, progress = 1, angle = 0, style }) => {
   const l = Math.max(0, length * progress);
   const head = 10;
   return (

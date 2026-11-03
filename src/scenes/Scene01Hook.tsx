@@ -2,20 +2,13 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { Banknote } from "../components/Banknote";
 import { Scene } from "../components/Scene";
-import { ease, fontFamily } from "../theme";
+import { Background } from "../components/Background";
+import { C, ease, fontFamily } from "../theme";
 import { BEATS, SCENES } from "../timing";
 
 const B = BEATS.hook;
 
-// Paleta "papel" exclusiva del gancho (estilo del clip de referencia)
-const PAPER = {
-  center: "#E6E5DC",
-  edge: "#BDBCB2",
-  grid: "rgba(40,40,30,0.07)",
-  line: "rgba(70,70,60,0.45)",
-  ink: "#3E3E3A",
-  inkSoft: "#6E6E66",
-};
+const PAPER = { ink: C.inkSoft, inkSoft: C.gray };
 
 const LEFT = 150;
 const RIGHT = 930;
@@ -45,23 +38,8 @@ export const Scene01Hook: React.FC = () => {
 
   return (
     <Scene duration={SCENES.hook}>
-      <AbsoluteFill
-        style={{
-          background: `radial-gradient(ellipse 80% 65% at 50% 42%, ${PAPER.center} 0%, ${PAPER.center} 35%, ${PAPER.edge} 100%)`,
-        }}
-      />
       <AbsoluteFill style={{ transform: `scale(${zoom})` }}>
-        <svg width={1080} height={1920} style={{ position: "absolute", left: 0, top: 0 }}>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <line key={`v${i}`} x1={i * 150 + 15} y1={0} x2={i * 150 + 15} y2={1920} stroke={PAPER.grid} strokeWidth={2} />
-          ))}
-          {Array.from({ length: 13 }).map((_, i) => (
-            <line key={`h${i}`} x1={0} y1={i * 150 + 60} x2={1080} y2={i * 150 + 60} stroke={PAPER.grid} strokeWidth={2} />
-          ))}
-          <line x1={-40} y1={560} x2={1120} y2={120} stroke={PAPER.line} strokeWidth={2.5} />
-          <line x1={330} y1={1640} x2={800} y2={-20} stroke={PAPER.line} strokeWidth={2.5} />
-          <line x1={120} y1={1520} x2={1120} y2={1040} stroke={PAPER.line} strokeWidth={2.5} />
-        </svg>
+        <Background diagonals />
 
         {/* fajo arriba a la derecha */}
         <Banknote x={930 + drift * 6} y={210 - drift * 10} width={520} rotate={-28 + drift * 2} shade={0.5} />

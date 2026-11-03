@@ -56,11 +56,11 @@ export const Scene09Numeros: React.FC = () => {
           {/* año, arriba a la derecha (dentro de la zona segura) */}
           <div style={{ position: "absolute", right: 140, top: 200, textAlign: "right", opacity: top.opacity, transform: top.transform }}>
             <div style={{ ...type.micro }}>AÑO</div>
-            <div style={{ ...type.figure, fontSize: 76, color: C.white, filter: GLOW, lineHeight: 1, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>{year}</div>
+            <div style={{ ...type.figure, fontSize: 76, color: C.ink, filter: GLOW, lineHeight: 1, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>{year}</div>
           </div>
 
           {/* lo que te diste a ti */}
-          <Text variant="micro" y={330} color={C.white} style={{ opacity: top.opacity }}>
+          <Text variant="micro" y={330} color={C.ink} style={{ opacity: top.opacity }}>
             {"LO QUE TE DISTE A TI · 10% AL MES"}
           </Text>
           <Text variant="figure" y={362} glow style={{ opacity: top.opacity, transform: top.transform, fontVariantNumeric: "tabular-nums", lineHeight: 1.1 }}>
@@ -88,10 +88,10 @@ export const Scene09Numeros: React.FC = () => {
                   width: STEP_W,
                   height: h,
                   boxSizing: "border-box",
-                  border: `3px solid ${C.white}`,
+                  border: `3px solid ${C.ink}`,
                   borderBottom: "none",
                   borderRadius: "6px 6px 0 0",
-                  background: current ? C.white : "rgba(255,255,255,0.05)",
+                  background: current ? C.ink : "rgba(0,0,0,0.04)",
                   filter: GLOW,
                 }}
               />

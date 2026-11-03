@@ -18,7 +18,7 @@ export const Scene11Cierre: React.FC = () => {
   const typing = frame >= B.typeStart && chars < HANDLE.length;
   const cursorOn = typing || Math.floor(frame / 15) % 2 === 0;
   return (
-    <Scene duration={SCENES.cierre} bg="night" fadeIn fadeOut={false}>
+    <Scene duration={SCENES.cierre} fadeIn fadeOut={false}>
       <Text variant="title" y={600} size={56} glow style={{ opacity: t.opacity, transform: t.transform, fontWeight: 600 }}>
         SÍGUEME
       </Text>

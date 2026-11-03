@@ -54,9 +54,9 @@ export const Chart: React.FC<{
         </g>
         {progress > 0 && (
           <g style={{ filter: GLOW }}>
-            <path d={d} stroke={C.white} strokeWidth={5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx={tip[0]} cy={tip[1]} r={13} fill={C.white} />
-            <circle cx={tip[0]} cy={tip[1]} r={26} fill={C.white} opacity={0.18} />
+            <path d={d} stroke={C.ink} strokeWidth={5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx={tip[0]} cy={tip[1]} r={13} fill={C.ink} />
+            <circle cx={tip[0]} cy={tip[1]} r={26} fill={C.ink} opacity={0.18} />
           </g>
         )}
       </svg>
