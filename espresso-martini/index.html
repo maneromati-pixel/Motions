@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Espresso Martini Recipe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;700&display=block" rel="stylesheet">
+<style>
+  :root {
+    --ui-bg: #05082a;
+    --ui-panel: #0d1450;
+    --ui-line: rgba(255,255,255,.14);
+    --ui-text: #ffffff;
+    --ui-muted: rgba(255,255,255,.62);
+    --accent: #f3e1c0;
+    --blue: #0A1FD1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font-family: Oswald, "Arial Narrow", system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; padding: 16px; overflow: hidden;
+  }
+  .stage {
+    position: relative;
+    height: calc(100vh - 120px);
+    max-width: calc(100vw - 32px);
+    aspect-ratio: 9 / 16;
+    border-radius: 18px; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 0 1px var(--ui-line);
+    background: #001199;
+  }
+  canvas { width: 100%; height: 100%; display: block; }
+  .safe { position: absolute; inset: 0; pointer-events: none; display: none; }
+  .safe.on { display: block; }
+  .safe .bottom { position: absolute; left: 0; right: 0; bottom: 0; height: 20%; background: rgba(255,0,80,.25); border-top: 2px dashed #ff3b6b; }
+  .safe .right  { position: absolute; top: 0; right: 0; bottom: 0; width: 12%; background: rgba(255,0,80,.18); border-left: 2px dashed #ff3b6b; }
+  .safe .top    { position: absolute; top: 0; left: 0; right: 0; height: 7%; background: rgba(255,0,80,.12); border-bottom: 2px dashed #ff3b6b; }
+  .safe span { position: absolute; font: 600 12px Oswald, sans-serif; color: #fff; background: #ff3b6b; padding: 2px 6px; border-radius: 4px; }
+  .big-play {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: transparent; border: 0; cursor: pointer; opacity: 0; transition: opacity .25s;
+  }
+  .big-play.show { opacity: 1; }
+  .big-play i {
+    width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,.92);
+    display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  }
+  .big-play i::after { content: ""; border-left: 38px solid var(--blue); border-top: 24px solid transparent; border-bottom: 24px solid transparent; margin-left: 10px; }
+  .controls {
+    width: min(100%, calc((100vh - 120px) * 9 / 16 + 220px)); max-width: 640px;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 14px; padding: 10px 12px;
+  }
+  .controls button {
+    appearance: none; border: 1px solid var(--ui-line); background: rgba(255,255,255,.06); color: var(--ui-text);
+    font: 600 14px Oswald, sans-serif; letter-spacing: .04em; text-transform: uppercase;
+    height: 38px; min-width: 38px; padding: 0 12px; border-radius: 10px; cursor: pointer; white-space: nowrap;
+  }
+  .controls button:hover { background: rgba(255,255,255,.14); }
+  .controls button.primary { background: #fff; color: var(--blue); border-color: #fff; }
+  .controls button.rec { color: #ffb3c4; }
+  .controls button.rec.on { background: #ff3b6b; color: #fff; border-color: #ff3b6b; }
+  .bar { position: relative; flex: 1; height: 38px; cursor: pointer; display: flex; align-items: center; touch-action: none; min-width: 60px; }
+  .bar .track { position: relative; width: 100%; height: 8px; border-radius: 8px; background: rgba(255,255,255,.16); overflow: visible; }
+  .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 8px; background: linear-gradient(90deg, #f3e1c0, #c58b4f); }
+  .bar .knob { position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+  .bar .ticks { position: absolute; inset: 0; pointer-events: none; }
+  .bar .ticks b { position: absolute; top: -3px; width: 2px; height: 14px; background: rgba(255,255,255,.35); border-radius: 2px; }
+  .time { font: 500 14px Oswald, sans-serif; color: var(--ui-muted); min-width: 78px; text-align: right; font-variant-numeric: tabular-nums; }
+  .note { font: 400 12px Oswald, sans-serif; color: var(--ui-muted); text-align: center; min-height: 16px; }
+  @media (max-width: 520px) {
+    body { padding: 8px; gap: 8px; }
+    .stage { height: calc(100vh - 140px); }
+    .controls { flex-wrap: wrap; }
+    .bar { order: 5; flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <canvas id="c" width="1080" height="1920" aria-label="Animación de receta: Espresso Martini"></canvas>
+    <div class="safe" id="safe">
+      <div class="top"></div><div class="right"></div><div class="bottom"></div>
+      <span style="left:8px;bottom:calc(20% + 6px)">UI TikTok</span>
+    </div>
+    <button class="big-play" id="bigPlay" aria-label="Reproducir"><i></i></button>
+  </div>
+  <div class="controls">
+    <button class="primary" id="play" aria-label="Reproducir / pausa">▶</button>
+    <button id="replay" title="Repetir desde el inicio" aria-label="Repetir">↺</button>
+    <div class="bar" id="bar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="30">
+      <div class="track"><div class="ticks" id="ticks"></div><div class="fill" id="fill"></div><div class="knob" id="knob"></div></div>
+    </div>
+    <div class="time" id="time">0.0 / 30.0s</div>
+    <button id="loop" title="Loop" aria-pressed="true">Loop</button>
+    <button id="safeBtn" title="Mostrar zonas seguras de TikTok">Safe</button>
+    <button class="rec" id="rec" title="Grabar 30 s como video">● Grabar</button>
+  </div>
+  <div class="note" id="note">Espacio: play/pausa · ← → : ±1 s · R: repetir</div>
+
+<script>
+(() => {
+'use strict';
+
+// ───────────────────────────────── setup ─────────────────────────────────
+const W = 1080, H = 1920, DUR = 30;
+const CX = 500;                    // content axis (nudged left of 540 to clear TikTok's right rail)
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const HEAD = '"Anton", Impact, "Arial Narrow Bold", sans-serif';
+const BODY = '"Oswald", "Arial Narrow", Arial, sans-serif';
+
+const COL = {
+  white: '#ffffff',
+  cream: '#F3E1C0',
+  creamDeep: '#D9B98A',
+  latte: '#C58B4F',
+  coffee: '#5A3218',
+  espresso: '#3B2314',
+  kahlua: '#2A140A',
+  ice: 'rgba(225,240,255,0.32)',
+  vodka: 'rgba(225,238,255,0.55)',
+};
+
+// ───────────────────────────────── math / easing ─────────────────────────
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const E = {
+  lin: k => k,
+  inQ: k => k * k,
+  outC: k => 1 - Math.pow(1 - k, 3),
+  inC: k => k * k * k,
+  inOutC: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
+  outQuint: k => 1 - Math.pow(1 - k, 5),
+  outBack: (k, s = 1.70158) => 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2),
+  inBack: (k, s = 1.70158) => (s + 1) * k * k * k - s * k * k,
+  outBounce: k => {
+    const n = 7.5625, d = 2.75;
+    if (k < 1 / d) return n * k * k;
+    if (k < 2 / d) return n * (k -= 1.5 / d) * k + .75;
+    if (k < 2.5 / d) return n * (k -= 2.25 / d) * k + .9375;
+    return n * (k -= 2.625 / d) * k + .984375;
+  },
+  outElastic: k => k === 0 ? 0 : k === 1 ? 1 : Math.pow(2, -10 * k) * Math.sin((k * 10 - .75) * (2 * Math.PI / 3)) + 1,
+};
+// in/out envelope: 0 → 1 over [a, a+din], 1 → 0 over [b-dout, b]
+const env = (t, a, b, din = .4, dout = .35, ein = E.outC, eout = E.inC) =>
+  t < a || t > b ? 0 : Math.min(ein(prog(t, a, a + din)), 1 - eout(prog(t, b - dout, b)));
+// deterministic pseudo random
+const rnd = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const mixHex = (a, b, k) => {
+  const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
+  const r = Math.round(lerp(pa >> 16, pb >> 16, k)), g = Math.round(lerp(pa >> 8 & 255, pb >> 8 & 255, k)), bl = Math.round(lerp(pa & 255, pb & 255, k));
+  return `rgb(${r},${g},${bl})`;
+};
+
+// ───────────────────────────────── text helpers ──────────────────────────
+function font(size, fam = HEAD, weight = '') { ctx.font = `${weight} ${size}px ${fam}`.trim(); }
+
+// Rich text: array of [text, color] segments, wrapped by words, centered on x.
+function richLines(segs, maxW) {
+  const words = [];
+  segs.forEach(([txt, color]) => txt.split(' ').forEach(w => w && words.push({ w, color })));
+  const space = ctx.measureText(' ').width;
+  const lines = []; let cur = [], curW = 0;
+  for (const wd of words) {
+    const ww = ctx.measureText(wd.w).width;
+    if (cur.length && curW + space + ww > maxW) { lines.push({ words: cur, w: curW }); cur = []; curW = 0; }
+    curW += (cur.length ? space : 0) + ww; cur.push({ ...wd, ww });
+  }
+  if (cur.length) lines.push({ words: cur, w: curW });
+  return { lines, space };
+}
+// Animated headline: each line slides up from a mask with stagger.
+function drawRich(segs, x, y, size, lineH, maxW, k, { stagger = .12, align = 'center', exitK = 0 } = {}) {
+  font(size);
+  const { lines, space } = richLines(segs, maxW);
+  ctx.textBaseline = 'alphabetic';
+  lines.forEach((ln, i) => {
+    const li = clamp((k - i * stagger) / (1 - stagger * (lines.length - 1) || 1));
+    const e = E.outQuint(li);
+    const ex = E.inC(clamp((exitK - i * stagger * .6) / (1 - stagger * .6 * (lines.length - 1) || 1)));
+    if (e <= 0 || ex >= 1) return;
+    const ly = y + i * lineH;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(0, ly - size * 1.12, W, size * 1.38); ctx.clip();
+    const off = (1 - e) * size * 1.15 - ex * size * 1.2;
+    let lx = align === 'center' ? x - ln.w / 2 : x;
+    for (const wd of ln.words) {
+      ctx.fillStyle = wd.color;
+      ctx.fillText(wd.w, lx, ly + off);
+      lx += wd.ww + space;
+    }
+    ctx.restore();
+  });
+  return lines.length;
+}
+function textC(txt, x, y, size, color, fam = HEAD, weight = '', align = 'center', alpha = 1, spacing = 0) {
+  if (alpha <= 0) return;
+  ctx.save(); font(size, fam, weight); ctx.globalAlpha *= alpha; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'alphabetic';
+  if (spacing && 'letterSpacing' in ctx) ctx.letterSpacing = spacing + 'px';
+  ctx.fillText(txt, x, y); ctx.restore();
+}
+function rrect(x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function pill(txt, x, y, size, bg, fg, alpha = 1, padX = 26, h = 62) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha *= alpha; font(size, BODY, '700');
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '3px';
+  const w = ctx.measureText(txt).width + padX * 2;
+  rrect(x - w / 2, y - h / 2, w, h, h / 2); ctx.fillStyle = bg; ctx.fill();
+  ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x + 1.5, y + 2);
+  ctx.restore();
+  return w;
+}
+
+// ───────────────────────────────── background ────────────────────────────
+const bgCanvas = document.createElement('canvas'); bgCanvas.width = W; bgCanvas.height = H;
+(() => {
+  const b = bgCanvas.getContext('2d');
+  const g = b.createLinearGradient(0, 0, W * .35, H);
+  g.addColorStop(0, '#0A1FD1'); g.addColorStop(1, '#001199');
+  b.fillStyle = g; b.fillRect(0, 0, W, H);
+  const r = b.createRadialGradient(W * .5, H * .36, 40, W * .5, H * .36, 900);
+  r.addColorStop(0, 'rgba(70,100,255,0.35)'); r.addColorStop(1, 'rgba(70,100,255,0)');
+  b.fillStyle = r; b.fillRect(0, 0, W, H);
+  const v = b.createRadialGradient(W / 2, H / 2, H * .35, W / 2, H / 2, H * .75);
+  v.addColorStop(0, 'rgba(0,0,40,0)'); v.addColorStop(1, 'rgba(0,0,40,0.45)');
+  b.fillStyle = v; b.fillRect(0, 0, W, H);
+  // fine grain
+  for (let i = 0; i < 2600; i++) { b.fillStyle = `rgba(255,255,255,${rnd(i) * .035})`; b.fillRect(rnd(i + 9000) * W, rnd(i + 19000) * H, 2, 2); }
+})();
+
+function drawBackground(t) {
+  ctx.drawImage(bgCanvas, 0, 0);
+  // slow drifting soft orbs (loop-safe: periods divide 30s)
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 6; i++) {
+    const a = (t / DUR) * Math.PI * 2 * (i % 2 ? 1 : -1) + i * 1.7;
+    const x = W * (.2 + .6 * rnd(i + 3)) + Math.cos(a) * 90;
+    const y = H * (.12 + .7 * rnd(i + 31)) + Math.sin(a) * 120;
+    const rr = 160 + rnd(i + 7) * 220;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, rr);
+    g.addColorStop(0, 'rgba(90,120,255,0.13)'); g.addColorStop(1, 'rgba(90,120,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(x - rr, y - rr, rr * 2, rr * 2);
+  }
+  // rising micro particles
+  for (let i = 0; i < 34; i++) {
+    const sp = 1 + Math.floor(rnd(i + 50) * 3);                 // integer cycles per 30s → seamless loop
+    const ph = ((t / DUR) * sp + rnd(i + 60)) % 1;
+    const x = rnd(i + 70) * W + Math.sin(ph * 6.28 * 2 + i) * 18;
+    const y = H + 40 - ph * (H + 80);
+    const a = Math.sin(ph * Math.PI) * (.12 + rnd(i + 80) * .22);
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.beginPath(); ctx.arc(x, y, 2 + rnd(i + 90) * 3.5, 0, 6.283); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// ───────────────────────────────── martini glass ─────────────────────────
+// Local space: rim centre (0,0). Bowl is a cone: rim half-width R, apex depth D.
+const G = { R: 250, D: 290, stemB: 560, footRx: 150, footRy: 24, maxH: 248 };
+const glassW = y => G.R * (G.D - y) / G.D;
+const glassLevelY = f => G.D - G.maxH * Math.cbrt(clamp(f));   // cone volume ∝ h³ → realistic rise
+
+function bowlPath(inset = 0) {
+  ctx.beginPath();
+  ctx.moveTo(-G.R + inset * 1.6, inset * .4);
+  ctx.lineTo(G.R - inset * 1.6, inset * .4);
+  ctx.lineTo(0, G.D - inset * 1.4);
+  ctx.closePath();
+}
+function drawBean(x, y, rot, s = 1, alpha = 1) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); ctx.globalAlpha *= alpha;
+  ctx.fillStyle = 'rgba(30,12,4,0.35)'; ctx.beginPath(); ctx.ellipse(3, 9, 25, 10, 0, 0, 6.283); ctx.fill();
+  const g = ctx.createRadialGradient(-8, -7, 2, 0, 0, 30);
+  g.addColorStop(0, '#8A5230'); g.addColorStop(.55, '#4E2711'); g.addColorStop(1, '#240F05');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, 26, 17, 0, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = '#1A0A03'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-21, 2); ctx.bezierCurveTo(-8, -9, 8, 9, 21, -2); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,220,180,0.35)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.ellipse(-6, -8, 11, 4, -.2, 3.4, 5.6); ctx.stroke();
+  ctx.restore();
+}
+
+/**
+ * o: { x, y, s, alpha, fill, foam, frost, beans:[{x,y,rot,a}], shine, glow, t, wobble, liquidColor }
+ */
+function drawGlass(o) {
+  if (o.alpha <= 0) return;
+  const t = o.t;
+  ctx.save();
+  ctx.translate(o.x, o.y); ctx.scale(o.s, o.s); ctx.globalAlpha *= o.alpha;
+
+  // glow halo
+  if (o.glow > 0) {
+    const g = ctx.createRadialGradient(0, 160, 20, 0, 160, 560);
+    g.addColorStop(0, `rgba(243,225,192,${.42 * o.glow})`); g.addColorStop(.45, `rgba(197,139,79,${.16 * o.glow})`); g.addColorStop(1, 'rgba(197,139,79,0)');
+    ctx.fillStyle = g; ctx.fillRect(-600, -420, 1200, 1180);
+  }
+  // shadow on "table"
+  ctx.fillStyle = 'rgba(0,0,40,0.28)'; ctx.beginPath(); ctx.ellipse(0, G.stemB + 30, G.footRx * 1.35, 26, 0, 0, 6.283); ctx.fill();
+
+  // stem + foot
+  const sg = ctx.createLinearGradient(-12, 0, 12, 0);
+  sg.addColorStop(0, 'rgba(255,255,255,0.55)'); sg.addColorStop(.5, 'rgba(255,255,255,0.18)'); sg.addColorStop(1, 'rgba(255,255,255,0.6)');
+  ctx.fillStyle = sg;
+  ctx.beginPath(); ctx.moveTo(-14, G.D - 12); ctx.quadraticCurveTo(-7, G.D + 30, -7, G.D + 60); ctx.lineTo(-7, G.stemB - 18);
+  ctx.quadraticCurveTo(-8, G.stemB - 4, -40, G.stemB); ctx.lineTo(40, G.stemB); ctx.quadraticCurveTo(8, G.stemB - 4, 7, G.stemB - 18);
+  ctx.lineTo(7, G.D + 60); ctx.quadraticCurveTo(7, G.D + 30, 14, G.D - 12); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.ellipse(0, G.stemB + 2, G.footRx, G.footRy, 0, 0, 6.283); ctx.fill(); ctx.stroke();
+
+  // bowl glass body
+  bowlPath(); ctx.fillStyle = 'rgba(255,255,255,0.07)'; ctx.fill();
+
+  // liquid
+  const fill = o.fill || 0;
+  if (fill > 0.001) {
+    ctx.save(); bowlPath(5); ctx.clip();
+    const ly = glassLevelY(fill);
+    const lw = glassW(ly);
+    const wob = (o.wobble || 0);
+    const lg = ctx.createLinearGradient(0, ly, 0, G.D);
+    lg.addColorStop(0, '#6E3D1C'); lg.addColorStop(.35, '#3E1F0D'); lg.addColorStop(1, '#1C0B04');
+    ctx.fillStyle = lg;
+    ctx.beginPath(); ctx.moveTo(-G.R, G.D + 10);
+    for (let xx = -G.R; xx <= G.R; xx += 10) ctx.lineTo(xx, ly + Math.sin(xx * .035 + t * 9) * 4 * wob);
+    ctx.lineTo(G.R, G.D + 10); ctx.closePath(); ctx.fill();
+    // inner reflection
+    ctx.fillStyle = 'rgba(255,190,130,0.10)';
+    ctx.beginPath(); ctx.moveTo(-lw * .78, ly + 10); ctx.lineTo(-lw * .55, ly + 10); ctx.lineTo(-10, G.D - 20); ctx.closePath(); ctx.fill();
+
+    // foam: forms at the top of the liquid
+    const foam = clamp(o.foam || 0);
+    const fh = 34 * foam;
+    if (foam > 0.01) {
+      const fg = ctx.createLinearGradient(0, ly - 4, 0, ly + fh);
+      fg.addColorStop(0, '#F6E7CB'); fg.addColorStop(.6, '#E2C394'); fg.addColorStop(1, 'rgba(160,100,50,0.0)');
+      ctx.fillStyle = fg; ctx.fillRect(-G.R, ly - 4, G.R * 2, fh + 6);
+    }
+    // surface ellipse (top view)
+    const sry = Math.max(4, lw * .13);
+    const surf = foam > 0.01 ? mixHex('#7A4421', '#EFD9B2', foam) : '#7A4421';
+    ctx.fillStyle = surf; ctx.beginPath(); ctx.ellipse(0, ly, lw, sry, 0, 0, 6.283); ctx.fill();
+    if (foam > 0.2) {
+      // micro bubbles
+      for (let i = 0; i < 46; i++) {
+        const a = rnd(i + 400) * 6.283, rr = Math.sqrt(rnd(i + 500)) * .92;
+        const bx = Math.cos(a) * lw * rr, by = ly + Math.sin(a) * sry * rr;
+        ctx.fillStyle = `rgba(255,248,235,${.55 * foam * rnd(i + 600)})`;
+        ctx.beginPath(); ctx.arc(bx, by, 1.5 + rnd(i + 700) * 3.2, 0, 6.283); ctx.fill();
+      }
+      // crema swirl
+      ctx.strokeStyle = `rgba(180,120,60,${.35 * foam})`; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.ellipse(lw * .08, ly, lw * .55, sry * .5, 0, .3, 4.2); ctx.stroke();
+    }
+    ctx.restore();
+
+    // beans resting on the foam (in front of liquid, behind rim)
+    if (o.beans) for (const b of o.beans) drawBean(b.x, ly + b.y, b.rot, 1, b.a);
+  } else if (o.beans) {
+    for (const b of o.beans) drawBean(b.x, glassLevelY(1) + b.y, b.rot, 1, b.a);
+  }
+
+  // frost
+  const fr = o.frost || 0;
+  if (fr > 0) {
+    ctx.save(); bowlPath(); ctx.clip();
+    ctx.fillStyle = `rgba(225,240,255,${.22 * fr})`; ctx.fillRect(-G.R, 0, G.R * 2, G.D);
+    for (let i = 0; i < 140; i++) {
+      const yy = rnd(i + 1200) * G.D, ww = glassW(yy);
+      const xx = (rnd(i + 1300) * 2 - 1) * ww;
+      const reveal = clamp(fr * 1.4 - rnd(i + 1400) * .5);
+      ctx.fillStyle = `rgba(255,255,255,${.55 * reveal})`;
+      ctx.beginPath(); ctx.arc(xx, yy, 1 + rnd(i + 1500) * 3, 0, 6.283); ctx.fill();
+    }
+    // condensation drips
+    for (let i = 0; i < 7; i++) {
+      const x0 = (rnd(i + 1600) * 1.6 - .8) * G.R * .8;
+      const len = 20 + rnd(i + 1700) * 60 * fr;
+      ctx.strokeStyle = `rgba(255,255,255,${.4 * fr})`; ctx.lineWidth = 3; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x0, 12 + rnd(i) * 30); ctx.lineTo(x0 * (1 - len / 600), 12 + rnd(i) * 30 + len); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // bowl outline + highlights
+  const edge = fr > 0 ? mixHex('#ffffff', '#BFE3FF', fr) : '#ffffff';
+  ctx.strokeStyle = edge; ctx.lineWidth = 5; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-G.R, 0); ctx.lineTo(-14, G.D - 12); ctx.quadraticCurveTo(0, G.D + 4, 14, G.D - 12); ctx.lineTo(G.R, 0); ctx.stroke();
+  ctx.lineWidth = 5; ctx.beginPath(); ctx.ellipse(0, 0, G.R, G.R * .12, 0, 0, 6.283); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-G.R + 40, 22); ctx.lineTo(-G.R * .45, G.D * .5); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(G.R - 60, 22); ctx.lineTo(G.R - 90, 52); ctx.stroke();
+
+  // moving shine sweep
+  if (o.shine != null && o.shine > 0 && o.shine < 1) {
+    ctx.save(); bowlPath(); ctx.clip();
+    const sx = lerp(-G.R * 1.6, G.R * 1.6, E.inOutC(o.shine));
+    const sgr = ctx.createLinearGradient(sx - 70, 0, sx + 70, 0);
+    sgr.addColorStop(0, 'rgba(255,255,255,0)'); sgr.addColorStop(.5, 'rgba(255,255,255,0.55)'); sgr.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = sgr; ctx.transform(1, 0, -.35, 1, 0, 0); ctx.fillRect(sx - 140, -20, 280, G.D + 40);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+// ───────────────────────────────── shaker ────────────────────────────────
+// Local space: body bottom centre (0,0); body up to y=-500. Pivot at (0,-300).
+const S = { b: 115, tp: 150, h: 500, pivot: 300 };
+const shW = y => S.b + (S.tp - S.b) * (-y / S.h);
+const ML_PX = 2.55;                // px of height per ml inside the shaker
+const ICE = [
+  { x: -55, y: -48, r: .25 }, { x: 28, y: -46, r: -.18 }, { x: 74, y: -112, r: .5 }, { x: -18, y: -118, r: .1 },
+  { x: -78, y: -170, r: -.35 }, { x: 42, y: -188, r: .3 }, { x: -20, y: -245, r: .62 }, { x: 70, y: -262, r: -.12 },
+];
+function bodyPath(inset = 0) {
+  ctx.beginPath();
+  ctx.moveTo(-S.b + inset, -inset); ctx.lineTo(-S.tp + inset, -S.h + 2); ctx.lineTo(S.tp - inset, -S.h + 2); ctx.lineTo(S.b - inset, -inset);
+  ctx.ellipse(0, -inset, S.b - inset, 16, 0, 0, Math.PI); ctx.closePath();
+}
+function drawIce(x, y, rot, s = 1, a = 1) {
+  if (a <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); ctx.globalAlpha *= a;
+  rrect(-38, -38, 76, 76, 16);
+  const g = ctx.createLinearGradient(-38, -38, 38, 38);
+  g.addColorStop(0, 'rgba(255,255,255,0.55)'); g.addColorStop(.5, 'rgba(200,225,255,0.22)'); g.addColorStop(1, 'rgba(255,255,255,0.4)');
+  ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 3.5; ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.75)'; rrect(-26, -26, 22, 10, 5); ctx.fill();
+  ctx.restore();
+}
+function drawLid(o) {
+  // cobbler top sits over the rim
+  const lg = ctx.createLinearGradient(-160, 0, 160, 0);
+  lg.addColorStop(0, '#7D8899'); lg.addColorStop(.25, '#E9EEF5'); lg.addColorStop(.45, '#AEB8C7'); lg.addColorStop(.75, '#D5DCE6'); lg.addColorStop(1, '#6E7888');
+  ctx.fillStyle = lg; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(-160, -470); ctx.lineTo(-160, -535); ctx.bezierCurveTo(-160, -600, -80, -610, -72, -640);
+  ctx.lineTo(72, -640); ctx.bezierCurveTo(80, -610, 160, -600, 160, -535); ctx.lineTo(160, -470);
+  ctx.ellipse(0, -470, 160, 18, 0, 0, Math.PI); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); rrect(-84, -712, 168, 76, 22); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(-110, -560, 18, 70);
+  ctx.strokeStyle = 'rgba(40,50,70,0.35)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(-160, -500); ctx.lineTo(160, -500); ctx.stroke();
+}
+/**
+ * o: { x, y, rot, s, alpha, layers:[{ml,color}], mix, ice:[{x,y,rot,a}], lid (0..1 drop progress), lidOn,
+ *      frost, worldLevel (null | y), t, wobble, foam }
+ */
+function shakerXf(o) { ctx.translate(o.x, o.y); ctx.rotate(o.rot || 0); ctx.scale(o.s, o.s); ctx.translate(0, S.pivot); }
+function shakerToWorld(o, lx, ly) {
+  const px = lx * o.s, py = (ly + S.pivot) * o.s, c = Math.cos(o.rot || 0), sn = Math.sin(o.rot || 0);
+  return { x: o.x + px * c - py * sn, y: o.y + px * sn + py * c };
+}
+function drawShaker(o) {
+  if (o.alpha <= 0) return;
+  const t = o.t;
+  ctx.save(); ctx.globalAlpha *= o.alpha;
+  ctx.save(); shakerXf(o);
+
+  // shadow
+  if (!o.rot) { ctx.fillStyle = 'rgba(0,0,40,0.28)'; ctx.beginPath(); ctx.ellipse(0, 26, 180, 26, 0, 0, 6.283); ctx.fill(); }
+
+  // back glass
+  bodyPath(); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.ellipse(0, -S.h, S.tp, 20, 0, Math.PI, 0); ctx.stroke();
+
+  // liquid
+  const total = (o.layers || []).reduce((a, l) => a + l.ml, 0);
+  if (total > 0.05 || o.worldLevel != null) {
+    ctx.save(); bodyPath(7); ctx.clip();
+    const mix = clamp(o.mix || 0);
+    if (o.worldLevel != null) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      const g = ctx.createLinearGradient(0, o.worldLevel, 0, o.worldLevel + 300);
+      g.addColorStop(0, '#7A4421'); g.addColorStop(1, '#2A1408');
+      ctx.fillStyle = g; ctx.fillRect(0, o.worldLevel, W, H);
+      ctx.fillStyle = 'rgba(239,217,178,0.9)'; ctx.fillRect(0, o.worldLevel - 3, W, 12);
+    } else {
+      let acc = 0;
+      const topY = -total * ML_PX;
+      (o.layers || []).forEach((l, i) => {
+        if (l.ml <= 0) return;
+        const y0 = -acc * ML_PX, y1 = -(acc + l.ml) * ML_PX;
+        acc += l.ml;
+        const isTop = Math.abs(y1 - topY) < .01;
+        ctx.fillStyle = mix > 0 ? mixHex(l.color, '#4A2511', mix) : l.color;
+        if (l.alpha != null && mix < 1) ctx.globalAlpha = lerp(l.alpha, 1, mix) * o.alpha;
+        ctx.beginPath(); ctx.moveTo(-200, y0 + 30 + (i === 0 ? 30 : 0));
+        ctx.lineTo(-200, y1);
+        if (isTop) for (let xx = -200; xx <= 200; xx += 10) ctx.lineTo(xx, y1 + Math.sin(xx * .04 + t * 10) * 5 * (o.wobble || 0));
+        ctx.lineTo(200, y1); ctx.lineTo(200, y0 + 30 + (i === 0 ? 30 : 0)); ctx.closePath(); ctx.fill();
+        ctx.globalAlpha = o.alpha;
+      });
+      // surface ellipse
+      const sw = shW(topY) - 7;
+      ctx.fillStyle = mix > 0 ? mixHex(o.layers[o.layers.length - 1].ml > 0 ? '#5A3218' : '#5A3218', '#E6CDA2', clamp(o.foam || 0)) : 'rgba(255,255,255,0.22)';
+      ctx.beginPath(); ctx.ellipse(0, topY, sw, 14, 0, 0, 6.283); ctx.fill();
+      if ((o.foam || 0) > 0) {
+        ctx.fillStyle = `rgba(238,214,172,${.85 * o.foam})`; ctx.fillRect(-200, topY, 400, 20 * o.foam);
+      }
+    }
+    ctx.restore();
+  }
+
+  // ice
+  if (o.ice) for (const c of o.ice) drawIce(c.x, c.y, c.rot, 1, c.a);
+
+  // frost on the shaker
+  if (o.frost > 0) {
+    ctx.save(); bodyPath(); ctx.clip();
+    ctx.fillStyle = `rgba(230,242,255,${.28 * o.frost})`; ctx.fillRect(-200, -S.h, 400, S.h + 20);
+    for (let i = 0; i < 120; i++) {
+      const yy = -rnd(i + 2100) * S.h, xx = (rnd(i + 2200) * 2 - 1) * shW(yy);
+      ctx.fillStyle = `rgba(255,255,255,${.6 * clamp(o.frost * 1.5 - rnd(i + 2300) * .5)})`;
+      ctx.beginPath(); ctx.arc(xx, yy, 1 + rnd(i + 2400) * 3, 0, 6.283); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // front glass outline + highlights
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 5; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-S.tp, -S.h); ctx.lineTo(-S.b, 0); ctx.ellipse(0, 0, S.b, 16, 0, Math.PI, 0, true); ctx.lineTo(S.tp, -S.h); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(0, -S.h, S.tp, 20, 0, 0, Math.PI); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 9; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-S.tp + 34, -S.h + 40); ctx.lineTo(-S.b + 26, -40); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(S.tp - 40, -S.h + 60); ctx.lineTo(S.tp - 48, -S.h + 140); ctx.stroke();
+  // measurement marks on the glass
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 3;
+  for (let ml = 25; ml <= 100; ml += 25) { const yy = -ml * ML_PX; ctx.beginPath(); ctx.moveTo(shW(yy) - 30, yy); ctx.lineTo(shW(yy) - 8, yy); ctx.stroke(); }
+
+  // lid
+  if (o.lid > 0) {
+    ctx.save();
+    ctx.translate(0, -(1 - o.lid) * 700); ctx.globalAlpha *= clamp(o.lid * 3);
+    drawLid(o);
+    ctx.restore();
+  }
+  ctx.restore(); // xf
+  ctx.restore();
+}
+
+// ───────────────────────────────── pour bottles ──────────────────────────
+// Local space: mouth at (0,0), body extends +y. Upright rot = 0.
+function drawBottle(kind, x, y, rot, alpha, fillK, t) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.globalAlpha *= alpha;
+  const st = 'rgba(255,255,255,0.92)';
+  if (kind === 'vodka') {
+    // tall clear bottle, short neck, rounded shoulders
+    ctx.beginPath();
+    ctx.moveTo(-22, 0); ctx.lineTo(-22, 70); ctx.bezierCurveTo(-22, 110, -78, 120, -78, 170); ctx.lineTo(-78, 420);
+    ctx.quadraticCurveTo(-78, 440, -58, 440); ctx.lineTo(58, 440); ctx.quadraticCurveTo(78, 440, 78, 420); ctx.lineTo(78, 170);
+    ctx.bezierCurveTo(78, 120, 22, 110, 22, 70); ctx.lineTo(22, 0); ctx.closePath();
+    ctx.fillStyle = 'rgba(210,228,255,0.22)'; ctx.fill();
+    ctx.save(); ctx.clip();
+    // liquid inside stays world-horizontal-ish: approximate by filling lower part
+    ctx.fillStyle = 'rgba(235,244,255,0.35)'; ctx.fillRect(-80, lerp(160, 300, 1 - fillK), 160, 300);
+    ctx.restore();
+    ctx.strokeStyle = st; ctx.lineWidth = 5; ctx.stroke();
+    ctx.fillStyle = '#ffffff'; rrect(-26, -8, 52, 22, 6); ctx.fill();
+    ctx.save(); ctx.translate(0, 300); ctx.rotate(-Math.PI / 2);
+    font(54, HEAD); ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '6px'; ctx.fillText('VODKA', 0, 2);
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 8; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-58, 190); ctx.lineTo(-58, 400); ctx.stroke();
+  } else if (kind === 'espresso') {
+    // small glass pitcher with dark coffee
+    ctx.beginPath();
+    ctx.moveTo(-10, 0); ctx.quadraticCurveTo(-60, 4, -62, 40); ctx.lineTo(-62, 230); ctx.quadraticCurveTo(-62, 250, -42, 250);
+    ctx.lineTo(42, 250); ctx.quadraticCurveTo(62, 250, 62, 230); ctx.lineTo(62, 40); ctx.quadraticCurveTo(60, 4, 10, 0); ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fill();
+    ctx.save(); ctx.clip();
+    ctx.fillStyle = COL.espresso; ctx.fillRect(-70, lerp(70, 210, 1 - fillK), 140, 260);
+    ctx.fillStyle = '#C58B4F'; ctx.fillRect(-70, lerp(70, 210, 1 - fillK), 140, 14);
+    ctx.restore();
+    ctx.strokeStyle = st; ctx.lineWidth = 5; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(62, 70); ctx.bezierCurveTo(120, 70, 120, 190, 62, 190); ctx.stroke();
+    ctx.save(); ctx.translate(-30, 160); ctx.rotate(-Math.PI / 2);
+    font(30, BODY, '700'); ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '3px'; ctx.fillText('ESPRESSO', 0, 0); ctx.restore();
+  } else {
+    // coffee liqueur bottle: squat, dark, long neck
+    ctx.beginPath();
+    ctx.moveTo(-18, 0); ctx.lineTo(-18, 120); ctx.bezierCurveTo(-18, 150, -82, 160, -82, 210); ctx.lineTo(-82, 400);
+    ctx.quadraticCurveTo(-82, 420, -62, 420); ctx.lineTo(62, 420); ctx.quadraticCurveTo(82, 420, 82, 400); ctx.lineTo(82, 210);
+    ctx.bezierCurveTo(82, 160, 18, 150, 18, 120); ctx.lineTo(18, 0); ctx.closePath();
+    const g = ctx.createLinearGradient(-80, 0, 80, 0);
+    g.addColorStop(0, '#1A0B04'); g.addColorStop(.35, '#4A2410'); g.addColorStop(1, '#140802');
+    ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = st; ctx.lineWidth = 5; ctx.stroke();
+    ctx.fillStyle = '#E9D2A6'; rrect(-22, -10, 44, 34, 6); ctx.fill();
+    ctx.fillStyle = '#F3E1C0'; rrect(-66, 240, 132, 140, 10); ctx.fill();
+    ctx.save(); ctx.translate(0, 310); ctx.rotate(-Math.PI / 2);
+    font(40, HEAD); ctx.fillStyle = '#3B2314'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('KAHLÚA', 0, 2); ctx.restore();
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-64, 220); ctx.lineTo(-64, 236); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// stream from p0 to p1 with gravity arc; head/tail in 0..1 along the curve
+function drawStream(p0, p1, head, tail, width, color, t, wobble = 1) {
+  if (head <= tail) return;
+  const c1 = { x: p0.x - 34, y: p0.y + 10 }, c2 = { x: p1.x + 6, y: lerp(p0.y, p1.y, .45) };
+  const pt = k => {
+    const u = 1 - k;
+    return {
+      x: u * u * u * p0.x + 3 * u * u * k * c1.x + 3 * u * k * k * c2.x + k * k * k * p1.x + Math.sin(k * 14 - t * 30) * 2.2 * wobble * k,
+      y: u * u * u * p0.y + 3 * u * u * k * c1.y + 3 * u * k * k * c2.y + k * k * k * p1.y,
+    };
+  };
+  ctx.save(); ctx.strokeStyle = color; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.lineWidth = width; ctx.beginPath();
+  const N = 40;
+  for (let i = 0; i <= N; i++) { const k = lerp(tail, head, i / N); const p = pt(k); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }
+  ctx.stroke();
+  // shine on stream
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = Math.max(2, width * .22); ctx.beginPath();
+  for (let i = 0; i <= N; i++) { const k = lerp(tail, head, i / N); const p = pt(k); i ? ctx.lineTo(p.x - width * .2, p.y) : ctx.moveTo(p.x - width * .2, p.y); }
+  ctx.stroke();
+  ctx.restore();
+}
+function drawSplash(x, y, t, intensity, color) {
+  if (intensity <= 0) return;
+  ctx.save();
+  for (let i = 0; i < 10; i++) {
+    const ph = ((t * 3.2) + rnd(i + 3000)) % 1;
+    const dir = rnd(i + 3100) * 2 - 1;
+    const px = x + dir * 70 * ph, py = y - Math.sin(ph * Math.PI) * (26 + rnd(i + 3200) * 34);
+    ctx.fillStyle = color; ctx.globalAlpha = intensity * (1 - ph);
+    ctx.beginPath(); ctx.arc(px, py, 4 + rnd(i + 3300) * 5, 0, 6.283); ctx.fill();
+  }
+  ctx.restore();
+}
+
+// ───────────────────────────────── misc fx ───────────────────────────────
+function snowflake(x, y, r, rot, a) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.globalAlpha *= a;
+  ctx.strokeStyle = '#E6F4FF'; ctx.lineWidth = Math.max(2, r * .14); ctx.lineCap = 'round';
+  for (let i = 0; i < 6; i++) {
+    ctx.rotate(Math.PI / 3);
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -r);
+    ctx.moveTo(0, -r * .55); ctx.lineTo(-r * .25, -r * .78); ctx.moveTo(0, -r * .55); ctx.lineTo(r * .25, -r * .78); ctx.stroke();
+  }
+  ctx.restore();
+}
+function sparkle(x, y, r, a) {
+  if (a <= 0) return;
+  ctx.save(); ctx.translate(x, y); ctx.globalAlpha *= a; ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.moveTo(0, -r); ctx.quadraticCurveTo(0, 0, r, 0); ctx.quadraticCurveTo(0, 0, 0, r); ctx.quadraticCurveTo(0, 0, -r, 0); ctx.quadraticCurveTo(0, 0, 0, -r); ctx.fill();
+  ctx.restore();
+}
+
+// Step header: "PASO n / 5" pill + progress segments + big caption
+function stepHeader(n, caption, t, a, b, sub) {
+  const k = env(t, a, b, .45, .3);
+  if (k <= 0) return;
+  const kin = prog(t, a, a + .6), kout = prog(t, b - .35, b);
+  ctx.save();
+  ctx.globalAlpha = clamp(kin * 3) * (1 - kout);
+  const py = 196 - (1 - E.outBack(clamp(kin * 1.4))) * 40;
+  pill(`PASO ${n}`, CX, py, 30, '#ffffff', '#0A1FD1', 1, 26, 58);
+  // step progress
+  for (let i = 0; i < 5; i++) {
+    const sx = CX - 2 * 52 + i * 52 - 20;
+    const on = i < n - 1 ? 1 : i === n - 1 ? E.outC(prog(t, a + .2, a + .8)) : 0;
+    ctx.fillStyle = 'rgba(255,255,255,0.22)'; rrect(sx, 246, 40, 8, 4); ctx.fill();
+    if (on > 0) { ctx.fillStyle = COL.cream; rrect(sx, 246, 40 * on, 8, 4); ctx.fill(); }
+  }
+  ctx.restore();
+  ctx.save(); ctx.globalAlpha = 1 - E.inC(kout);
+  ctx.shadowColor = 'rgba(0,0,50,0.35)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 6;
+  const nl = drawRich(caption, CX, 384, 100, 100, 900, E.lin(prog(t, a + .05, a + .75)), { exitK: prog(t, b - .4, b) });
+  ctx.restore();
+  if (sub) {
+    const ks = env(t, a + .35, b, .5, .3);
+    textC(sub, CX, 384 + (nl - 1) * 100 + 74 + (1 - E.outC(clamp(ks))) * 30, 42, 'rgba(255,255,255,0.85)', BODY, '500', 'center', ks, 2);
+  }
+}
+
+// ───────────────────────────────── poses ────────────────────────────────
+// Glass resting poses (rim centre position + scale).
+const POSE = {
+  cover: { x: CX, y: 860, s: .98 },
+  center: { x: CX, y: 880, s: 1.0 },
+  step1: { x: CX, y: 760, s: 1.08 },
+  pour: { x: 470, y: 1010, s: .82 },
+  garnish: { x: CX, y: 760, s: 1.12 },
+  final: { x: CX, y: 520, s: .82 },
+};
+const mixPose = (a, b, k) => ({ x: lerp(a.x, b.x, k), y: lerp(a.y, b.y, k), s: lerp(a.s, b.s, k) });
+
+// Bean landing spots on the foam (relative to the liquid surface)
+const BEANS = [{ x: -62, y: -4, rot: -.5 }, { x: 4, y: 8, rot: .25 }, { x: 64, y: -6, rot: .9 }];
+const fullBeans = a => BEANS.map(b => ({ ...b, a }));
+
+// Ingredient pours (step 3)
+const ING = [
+  { kind: 'vodka', ml: 50, name: 'VODKA ABSOLUT', note: 'transparente', color: '#DCE8FF', alpha: .5, stream: 'rgba(230,240,255,0.85)', start: 12.0 },
+  { kind: 'espresso', ml: 25, name: 'CAFÉ ESPRESSO', note: 'recién hecho, frío', color: '#3B2314', alpha: 1, stream: '#4A2A17', start: 14.33 },
+  { kind: 'kahlua', ml: 25, name: 'KAHLÚA', note: 'licor de café', color: '#2A140A', alpha: 1, stream: '#2E160A', start: 16.66 },
+];
+const POUR_DUR = 2.34;
+const SHAKER_HOME = { x: CX, y: 1080, s: 1 };   // pivot position (bottom at y=1380)
+
+function iceState(t) {
+  // drops start at 9.55, staggered
+  return ICE.map((c, i) => {
+    const t0 = 9.55 + i * .17, k = prog(t, t0, t0 + .75);
+    const y = lerp(-1300, c.y, E.outBounce(k));
+    return { x: c.x + (1 - k) * (rnd(i + 40) - .5) * 80, y, rot: c.r + (1 - k) * (rnd(i + 41) - .5) * 4, a: k > 0 ? 1 : 0 };
+  });
+}
+function layersAt(t) {
+  return ING.map(g => {
+    const k = E.inOutC(prog(t, g.start + .7, g.start + 1.85));
+    return { ml: g.ml * k, color: g.color, alpha: g.alpha };
+  });
+}
+
+// ───────────────────────────────── scenes ────────────────────────────────
+function render(t) {
+  t = ((t % DUR) + DUR) % DUR;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  drawBackground(t);
+
+  sceneCover(t);
+  sceneTitle(t);
+  sceneStep1(t);
+  sceneShaker(t);
+  sceneGlassPourAndGarnish(t);
+  sceneFinal(t);
+  brandTag(t);
+}
+
+function brandTag(t) {
+  // small persistent recipe tag (hidden on cover/title/final for clean frames)
+  const a = env(t, 6.0, 26.0, .5, .5);
+  if (a <= 0) return;
+  textC('ABSOLUT · ESPRESSO MARTINI', 70, 120, 26, 'rgba(255,255,255,0.7)', BODY, '700', 'left', a, 4);
+}
+
+const HOOK = [['EL TRAGO QUE', '#fff'], ['TE DESPIERTA', COL.cream], ['Y TE PONE', '#fff'], ['DE FIESTA', COL.cream], ['AL MISMO TIEMPO\u00a0☕🍸', '#fff']];
+
+function coverText(alpha, k, exitK) {
+  if (alpha <= 0) return;
+  ctx.save(); ctx.globalAlpha = alpha;
+  ctx.shadowColor = 'rgba(0,0,60,0.45)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 8;
+  drawRich(HOOK, CX, 270, 108, 114, 900, k, { stagger: .1, exitK });
+  ctx.restore();
+  textC('ESPRESSO MARTINI · RECETA EN 30 S', CX, 1440, 34, 'rgba(255,255,255,0.8)', BODY, '700', 'center', alpha * (1 - exitK), 5);
+}
+
+// 0–3 s: cover (finished cocktail + hook) → drains to an empty glass
+function sceneCover(t) {
+  // loop-in: 29.2–30 the final frame morphs into the cover, so t=30 ≡ t=0
+  if (t >= 29.15) {
+    const k = E.inOutC(prog(t, 29.15, 29.9));
+    const pose = mixPose(POSE.final, POSE.cover, k);
+    drawGlass({ ...pose, alpha: 1, fill: 1, foam: 1, beans: fullBeans(1), glow: lerp(1, .55, k), t, frost: .35 });
+    coverText(1, prog(t, 29.35, 29.95), 0);
+    return;
+  }
+  if (t > 3.5) return;
+  // 0–2.15 hold cover; 2.15–2.9 drain; 2.9–3.5 empty glass shrinks away
+  const drain = E.inOutC(prog(t, 2.2, 2.85));
+  const away = prog(t, 2.95, 3.45);
+  const pose = mixPose(POSE.cover, POSE.center, E.inOutC(prog(t, 2.15, 2.9)));
+  const s = pose.s * (1 - E.inBack(away) * .9);
+  const breathe = 1 + Math.sin(t * 2.2) * .006 * (1 - drain);
+  drawGlass({
+    x: pose.x, y: pose.y, s: s * breathe, alpha: 1 - E.inC(away), t,
+    fill: 1 - drain, foam: 1 - E.inC(prog(t, 2.2, 2.6)), wobble: drain > 0 && drain < 1 ? 1 : 0,
+    beans: BEANS.map((b, i) => {
+      const k = E.inC(prog(t, 2.15 + i * .06, 2.55 + i * .06));
+      return { x: b.x + (i - 1) * 260 * k, y: b.y - 700 * k, rot: b.rot + k * 6, a: 1 - k };
+    }),
+    glow: .55 * (1 - drain), frost: .35 * (1 - drain), shine: prog(t, .3, 1.5),
+  });
+  // sparkles on cover
+  for (let i = 0; i < 6; i++) {
+    const ph = (t * .9 + rnd(i + 800)) % 1;
+    sparkle(CX + (rnd(i + 810) - .5) * 640, 820 + rnd(i + 820) * 300, 14 + rnd(i + 830) * 14, Math.sin(ph * Math.PI) * (1 - drain));
+  }
+  coverText(1, 1, prog(t, 2.15, 2.75));
+}
+
+// 3–6 s: title + 4 ingredients
+function sceneTitle(t) {
+  if (t < 2.9 || t > 6.2) return;
+  const out = prog(t, 5.6, 6.0);
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,60,0.4)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 8;
+  drawRich([['ESPRESSO', '#fff']], CX, 470, 190, 180, 900, prog(t, 3.0, 3.55), { exitK: out });
+  drawRich([['MARTINI', COL.cream]], CX, 650, 190, 180, 900, prog(t, 3.1, 3.65), { exitK: prog(t, 5.65, 6.05) });
+  ctx.restore();
+  // "en 5 pasos" badge
+  const kb = env(t, 3.35, 6.0, .5, .3, E.outBack);
+  if (kb > 0) {
+    ctx.save(); ctx.translate(CX, 760); ctx.scale(kb, kb); ctx.rotate(-.04);
+    pill('EN 5 PASOS', 0, 0, 52, '#ffffff', '#0A1FD1', 1, 40, 96);
+    ctx.restore();
+  }
+  // "Solo 4 ingredientes"
+  const ks = env(t, 3.7, 6.05, .45, .3);
+  textC('SOLO 4 INGREDIENTES', CX, 930 + (1 - ks) * 30, 58, COL.cream, HEAD, '', 'center', ks, 3);
+  // 4 chips in a 2×2 grid
+  const chips = [
+    ['50 ml', 'Vodka Absolut', 'v'], ['25 ml', 'Café espresso', 'e'], ['25 ml', 'Kahlúa', 'k'], ['×3', 'Granos de café', 'b'],
+  ];
+  chips.forEach((c, i) => {
+    const k = env(t, 3.95 + i * .14, 6.1 - (3 - i) * .03, .45, .3, E.outBack);
+    if (k <= 0) return;
+    const col = i % 2, row = Math.floor(i / 2);
+    const x = CX - 210 + col * 420, y = 1060 + row * 190;
+    ctx.save(); ctx.translate(x, y + (1 - k) * 40); ctx.globalAlpha = clamp(k);
+    rrect(-195, -78, 390, 156, 30); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 2; ctx.stroke();
+    // icon
+    ctx.save(); ctx.translate(-130, 0);
+    if (c[2] === 'b') drawBean(0, 0, -.5, 1.2, 1);
+    else {
+      const colr = c[2] === 'v' ? 'rgba(225,238,255,0.85)' : c[2] === 'e' ? '#4A2A17' : '#2A140A';
+      ctx.beginPath(); ctx.arc(0, 0, 38, 0, 6.283); ctx.fillStyle = colr; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.beginPath(); ctx.arc(-12, -12, 9, 0, 6.283); ctx.fill();
+    }
+    ctx.restore();
+    textC(c[0], -70, -6, 58, '#fff', HEAD, '', 'left');
+    textC(c[1], -70, 44, 32, 'rgba(255,255,255,0.85)', BODY, '500', 'left');
+    ctx.restore();
+  });
+}
+
+// 6–9 s: chill the glass
+function sceneStep1(t) {
+  if (t < 5.8 || t > 9.4) return;
+  stepHeader(1, [['ENFRIÁ LA COPA', '#fff']], t, 6.0, 9.15, 'Con hielo o 10 min en el freezer');
+  const kin = E.outBack(prog(t, 6.15, 6.85), 1.4);
+  const kout = E.inBack(prog(t, 8.85, 9.3));
+  const frost = E.inOutC(prog(t, 6.8, 8.4));
+  const p = POSE.step1;
+  drawGlass({ x: p.x - kout * 700, y: p.y + Math.sin(t * 2) * 6, s: p.s * Math.max(.001, kin), alpha: clamp(kin * 2), fill: 0, frost, t, shine: prog(t, 8.0, 8.8) });
+  // cold particles: snowflakes + mist drifting around the glass
+  const a = env(t, 6.6, 9.2, .6, .4);
+  for (let i = 0; i < 16; i++) {
+    const ph = (t * (.25 + rnd(i + 900) * .25) + rnd(i + 910)) % 1;
+    const ang = rnd(i + 920) * 6.283 + t * .4;
+    const rad = 200 + rnd(i + 930) * 240;
+    const x = p.x + Math.cos(ang) * rad - kout * 700;
+    const y = p.y + 140 + Math.sin(ang) * rad * .55 - ph * 160;
+    snowflake(x, y, 10 + rnd(i + 940) * 16, t * (rnd(i + 950) - .5) * 2, a * Math.sin(ph * Math.PI) * .9);
+  }
+  // cold mist wisps over the rim
+  ctx.save();
+  for (let i = 0; i < 5; i++) {
+    const ph = (t * .45 + i / 5) % 1;
+    const x = p.x + (rnd(i + 960) - .5) * 360 - kout * 700, y = p.y - 20 - ph * 220;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, 120);
+    g.addColorStop(0, `rgba(220,238,255,${.22 * a * Math.sin(ph * Math.PI) * frost})`); g.addColorStop(1, 'rgba(220,238,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(x - 120, y - 120, 240, 240);
+  }
+  ctx.restore();
+  // thermometer badge
+  const kb = env(t, 7.2, 9.0, .45, .3, E.outBack);
+  if (kb > 0) {
+    ctx.save(); ctx.translate(CX, 1450); ctx.scale(kb, kb);
+    pill('❄  BIEN FRÍA', 0, 0, 34, 'rgba(255,255,255,0.14)', '#E6F4FF', 1, 30, 70);
+    ctx.restore();
+  }
+}
+
+// 9–21 s: shaker — ice, pours, shake; 21–23.4 strain pose
+function shakerPoseAt(t) {
+  let pose = { ...SHAKER_HOME, rot: 0, alpha: 1 };
+  const kin = E.outBack(prog(t, 9.0, 9.55), 1.2);
+  pose.s = SHAKER_HOME.s * Math.max(.001, kin);
+  pose.alpha = clamp(kin * 2);
+  // shake 19.45–20.95
+  const sk = prog(t, 19.45, 20.95);
+  if (sk > 0 && sk < 1) {
+    const envS = Math.sin(sk * Math.PI) ** .5;
+    const w = (t - 19.45) * 2 * Math.PI * 6.5;
+    pose.rot = Math.sin(w) * .26 * envS;
+    pose.x += Math.sin(w + .6) * 46 * envS;
+    pose.y += -Math.abs(Math.cos(w)) * 34 * envS;
+  }
+  // move to pour position 21.0–21.5, tilt
+  const mv = E.inOutC(prog(t, 21.0, 21.55));
+  if (mv > 0) {
+    pose.x = lerp(pose.x, 770, mv); pose.y = lerp(pose.y, 690, mv); pose.s = lerp(pose.s, .66, mv);
+    pose.rot = lerp(pose.rot, -2.05, E.inOutC(prog(t, 21.15, 21.65)));
+  }
+  // exit 23.0–23.45
+  const ex = E.inBack(prog(t, 23.0, 23.45));
+  if (ex > 0) { pose.x += ex * 600; pose.y -= ex * 500; pose.rot -= ex * .5; }
+  return pose;
+}
+function shakerStateAt(t, poseOverride) {
+  const pose = poseOverride || shakerPoseAt(t);
+  const layers = layersAt(t);
+  const mix = E.inOutC(prog(t, 19.6, 20.7));
+  const st = {
+    ...pose, t, layers, ice: iceState(t), mix,
+    lid: E.outBack(prog(t, 19.0, 19.4), 1.1),
+    frost: E.inOutC(prog(t, 19.6, 20.9)),
+    foam: mix,
+    wobble: t > 12 && t < 19.4 ? 1 : 0,
+  };
+  // after shake: liquid in world space (stays level when tilted), drains while pouring
+  if (t >= 21.0) {
+    const homeSurface = SHAKER_HOME.y + S.pivot - 100 * ML_PX;     // 1380 − 255
+    // lowest point of the tilted body (shoulder near the lid)
+    const lowY = Math.max(...[[-S.tp, -S.h], [S.tp, -S.h], [-S.b, 0], [S.b, 0]].map(([lx, ly]) => shakerToWorld(pose, lx, ly).y));
+    const drain = E.inOutC(prog(t, 21.5, 22.8));
+    const tilted = lowY - 120 * pose.s;
+    st.worldLevel = lerp(lerp(homeSurface, tilted, E.inOutC(prog(t, 21.0, 21.55))), lowY + 30, drain);
+  }
+  return st;
+}
+
+function sceneShaker(t) {
+  if (t < 8.9 || t > 23.6) return;
+  // headers
+  stepHeader(2, [['COCTELERA', '#fff'], ['CON HIELO', COL.cream]], t, 9.15, 12.0);
+  stepHeader(3, [['AGREGÁ LOS', '#fff'], ['INGREDIENTES', COL.cream]], t, 12.0, 19.0);
+  stepHeader(4, [['AGITÁ', '#fff'], ['Y COLÁ', COL.cream]], t, 19.0, 23.0);
+
+  const state = shakerStateAt(t);
+
+  // motion blur ghosts during shake
+  const shaking = t > 19.45 && t < 20.95;
+  if (shaking) {
+    for (let g = 3; g >= 1; g--) {
+      const gt = t - g * .014;
+      const gs = shakerStateAt(gt, shakerPoseAt(gt));
+      gs.alpha = .16 * (4 - g) / 3; gs.ice = null;
+      drawShaker(gs);
+    }
+  }
+  drawShaker(state);
+
+  // ice count badge
+  const kb = env(t, 10.3, 11.95, .45, .3, E.outBack);
+  if (kb > 0) {
+    ctx.save(); ctx.translate(CX, 600); ctx.scale(kb, kb);
+    pill('🧊  LLENALA HASTA ARRIBA', 0, 0, 34, 'rgba(255,255,255,0.14)', '#E6F4FF', 1, 30, 70);
+    ctx.restore();
+  }
+
+  // pours
+  ING.forEach((g, i) => pourAnim(t, g, i, state));
+  meter(t);
+
+  // shake fx
+  if (t > 19.3 && t < 21.1) shakeFx(t, state);
+
+  // strain: stream from shaker into the glass
+  if (t > 21.3 && t < 23.0) {
+    const mouth = shakerToWorld(state, 0, -712);
+    const gp = POSE.pour;
+    const fill = E.inOutC(prog(t, 21.55, 22.85));
+    const surfY = gp.y + gp.s * glassLevelY(Math.max(.02, fill)) - 4;
+    const head = E.outC(prog(t, 21.5, 21.75)), tail = E.inC(prog(t, 22.7, 22.95));
+    drawStream(mouth, { x: gp.x + 10, y: surfY }, head, tail, 16 * (1 - tail * .5), '#3F1F0C', t);
+    drawSplash(gp.x + 10, surfY, t, env(t, 21.7, 22.85, .1, .2) * .9, '#C9A06C');
+    // strainer hint
+    const k = env(t, 21.4, 22.95, .3, .3);
+    if (k > 0) sparkle(mouth.x - 6, mouth.y + 4, 14, k * .7);
+  }
+  if (t > 21.0 && t < 23.1) {
+    const k = env(t, 21.05, 23.0, .4, .3);
+    textC('Colá en la copa fría', CX, 458 + (1 - k) * 20, 46, 'rgba(255,255,255,0.88)', BODY, '500', 'center', k, 2);
+  }
+}
+
+function pourAnim(t, g, i, sh) {
+  const s0 = g.start, s1 = s0 + POUR_DUR;
+  if (t < s0 - .05 || t > s1 + .05) return;
+  const ent = E.outC(prog(t, s0, s0 + .45));
+  const tilt = E.inOutC(prog(t, s0 + .3, s0 + .7));
+  const untilt = E.inOutC(prog(t, s0 + 1.85, s0 + 2.1));
+  const ext = E.inC(prog(t, s0 + 2.0, s1));
+  const mx = 588 + (1 - ent) * 520 + ext * 520, my = 712 - (1 - ent) * 420 - ext * 300;
+  const rot = lerp(-.25, -2.08, tilt) * (1 - untilt) + -.25 * untilt + (1 - ent) * .4;
+  drawBottle(g.kind, mx, my, rot, 1, 1 - prog(t, s0 + .7, s0 + 1.85), t);
+
+  // stream
+  const head = E.outC(prog(t, s0 + .6, s0 + .8));
+  const tail = E.inC(prog(t, s0 + 1.75, s0 + 1.95));
+  if (head > 0 && tail < 1) {
+    const total = layersAt(t).reduce((a, l) => a + l.ml, 0);
+    const surf = SHAKER_HOME.y + S.pivot - total * ML_PX - 6;
+    const mouth = { x: mx + Math.sin(rot) * 0 - 6, y: my + 4 };
+    drawStream(mouth, { x: CX + 34, y: surf }, head, tail, g.kind === 'espresso' ? 15 : 13, g.stream, t);
+    drawSplash(CX + 34, surf, t, env(t, s0 + .75, s0 + 1.9, .1, .2) * .9, g.kind === 'vodka' ? 'rgba(235,245,255,0.9)' : '#6A4026');
+  }
+
+  // label card: big ml + name
+  const k = env(t, s0 + .15, s1 - .05, .45, .3);
+  if (k > 0) {
+    const y = 640, x0 = 64;
+    const ml = Math.round(g.ml * E.inOutC(prog(t, s0 + .7, s0 + 1.85)));
+    ctx.save(); ctx.globalAlpha = clamp(k);
+    const slide = (1 - E.outBack(clamp(prog(t, s0 + .15, s0 + .6)))) * -60 + E.inC(prog(t, s1 - .35, s1)) * 60;
+    ctx.translate(slide, 0);
+    rrect(x0, y - 90, 440, 190, 34); ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 2; ctx.stroke();
+    // colour dot
+    ctx.beginPath(); ctx.arc(x0 + 62, y - 22, 30, 0, 6.283);
+    ctx.fillStyle = g.kind === 'vodka' ? 'rgba(225,238,255,0.9)' : g.color; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.stroke();
+    textC(`${ml}`, x0 + 210, y + 12, 104, '#fff', HEAD, '', 'right');
+    textC('ML', x0 + 220, y + 12, 44, COL.cream, HEAD, '', 'left');
+    textC(g.name, x0 + 36, y + 70, 44, '#fff', HEAD, '', 'left', 1, 1);
+    textC(g.note, x0 + 290, y - 30, 26, 'rgba(255,255,255,0.75)', BODY, '500', 'left', 1, 0);
+    ctx.restore();
+  }
+}
+
+// vertical liquid-level meter (left side, clear of the right UI rail)
+function meter(t) {
+  const a = env(t, 12.1, 19.4, .45, .4);
+  if (a <= 0) return;
+  const x = 130, y0 = 1380, h = 520, w = 44;
+  const layers = layersAt(t);
+  const total = layers.reduce((s, l) => s + l.ml, 0);
+  ctx.save(); ctx.globalAlpha = a; ctx.translate((1 - E.outC(a)) * -80, 0);
+  rrect(x - w / 2, y0 - h, w, h, w / 2); ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fill();
+  ctx.save(); rrect(x - w / 2, y0 - h, w, h, w / 2); ctx.clip();
+  let acc = 0;
+  layers.forEach((l, i) => {
+    if (l.ml <= 0) return;
+    const hh = (l.ml / 100) * h;
+    ctx.fillStyle = i === 0 ? 'rgba(225,238,255,0.85)' : i === 1 ? '#6A3E22' : '#3A1D0D';
+    ctx.fillRect(x - w / 2, y0 - (acc / 100) * h - hh, w, hh + 1);
+    acc += l.ml;
+  });
+  ctx.restore();
+  rrect(x - w / 2, y0 - h, w, h, w / 2); ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 3; ctx.stroke();
+  for (let ml = 0; ml <= 100; ml += 25) {
+    const yy = y0 - (ml / 100) * h;
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(x + w / 2 + 6, yy); ctx.lineTo(x + w / 2 + 20, yy); ctx.stroke();
+    if (ml % 50 === 0 && ml) textC(`${ml}`, x + w / 2 + 26, yy + 9, 26, 'rgba(255,255,255,0.7)', BODY, '500', 'left');
+  }
+  // readout bubble
+  const yy = y0 - (total / 100) * h;
+  ctx.fillStyle = '#ffffff'; rrect(x - 52, yy - 74, 104, 50, 25); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x - 10, yy - 26); ctx.lineTo(x + 10, yy - 26); ctx.lineTo(x, yy - 14); ctx.fill();
+  textC(`${Math.round(total)} ml`, x, yy - 38, 30, '#0A1FD1', HEAD, '', 'center');
+  ctx.restore();
+}
+
+function shakeFx(t, st) {
+  const k = env(t, 19.35, 21.05, .2, .2);
+  const c = { x: st.x, y: st.y - 60 };
+  ctx.save(); ctx.strokeStyle = '#ffffff'; ctx.lineCap = 'round';
+  for (let side = -1; side <= 1; side += 2) {
+    for (let i = 0; i < 3; i++) {
+      const flick = (Math.sin(t * 40 + i * 2 + side) + 1) / 2;
+      ctx.globalAlpha = k * (.35 + .65 * flick);
+      ctx.lineWidth = 9 - i * 2;
+      const r = 230 + i * 42;
+      ctx.beginPath(); ctx.arc(c.x, c.y, r, side > 0 ? -.55 : Math.PI - .55, side > 0 ? .55 : Math.PI + .55); ctx.stroke();
+    }
+  }
+  // speed streaks
+  for (let i = 0; i < 6; i++) {
+    const yy = c.y - 300 + i * 120 + Math.sin(t * 30 + i) * 10;
+    const len = 50 + (Math.sin(t * 50 + i * 3) + 1) * 40;
+    ctx.globalAlpha = k * .5; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(c.x - 400, yy); ctx.lineTo(c.x - 400 + len, yy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(c.x + 360, yy + 40); ctx.lineTo(c.x + 360 - len, yy + 40); ctx.stroke();
+  }
+  ctx.restore();
+  // "¡AGITÁ FUERTE!" with energetic jitter
+  const kt = env(t, 19.4, 21.0, .25, .25, E.outBack);
+  if (kt > 0) {
+    ctx.save();
+    ctx.translate(CX + Math.sin(t * 47) * 8, 540 + Math.cos(t * 53) * 6);
+    ctx.rotate(-.05 + Math.sin(t * 31) * .03);
+    ctx.scale(kt * (1 + Math.sin(t * 25) * .04), kt * (1 + Math.sin(t * 25) * .04));
+    pill('¡AGITÁ FUERTE!', 0, 0, 58, COL.cream, '#2A140A', 1, 40, 104);
+    ctx.restore();
+  }
+  // timer chip
+  const kc = env(t, 19.6, 20.95, .2, .2);
+  if (kc > 0) textC('10–15 SEGUNDOS', CX, 1480, 40, 'rgba(255,255,255,0.85)', HEAD, '', 'center', kc, 3);
+}
+
+// 21–26 s: glass receives the pour, then garnish
+function sceneGlassPourAndGarnish(t) {
+  if (t < 20.9 || t > 26.6) return;
+  const enter = E.outBack(prog(t, 21.0, 21.5), 1.2);
+  const toGarnish = E.inOutC(prog(t, 23.0, 23.5));
+  const toFinal = E.inOutC(prog(t, 26.0, 26.6));
+  let pose = mixPose(POSE.pour, POSE.garnish, toGarnish);
+  pose = mixPose(pose, POSE.final, toFinal);
+  const fill = E.inOutC(prog(t, 21.55, 22.85));
+  const foam = E.outC(prog(t, 22.3, 23.2));
+  const beans = BEANS.map((b, i) => {
+    const t0 = 23.55 + i * .6, k = prog(t, t0, t0 + .7);
+    if (k <= 0) return { ...b, a: 0 };
+    return { x: b.x + (1 - k) * (i - 1) * 40, y: b.y - (1 - E.outBounce(k)) * 900, rot: b.rot + (1 - k) * 5, a: 1 };
+  });
+  drawGlass({ x: pose.x - (1 - clamp(enter)) * 400, y: pose.y, s: pose.s * Math.max(.001, enter), alpha: clamp(enter * 2), fill, foam, frost: .55 - .2 * toGarnish, t, wobble: fill > 0 && fill < 1 ? 1 : (t < 23.4 ? .4 : 0), beans, glow: toGarnish * .5 + toFinal * .5 });
+
+  // step 5 header + bean counter
+  stepHeader(5, [['DECORÁ CON', '#fff'], ['3 GRANOS', COL.cream]], t, 23.15, 26.0);
+  const kc = env(t, 23.5, 26.0, .4, .3);
+  if (kc > 0) {
+    for (let i = 0; i < 3; i++) {
+      const on = prog(t, 23.55 + i * .6 + .35, 23.55 + i * .6 + .55);
+      const x = CX - 130 + i * 130, y = 1480;
+      ctx.save(); ctx.globalAlpha = kc;
+      ctx.beginPath(); ctx.arc(x, y, 46, 0, 6.283); ctx.fillStyle = on > 0 ? COL.cream : 'rgba(255,255,255,0.12)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.translate(x, y); ctx.scale(1 + Math.sin(on * Math.PI) * .25, 1 + Math.sin(on * Math.PI) * .25);
+      textC(`${i + 1}`, 0, 20, 56, on > 0 ? '#2A140A' : 'rgba(255,255,255,0.6)', HEAD, '', 'center');
+      ctx.restore();
+    }
+    // impact rings on the foam
+    for (let i = 0; i < 3; i++) {
+      const tk = prog(t, 23.55 + i * .6 + .36, 23.55 + i * .6 + .8);
+      if (tk <= 0 || tk >= 1) continue;
+      const surfY = pose.y + pose.s * (glassLevelY(1) + BEANS[i].y);
+      ctx.save(); ctx.strokeStyle = `rgba(255,248,235,${(1 - tk) * .8})`; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.ellipse(pose.x + pose.s * BEANS[i].x, surfY, 20 + tk * 60, 5 + tk * 12, 0, 0, 6.283); ctx.stroke(); ctx.restore();
+    }
+  }
+  textC('Uno por uno, sobre la espuma', CX, 458, 46, 'rgba(255,255,255,0.88)', BODY, '500', 'center', env(t, 23.4, 26.0, .4, .3), 2);
+}
+
+// 26–29.2 s: final reveal + recap + CTA
+function sceneFinal(t) {
+  if (t < 25.9 || t >= 29.15) return;
+  const p = POSE.final;
+  const settle = prog(t, 26.0, 26.6);
+  if (t >= 26.6) {
+    const breathe = 1 + Math.sin((t - 26.6) * 2.4) * .008;
+    drawGlass({ x: p.x, y: p.y, s: p.s * breathe, alpha: 1, fill: 1, foam: 1, frost: .35, beans: fullBeans(1), glow: 1, t, shine: prog(t, 26.8, 27.7) || prog(t, 28.3, 29.1) });
+  }
+  // sparkles around the glass
+  const ka = env(t, 26.4, 29.15, .4, .3);
+  for (let i = 0; i < 10; i++) {
+    const ph = (t * (.7 + rnd(i + 1900) * .5) + rnd(i + 1910)) % 1;
+    sparkle(p.x + (rnd(i + 1920) - .5) * 560, p.y - 60 + rnd(i + 1930) * 360, 10 + rnd(i + 1940) * 16, ka * Math.sin(ph * Math.PI));
+  }
+  // headline
+  const kp = env(t, 26.2, 29.15, .45, .3, E.outBack);
+  if (kp > 0) { ctx.save(); ctx.translate(CX, 180); ctx.scale(kp, kp); pill('¡LISTO!', 0, 0, 36, COL.cream, '#2A140A', 1, 32, 66); ctx.restore(); }
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,60,0.4)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 6;
+  drawRich([['ESPRESSO', '#fff'], ['MARTINI', COL.cream]], CX, 330, 120, 120, 900, prog(t, 26.25, 26.9), { exitK: prog(t, 28.95, 29.3) });
+  ctx.restore();
+
+  // recap card
+  const kr = env(t, 26.55, 29.15, .5, .3);
+  if (kr > 0) {
+    const y0 = 1035;
+    ctx.save(); ctx.globalAlpha = kr; ctx.translate(0, (1 - E.outC(kr)) * 40);
+    rrect(CX - 400, y0, 800, 330, 34); ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 2; ctx.stroke();
+    const rows = [['50 ML', 'Vodka Absolut'], ['25 ML', 'Café espresso'], ['25 ML', 'Kahlúa'], ['3', 'Granos de café']];
+    rows.forEach((r, i) => {
+      const kk = E.outC(prog(t, 26.7 + i * .12, 27.1 + i * .12));
+      const y = y0 + 70 + i * 72;
+      ctx.save(); ctx.globalAlpha = kr * kk; ctx.translate((1 - kk) * -30, 0);
+      textC(r[0], CX - 340, y + 16, 54, COL.cream, HEAD, '', 'left');
+      textC(r[1], CX - 150, y + 14, 44, '#fff', BODY, '500', 'left');
+      if (i < 3) { ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fillRect(CX - 340, y + 40, 680, 2); }
+      ctx.restore();
+    });
+    ctx.restore();
+  }
+  // CTA
+  const kc = env(t, 27.2, 29.15, .5, .3, E.outBack);
+  if (kc > 0) {
+    ctx.save(); ctx.translate(CX, 1450); ctx.scale(kc * (1 + Math.sin(t * 6) * .015), kc * (1 + Math.sin(t * 6) * .015));
+    pill('¿CON QUIÉN LO TOMÁS? ETIQUETALO 👇', 0, 0, 38, '#ffffff', '#0A1FD1', 1, 34, 88);
+    ctx.restore();
+  }
+}
+
+// ───────────────────────────────── player ────────────────────────────────
+let cur = 0, playing = false, last = 0, loop = true, recording = false;
+const $ = id => document.getElementById(id);
+const playBtn = $('play'), fillEl = $('fill'), knob = $('knob'), timeEl = $('time'), bar = $('bar'), bigPlay = $('bigPlay');
+// chapter ticks on the progress bar
+[3, 6, 9, 12, 19, 23, 26].forEach(s => { const b = document.createElement('b'); b.style.left = (s / DUR * 100) + '%'; $('ticks').appendChild(b); });
+
+function ui() {
+  const pct = (cur / DUR) * 100;
+  fillEl.style.width = pct + '%'; knob.style.left = pct + '%';
+  timeEl.textContent = `${cur.toFixed(1)} / ${DUR.toFixed(1)}s`;
+  playBtn.textContent = playing ? '❚❚' : '▶';
+  bigPlay.classList.toggle('show', !playing && !recording);
+  bar.setAttribute('aria-valuenow', cur.toFixed(1));
+}
+function frame(now) {
+  if (playing) {
+    const dt = Math.min(.1, (now - last) / 1000); last = now;
+    cur += dt;
+    if (cur >= DUR) {
+      if (loop && !recording) cur -= DUR;
+      else { cur = DUR; playing = false; if (recording) stopRec(); }
+    }
+  }
+  render(cur >= DUR ? DUR - 1e-6 : cur);
+  ui();
+  requestAnimationFrame(frame);
+}
+function play() { if (cur >= DUR) cur = 0; playing = true; last = performance.now(); }
+function pause() { playing = false; }
+playBtn.onclick = () => playing ? pause() : play();
+bigPlay.onclick = play;
+$('replay').onclick = () => { cur = 0; play(); };
+$('loop').onclick = e => { loop = !loop; e.target.setAttribute('aria-pressed', loop); e.target.style.opacity = loop ? 1 : .5; };
+$('safeBtn').onclick = () => $('safe').classList.toggle('on');
+
+let scrubbing = false;
+const seek = e => { const r = bar.getBoundingClientRect(); cur = clamp((e.clientX - r.left) / r.width) * DUR; last = performance.now(); };
+bar.addEventListener('pointerdown', e => { if (recording) return; scrubbing = true; bar.setPointerCapture(e.pointerId); seek(e); });
+bar.addEventListener('pointermove', e => scrubbing && seek(e));
+bar.addEventListener('pointerup', () => scrubbing = false);
+window.addEventListener('keydown', e => {
+  if (recording) return;
+  if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
+  if (e.code === 'ArrowRight') cur = Math.min(DUR - .01, cur + 1);
+  if (e.code === 'ArrowLeft') cur = Math.max(0, cur - 1);
+  if (e.key === 'r' || e.key === 'R') { cur = 0; play(); }
+});
+
+// ── record 30 s to a video file (MediaRecorder on the canvas stream)
+let rec = null, chunks = [];
+function pickMime() {
+  const c = ['video/mp4;codecs=avc1.640028', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+  return c.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+}
+function startRec() {
+  if (!cv.captureStream || !window.MediaRecorder) { $('note').textContent = 'Este navegador no soporta grabación del canvas. Probá con Chrome.'; return; }
+  const mime = pickMime();
+  const stream = cv.captureStream(60);
+  rec = new MediaRecorder(stream, { mimeType: mime || undefined, videoBitsPerSecond: 16_000_000 });
+  chunks = [];
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onstop = () => {
+    const type = rec.mimeType || mime || 'video/webm';
+    const blob = new Blob(chunks, { type });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `espresso-martini-1080x1920.${type.includes('mp4') ? 'mp4' : 'webm'}`;
+    document.body.appendChild(a); a.click(); a.remove();
+    $('note').textContent = `Listo: ${a.download} (${(blob.size / 1e6).toFixed(1)} MB)`;
+  };
+  recording = true; $('rec').classList.add('on'); $('rec').textContent = '■ Grabando…';
+  $('note').textContent = 'Grabando 30 s en tiempo real — no cambies de pestaña.';
+  cur = 0; render(0); rec.start(250); play();
+}
+function stopRec() {
+  recording = false; $('rec').classList.remove('on'); $('rec').textContent = '● Grabar';
+  if (rec && rec.state !== 'inactive') rec.stop();
+}
+$('rec').onclick = () => recording ? (pause(), stopRec()) : startRec();
+
+// expose a deterministic frame renderer for offline export (e.g. Playwright + ffmpeg)
+window.renderAt = s => { playing = false; cur = s; render(s); ui(); };
+
+// start once fonts are ready (first frame = TikTok cover)
+const ready = Promise.all([document.fonts.load('100px Anton'), document.fonts.load('700 40px Oswald'), document.fonts.load('500 40px Oswald')]).catch(() => {});
+Promise.race([ready, new Promise(r => setTimeout(r, 2500))]).then(() => {
+  const q = new URLSearchParams(location.search);
+  if (q.has('t')) cur = clamp(parseFloat(q.get('t')) || 0, 0, DUR - .001);
+  render(cur); ui();
+  window.__ready = true;
+  if (q.has('autoplay')) play();
+  requestAnimationFrame(frame);
+});
+})();
+</script>
+</body>
+</html>
