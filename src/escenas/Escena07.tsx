@@ -1,5 +1,6 @@
 import React from 'react';
-import {spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {spring, useVideoConfig} from 'remotion';
 import {Persona} from '../componentes/Persona';
 import {Cadena} from '../componentes/Cadena';
 import {Titulo} from '../componentes/Titulo';
@@ -10,7 +11,7 @@ import {SUAVE} from '../tema';
 const MINI = {ancho: 310, alto: 80, fontSize: 26, largoFlecha: 44};
 
 export const Escena07: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const piso = spring({frame: frame - 4, fps, config: SUAVE, durationInFrames: 24});
   const p1 = spring({frame: frame - 10, fps, config: SUAVE, durationInFrames: 18});

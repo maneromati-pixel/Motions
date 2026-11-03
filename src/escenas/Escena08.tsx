@@ -1,5 +1,6 @@
 import React from 'react';
-import {spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {spring, useVideoConfig} from 'remotion';
 import {ZonaSegura} from '../componentes/Escenario';
 import {FUENTE, SUAVE} from '../tema';
 
@@ -9,7 +10,7 @@ const INICIO = 8;
 const CADA = 4;
 
 export const Escena08: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   let k = 0;
   return (

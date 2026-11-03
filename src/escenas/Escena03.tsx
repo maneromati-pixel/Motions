@@ -24,4 +24,4 @@ export const LayoutTodos: React.FC<{
   </ZonaSegura>
 );
 
-export const Escena03: React.FC = () => <LayoutTodos aparecen={[38, 88, 138]} tituloDelay={6} />;
+export const Escena03: React.FC = () => <LayoutTodos aparecen={[62, 92, 146]} tituloDelay={6} />;

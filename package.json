@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "remotion studio",
-    "render": "remotion render Video out/video.mp4 && node scripts/srt.ts",
-    "srt": "node scripts/srt.ts",
-    "still": "remotion still Video"
+    "render": "node --no-warnings scripts/voz.ts && remotion render Video out/video.mp4 && node --no-warnings scripts/srt.ts",
+    "srt": "node --no-warnings scripts/srt.ts",
+    "still": "remotion still Video",
+    "voz": "node --no-warnings scripts/voz.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",

@@ -1,5 +1,6 @@
 import React from 'react';
-import {Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {Easing, interpolate, spring, useVideoConfig} from 'remotion';
 import {Persona} from '../componentes/Persona';
 import {Titulo} from '../componentes/Titulo';
 import {BarraProgreso} from '../componentes/BarraProgreso';
@@ -11,7 +12,7 @@ import {SUAVE} from '../tema';
 const CL = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
 const Columna: React.FC<{lleno: number; delay: number}> = ({lleno, delay}) => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const sube = interpolate(frame, [delay + 8, delay + 36], [0, lleno], {...CL, easing: Easing.out(Easing.cubic)});
   const baja = interpolate(frame, [72, 118], [1, 0], {...CL, easing: Easing.inOut(Easing.cubic)});

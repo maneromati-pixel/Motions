@@ -1,5 +1,6 @@
 import React from 'react';
-import {Easing, interpolate, useCurrentFrame} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {Easing, interpolate} from 'remotion';
 import {getLength, getPointAtLength} from '@remotion/paths';
 import {Titulo} from '../componentes/Titulo';
 import {ZonaSegura} from '../componentes/Escenario';
@@ -27,7 +28,7 @@ const LARGO = getLength(CURVA);
 const CL = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
 export const Escena11: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const ejes = interpolate(frame, [4, 26], [0, 1], {...CL, easing: Easing.out(Easing.cubic)});
   const p = interpolate(frame, [26, 165], [0, 1], {...CL, easing: Easing.inOut(Easing.quad)});
   const punto = getPointAtLength(CURVA, Math.max(0.01, LARGO * p));
@@ -68,7 +69,7 @@ export const Escena11: React.FC = () => {
           <circle cx={punto.x} cy={punto.y} r={14} fill="#FFFFFF" style={{filter: glowIntenso(1)}} />
         )}
       </svg>
-      <Titulo texto={'EMPEZÁ CON\nLO QUE TENÉS'} delay={150} size={44} color="#FFFFFF" glow style={{marginTop: 70}} />
+      <Titulo texto={'EMPEZÁ CON\nLO QUE TENÉS'} delay={140} size={44} color="#FFFFFF" glow style={{marginTop: 70}} />
     </ZonaSegura>
   );
 };

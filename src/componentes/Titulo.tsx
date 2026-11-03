@@ -1,5 +1,6 @@
 import React from 'react';
-import {spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {spring, useVideoConfig} from 'remotion';
 import {COLOR, FUENTE, SUAVE} from '../tema';
 
 // Título en mayúsculas, letter-spacing amplio, entra con fade + leve subida.
@@ -12,7 +13,7 @@ export const Titulo: React.FC<{
   align?: 'center' | 'left' | 'right';
   style?: React.CSSProperties;
 }> = ({texto, delay = 0, size = 40, color = COLOR.texto, glow = false, align = 'center', style}) => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const s = spring({frame: frame - delay, fps, config: SUAVE, durationInFrames: 20});
   return (

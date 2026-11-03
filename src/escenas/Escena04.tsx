@@ -1,12 +1,13 @@
 import React from 'react';
-import {Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {Easing, interpolate, spring, useVideoConfig} from 'remotion';
 import {LayoutTodos} from './Escena03';
 import {Contador} from '../componentes/Contador';
 import {COLOR, SUAVE} from '../tema';
 
 // [14–19s] AHORRO se apaga (gris, punteado) y aparece $0 en gris.
 export const Escena04: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const inactivo = interpolate(frame, [18, 42], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const entra = spring({frame: frame - 40, fps, config: SUAVE, durationInFrames: 18});

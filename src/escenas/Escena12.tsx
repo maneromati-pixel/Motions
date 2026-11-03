@@ -1,5 +1,6 @@
 import React from 'react';
-import {spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {spring, useVideoConfig} from 'remotion';
 import {Fondo, ZonaSegura} from '../componentes/Escenario';
 import {Titulo} from '../componentes/Titulo';
 import {COLOR, FUENTE, SUAVE} from '../tema';
@@ -16,7 +17,7 @@ const Lupa: React.FC = () => (
 );
 
 export const Escena12: React.FC<{usuario: string}> = ({usuario}) => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const barra = spring({frame: frame - 14, fps, config: SUAVE, durationInFrames: 20});
   const letras = Math.max(0, Math.min(usuario.length, Math.floor((frame - ESCRIBE) / CADA) + 1));

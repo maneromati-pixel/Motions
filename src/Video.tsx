@@ -6,7 +6,8 @@ const USUARIO = '@tuusuario';
 import React from 'react';
 import {AbsoluteFill, Audio, getStaticFiles, Sequence, staticFile} from 'remotion';
 import {Fondo, Transicion} from './componentes/Escenario';
-import {FPS, GUION} from './guion';
+import {LINEA} from './guion';
+import {EscalaTiempo} from './tiempo';
 import {Escena01} from './escenas/Escena01';
 import {Escena02} from './escenas/Escena02';
 import {Escena03} from './escenas/Escena03';
@@ -42,21 +43,21 @@ const hayMusica = getStaticFiles().some((f) => f.name === 'musica.mp3');
 export const Video: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: '#0A0A0A'}}>
     <Fondo />
-    {GUION.map((g, i) => {
+    {LINEA.map((g, i) => {
       const {Componente, entrada, salida} = ESCENAS[i];
-      const desde = Math.round(g.inicio * FPS);
-      const duracion = Math.round((g.fin - g.inicio) * FPS);
       return (
-        <Sequence key={g.id} from={desde} durationInFrames={duracion} name={`Escena ${g.id}`}>
-          <Transicion duracion={duracion} entrada={entrada} salida={salida}>
-            <Componente />
+        <Sequence key={g.id} from={g.desdeF} durationInFrames={g.frames} name={`Escena ${g.id}`}>
+          <Transicion duracion={g.frames} entrada={entrada} salida={salida}>
+            <EscalaTiempo.Provider value={g.escala}>
+              <Componente />
+            </EscalaTiempo.Provider>
           </Transicion>
         </Sequence>
       );
     })}
 
-    {/* VOZ EN OFF: grabala, guardala como public/voz.mp3 y descomentá la línea de abajo */}
-    {/* <Audio src={staticFile('voz.mp3')} /> */}
+    {/* VOZ EN OFF: public/voz.mp3 se arma con `npm run voz` a partir de audio/voz-original.mp3 */}
+    <Audio src={staticFile('voz.mp3')} />
 
     {hayMusica && <Audio src={staticFile('musica.mp3')} volume={0.15} loop />}
   </AbsoluteFill>

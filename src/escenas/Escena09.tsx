@@ -1,5 +1,6 @@
 import React from 'react';
-import {interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {interpolate, spring, useVideoConfig} from 'remotion';
 import {BarraProgreso} from '../componentes/BarraProgreso';
 import {Contador} from '../componentes/Contador';
 import {Titulo} from '../componentes/Titulo';
@@ -10,10 +11,10 @@ import {ANCHO_UTIL, COLOR, FUENTE, SUAVE} from '../tema';
 const META = 48000;
 const K = 3; // curvatura exponencial
 const G0 = 45; // frame en que empieza a crecer
-const G1 = 330; // frame en que llega al año 10
+const G1 = 282; // frame en que llega al año 10
 
 export const Escena09: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const p = interpolate(frame, [G0, G1], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const curva = (Math.exp(K * p) - 1) / (Math.exp(K) - 1);
@@ -67,7 +68,7 @@ export const Escena09: React.FC = () => {
       </div>
 
       <div style={{height: 110, display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
-        <Titulo texto="TENÉS UNA BASE" delay={338} size={36} glow />
+        <Titulo texto="TENÉS UNA BASE" delay={306} size={36} glow />
       </div>
     </ZonaSegura>
   );

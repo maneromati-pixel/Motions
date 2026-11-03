@@ -1,5 +1,6 @@
 import React from 'react';
-import {interpolate, interpolateColors, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {interpolate, interpolateColors, random, spring, useVideoConfig} from 'remotion';
 import {Persona} from '../componentes/Persona';
 import {Titulo} from '../componentes/Titulo';
 import {ZonaSegura} from '../componentes/Escenario';
@@ -13,7 +14,7 @@ const INICIO = 14;
 const FIN = 66;
 
 export const Escena01: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const brilloFinal = spring({frame: frame - FIN, fps, config: SUAVE, durationInFrames: 20});
   return (

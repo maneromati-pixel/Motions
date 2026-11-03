@@ -1,5 +1,6 @@
 import React from 'react';
-import {interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {interpolate, spring, useVideoConfig} from 'remotion';
 import {Moneda} from '../componentes/Moneda';
 import {Persona} from '../componentes/Persona';
 import {Titulo} from '../componentes/Titulo';
@@ -15,7 +16,7 @@ const POS = [
   {x: 10, y: 80},
   {x: 170, y: 80},
 ];
-const MORPH = 58;
+const MORPH = 98;
 
 const Luna: React.FC<{tam: number}> = ({tam}) => (
   <svg width={tam} height={tam} viewBox="0 0 100 100" style={{overflow: 'visible'}}>
@@ -30,9 +31,9 @@ const Luna: React.FC<{tam: number}> = ({tam}) => (
 );
 
 export const Escena10: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
-  const luna = spring({frame: frame - 120, fps, config: SUAVE, durationInFrames: 30});
+  const luna = spring({frame: frame - 165, fps, config: SUAVE, durationInFrames: 30});
   return (
     <ZonaSegura>
       <div
@@ -68,7 +69,7 @@ export const Escena10: React.FC = () => {
       </div>
 
       <div style={{position: 'absolute', top: 300, left: 0, right: 0}}>
-        <Titulo texto={'TRABAJAN\nPARA VOS'} delay={92} size={40} />
+        <Titulo texto={'TRABAJAN\nPARA VOS'} delay={122} size={40} />
       </div>
 
       <div style={{position: 'relative', width: 0, height: 0, top: 120}}>
@@ -78,7 +79,7 @@ export const Escena10: React.FC = () => {
           const flota = Math.sin(frame / 12 + i) * 6 * (1 - m);
           const arranca = MORPH + 26 + i * 3;
           const paso = Math.max(0, frame - arranca);
-          const x = paso * 2.1;
+          const x = paso * 3.2;
           const bob = paso > 0 ? -Math.abs(Math.sin(paso * 0.32)) * 12 : 0;
           const giro = paso > 0 ? Math.sin(paso * 0.32) * 5 : 0;
           return (

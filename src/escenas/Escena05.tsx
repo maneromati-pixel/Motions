@@ -1,5 +1,6 @@
 import React from 'react';
-import {Easing, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {Easing, interpolate, random, spring, useVideoConfig} from 'remotion';
 import {Moneda} from '../componentes/Moneda';
 import {Titulo} from '../componentes/Titulo';
 import {ZonaSegura} from '../componentes/Escenario';
@@ -41,7 +42,7 @@ const INTERVALO = 2.3;
 const CAIDA = 16;
 
 export const Escena05: React.FC = () => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   const ultimo = INICIO + (POSICIONES.length - 1) * INTERVALO + CAIDA;
   const lleno = spring({frame: frame - ultimo, fps, config: SUAVE, durationInFrames: 20});

@@ -1,5 +1,6 @@
 import React from 'react';
-import {interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useTiempo} from '../tiempo';
+import {interpolate, spring, useVideoConfig} from 'remotion';
 import {Caja} from './Caja';
 import {Flecha} from './Flecha';
 import {COLOR, SUAVE} from '../tema';
@@ -20,7 +21,7 @@ export const Cadena: React.FC<{
   largoFlecha?: number;
   apagada?: boolean;
 }> = ({cajas, ancho = 540, alto = 140, fontSize = 44, largoFlecha = 96, apagada = false}) => {
-  const frame = useCurrentFrame();
+  const frame = useTiempo();
   const {fps} = useVideoConfig();
   return (
     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
