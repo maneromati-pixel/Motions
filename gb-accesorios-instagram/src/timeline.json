@@ -1,0 +1,20 @@
+{
+  "fps": 30,
+  "durationInFrames": 300,
+  "bpm": 120,
+  "scenes": {
+    "logo":     {"from": 0,   "duration": 60},
+    "perfil":   {"from": 60,  "duration": 60},
+    "productos":{"from": 120, "duration": 75},
+    "mensaje":  {"from": 195, "duration": 45},
+    "cierre":   {"from": 240, "duration": 60}
+  },
+  "cuts": [60, 120, 195, 240],
+  "sfx": {
+    "pop":     [10],
+    "shimmer": [12, 158],
+    "whoosh":  [51, 111, 186, 231],
+    "tap":     [263],
+    "ding":    [268]
+  }
+}
