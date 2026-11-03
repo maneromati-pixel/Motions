@@ -1,12 +1,12 @@
 // ================================================================
 //  USUARIO: cambialo acá y se actualiza la pantalla final
 // ================================================================
-const USUARIO = '@tuusuario';
+const USUARIO = '@zerum00';
 
 import React from 'react';
-import {AbsoluteFill, Audio, getStaticFiles, Sequence, staticFile} from 'remotion';
+import {AbsoluteFill, Audio, getStaticFiles, interpolate, Sequence, staticFile} from 'remotion';
 import {Fondo, Transicion} from './componentes/Escenario';
-import {LINEA} from './guion';
+import {LINEA, TOTAL_FRAMES} from './guion';
 import {EscalaTiempo} from './tiempo';
 import {Escena01} from './escenas/Escena01';
 import {Escena02} from './escenas/Escena02';
@@ -59,6 +59,19 @@ export const Video: React.FC = () => (
     {/* VOZ EN OFF: public/voz.mp3 se arma con `npm run voz` a partir de audio/voz-original.mp3 */}
     <Audio src={staticFile('voz.mp3')} />
 
-    {hayMusica && <Audio src={staticFile('musica.mp3')} volume={0.15} loop />}
+    {/* Música de fondo a 0.15, con fade de entrada y de salida */}
+    {hayMusica && (
+      <Audio
+        src={staticFile('musica.mp3')}
+        loop
+        volume={(f) =>
+          0.15 *
+          interpolate(f, [0, 15, TOTAL_FRAMES - 45, TOTAL_FRAMES - 1], [0, 1, 1, 0], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          })
+        }
+      />
+    )}
   </AbsoluteFill>
 );
