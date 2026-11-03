@@ -98,7 +98,7 @@ export const Chart: React.FC = () => {
       >
         <defs>
           <linearGradient id="curveStroke" gradientUnits="userSpaceOnUse" x1="0" y1={gradY1} x2="0" y2={gradY2}>
-            <stop offset="0" stopColor={C.text} />
+            <stop offset="0" stopColor={C.curveLow} />
             <stop offset="0.55" stopColor={C.gold} />
             <stop offset="1" stopColor={C.goldHi} />
           </linearGradient>
@@ -168,4 +168,4 @@ export const Chart: React.FC = () => {
   );
 };
 
-export const pointColor = (y: number) => mixColor(C.text, C.gold, goldMix(y));
+export const pointColor = (y: number) => mixColor(C.curveLow, C.gold, goldMix(y));

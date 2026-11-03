@@ -137,7 +137,7 @@ export const GoldText: React.FC<{
           color: C.gold,
           textShadow:
             glow > 0
-              ? `0 0 22px rgba(232,184,75,${0.34 * glow}), 0 0 70px rgba(232,184,75,${0.14 * glow})`
+              ? `0 0 22px rgba(${C.glow},${0.34 * glow * C.glowAmt}), 0 0 70px rgba(${C.glow},${0.14 * glow * C.glowAmt})`
               : 'none',
         }}
       >

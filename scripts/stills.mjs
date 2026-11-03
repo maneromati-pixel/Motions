@@ -11,10 +11,10 @@ const outDir = path.resolve('out/stills');
 fs.mkdirSync(outDir, {recursive: true});
 const serveUrl = await bundle({entryPoint: path.resolve('src/index.ts')});
 const browserExecutable = process.env.REMOTION_BROWSER ?? null;
-const composition = await selectComposition({serveUrl, id: 'ZerumMillon', browserExecutable});
+const composition = await selectComposition({serveUrl, id: process.env.COMP ?? 'ZerumMillon', browserExecutable});
 for (const s of times) {
   const frame = Math.round(s * composition.fps);
-  const output = path.join(outDir, `t${s.toFixed(2)}.png`);
+  const output = path.join(outDir, `${process.env.COMP ?? 'ZerumMillon'}-t${s.toFixed(2)}.png`);
   await renderStill({composition, serveUrl, frame, output, scale, browserExecutable});
   console.log(output);
 }

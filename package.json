@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "remotion studio",
     "render": "remotion render ZerumMillon out/ZerumMillon.mp4",
+    "render:bn": "remotion render ZerumMillonBN out/ZerumMillon-BN.mp4",
     "still:cover": "remotion still ZerumMillon out/cover-frame0.png --frame=0",
     "typecheck": "tsc --noEmit"
   },

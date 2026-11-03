@@ -127,7 +127,7 @@ export const Instrument: React.FC = () => {
           top: barY - barH / 2,
           width: whiteW,
           height: barH,
-          background: C.text,
+          background: C.mine,
           borderRadius: `${radius}px ${gap > 0.5 ? radius : 0}px ${gap > 0.5 ? radius : 0}px ${radius}px`,
           opacity: seed,
         }}
@@ -141,7 +141,7 @@ export const Instrument: React.FC = () => {
           height: barH,
           background: `linear-gradient(180deg, ${C.goldHi} 0%, ${C.gold} 45%, ${C.goldDeep} 140%)`,
           borderRadius: `${gap > 0.5 ? radius : 0}px ${radius}px ${radius}px ${gap > 0.5 ? radius : 0}px`,
-          boxShadow: `0 0 ${lerp(14, 60, ks)}px rgba(232,184,75,${lerp(0.22, 0.28, ks)})`,
+          boxShadow: `0 0 ${lerp(14, 60, ks)}px rgba(${C.glow},${lerp(0.22, 0.28, ks) * C.glowAmt})`,
         }}
       />
 
@@ -187,7 +187,7 @@ export const Instrument: React.FC = () => {
               width: 14,
               height: 14,
               borderRadius: 3,
-              background: r.gold ? C.gold : C.text,
+              background: r.gold ? C.gold : C.mine,
               opacity: r.op,
             }}
           />
@@ -202,7 +202,7 @@ export const Instrument: React.FC = () => {
                 <GoldText glow={0.5}>{money(r.value)}</GoldText>
               </Mono>
             ) : (
-              <Mono size={44}>{money(r.value)}</Mono>
+              <Mono size={44} color={C.mine}>{money(r.value)}</Mono>
             )}
           </At>
         </React.Fragment>
@@ -213,7 +213,7 @@ export const Instrument: React.FC = () => {
         <Micro align="left">Vos</Micro>
       </At>
       <At x={BAR.x - 3} y={714 + 12 * (1 - vosIn)} ax={0} style={{opacity: vosIn}}>
-        <Mono size={60}>{`$${Math.round((DATA.contributedAt65 / 1000) * vosCount)}K`}</Mono>
+        <Mono size={60} color={C.mine}>{`$${Math.round((DATA.contributedAt65 / 1000) * vosCount)}K`}</Mono>
       </At>
       <At x={BAR.x + BAR.w} y={536 + 14 * (1 - intIn)} ax={1} style={{opacity: intIn}}>
         <Micro align="right">Interés</Micro>

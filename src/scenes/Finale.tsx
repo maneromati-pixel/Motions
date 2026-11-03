@@ -59,8 +59,8 @@ export const Finale: React.FC = () => {
 
   const gm = goldMix(head.y);
   const baseColor = t < T.close ? pointColor(head.y) : C.gold;
-  const color = mixColor(baseColor, C.goldDeep, morph);
-  const glowK = p(t, T.climbEnd - 0.3, 0.9) * (1 - morph);
+  const color = mixColor(baseColor, C.cursor, morph);
+  const glowK = p(t, T.climbEnd - 0.3, 0.9) * (1 - morph) * C.glowAmt;
 
   const w = lerp(18, 5, morph);
   const h = lerp(18, 54, morph);
@@ -149,9 +149,9 @@ export const Finale: React.FC = () => {
           opacity: op,
           boxShadow:
             glowK > 0.001
-              ? `0 0 ${18 * glowK}px rgba(232,184,75,${0.75 * glowK}), 0 0 ${60 * glowK}px rgba(232,184,75,${0.3 * glowK})`
+              ? `0 0 ${18 * glowK}px rgba(${C.glow},${0.75 * glowK}), 0 0 ${60 * glowK}px rgba(${C.glow},${0.3 * glowK})`
               : gm > 0
-                ? `0 0 10px rgba(232,184,75,${0.35 * gm})`
+                ? `0 0 10px rgba(${C.glow},${0.35 * gm})`
                 : '0 0 10px rgba(246,244,235,0.25)',
         }}
       />

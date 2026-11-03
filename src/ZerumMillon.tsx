@@ -8,7 +8,7 @@ import {Comparison} from './scenes/Comparison';
 import {Finale} from './scenes/Finale';
 import {HookAndCondition} from './scenes/HookAndCondition';
 import {Instrument} from './scenes/Instrument';
-import {C, SAFE} from './theme';
+import {C, PALETTES, SAFE, setPalette} from './theme';
 import {T} from './timeline';
 
 ensureFonts();
@@ -35,7 +35,9 @@ const Disclaimer: React.FC = () => {
   );
 };
 
-export const ZerumMillon: React.FC = () => (
+const Film: React.FC<{mode: keyof typeof PALETTES}> = ({mode}) => {
+  setPalette(mode);
+  return (
   <AbsoluteFill style={{overflow: 'hidden'}}>
     <Background />
     <HookAndCondition />
@@ -45,4 +47,9 @@ export const ZerumMillon: React.FC = () => (
     <Finale />
     <Disclaimer />
   </AbsoluteFill>
-);
+  );
+};
+
+export const ZerumMillon: React.FC = () => <Film mode="color" />;
+/** Versión blanco y negro. */
+export const ZerumMillonBN: React.FC = () => <Film mode="bn" />;
