@@ -9,7 +9,7 @@ import { BEATS, SCENES } from "../timing";
 
 const B = BEATS.curva;
 
-export const Scene09Curva: React.FC = () => {
+export const Scene10Curva: React.FC = () => {
   const frame = useCurrentFrame();
   const axes = progress(frame, B.axes, B.axes + 14);
   const curve = progress(frame, B.curveStart, B.curveEnd, Easing.inOut(Easing.quad));
@@ -23,7 +23,7 @@ export const Scene09Curva: React.FC = () => {
       </div>
       <Chart x={190} y={1000} width={720} height={640} axes={axes} progress={curve} labelsOpacity={axes} />
       <Text variant="label" y={1110} color={C.gray} size={27} style={{ opacity: t1.opacity, transform: t1.transform }}>
-        {"SI NO LE DAS UN DESTINO\nA TU PLATA,"}
+        {"SI NO LE DAS UN DESTINO\nA TU DINERO,"}
       </Text>
       <Text variant="label" y={1220} glow size={34} style={{ opacity: t2.opacity, transform: t2.transform }}>
         {"ALGUIEN MÁS\nSE LO DA"}

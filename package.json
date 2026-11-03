@@ -6,7 +6,7 @@
     "studio": "remotion studio",
     "render": "remotion render ClientePerfecto out/cliente-perfecto.mp4 --codec h264 --crf 18 --muted --concurrency 2 --timeout 120000",
     "frame0": "remotion still ClientePerfecto out/frame0.png --frame 0",
-    "shots": "remotion still ClientePerfecto out/captura-escena01.png --frame 100 && remotion still ClientePerfecto out/captura-escena03.png --frame 410 && remotion still ClientePerfecto out/captura-escena08.png --frame 1430 && remotion still ClientePerfecto out/captura-escena10.png --frame 1735",
+    "shots": "remotion still ClientePerfecto out/captura-escena01.png --frame 100 && remotion still ClientePerfecto out/captura-escena03.png --frame 420 && remotion still ClientePerfecto out/captura-escena04.png --frame 600 && remotion still ClientePerfecto out/captura-escena06.png --frame 940 && remotion still ClientePerfecto out/captura-escena07.png --frame 1110 && remotion still ClientePerfecto out/captura-escena09.png --frame 1515 && remotion still ClientePerfecto out/captura-escena11.png --frame 1795",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

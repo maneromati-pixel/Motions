@@ -32,7 +32,7 @@ export const Scene02Sueldo: React.FC = () => {
       </div>
 
       <Spotlight cx={540} top={340} bottom={GROUND_Y} width={300} intensity={light * (0.5 + 0.5 * level)} />
-      <Ground y={GROUND_Y} progress={ground} caption="DÍA DE COBRO" captionOpacity={person.opacity} />
+      <Ground y={GROUND_Y} progress={ground} caption="DÍA DE PAGO" captionOpacity={person.opacity} />
 
       <div style={{ position: "absolute", left: 540 - 55, top: 390, opacity: bar.opacity, transform: bar.transform }}>
         <BarMeter level={level} width={110} height={440} />

@@ -15,16 +15,17 @@ export const ENTER = 12;
 export const STAGGER = 7;
 
 export const SCENES = {
-  hook: 120, //       0–4 s
-  sueldo: 120, //     4–8 s
-  quien: 240, //      8–16 s
-  plan: 210, //      16–23 s
-  vaso: 150, //      23–28 s
-  pocos: 180, //     28–34 s
-  mismo: 150, //     34–39 s
-  numeros: 300, //   39–49 s
-  curva: 150, //     49–54 s
-  cierre: 120, //    54–58 s
+  hook: 120, //      0–4 s   gancho (texto visible desde el frame 0)
+  sueldo: 120, //    4–8 s   tu sueldo
+  quien: 210, //     8–15 s  quién se lo lleva
+  radar: 180, //    15–21 s  lo que no ves (nueva)
+  plan: 180, //     21–27 s  ellos planean tu dinero
+  gente: 150, //    27–32 s  cuánto ahorra la gente (nueva)
+  piensan: 180, //  32–38 s  lo que hacen pocos: diagrama de decisión (nueva)
+  mismo: 120, //    38–42 s  mismo sueldo
+  numeros: 270, //  42–51 s  pongamos números: escalera (nueva)
+  curva: 150, //    51–56 s  curva
+  cierre: 120, //   56–60 s  sígueme
 } as const;
 
 export type SceneKey = keyof typeof SCENES;
@@ -34,7 +35,7 @@ export const TOTAL_FRAMES = Object.values(SCENES).reduce((a, b) => a + b, 0);
 /** Beats internos de cada escena (frames relativos al inicio de la escena). */
 export const BEATS = {
   hook: {
-    subtitle: 45, // "Y NO SOS VOS" a los 1,5 s
+    subtitle: 45, // "Y NO ERES TÚ" a los 1,5 s
     twinklePeriod: 18,
   },
   sueldo: {
@@ -46,48 +47,64 @@ export const BEATS = {
   quien: {
     title: 0,
     bar: 4,
-    firstBox: 24,
-    boxGap: 34, // cada caja + su tramo de barra
+    firstBox: 22,
+    boxGap: 30, // cada caja + su tramo de barra
     drainDur: 18,
-    zero: 170,
+    zero: 150,
+  },
+  radar: {
+    title: 0,
+    person: 6,
+    radar: 10,
+    sweepStart: 20,
+    sweepSpeed: 4.2, // grados por frame
+    text: 120,
   },
   plan: {
     title: 0,
-    companies: 12,
+    companies: 10,
     person: 40,
-    lines: 60,
-    text1: 80,
-    text2: 140,
+    lines: 56,
+    text1: 76,
+    text2: 126,
   },
-  vaso: {
+  gente: {
     title: 0,
-    glass: 6,
-    firstCoin: 14,
-    coinGap: 1.15, // frames entre monedas (puede ser fraccional)
-    overflowGap: 3,
+    axis: 6,
+    dots: 18,
+    dotGap: 1.3,
+    crowdPill: 78,
+    you: 96,
+    text: 108,
   },
-  pocos: {
+  piensan: {
     title: 0,
-    cobro: 12,
-    arrow1: 28,
-    ahorro: 38,
-    arrow2: 70,
-    gastos: 82,
+    ground: 4,
+    cobro: 10,
+    arrow1: 22,
+    diamond: 30,
+    no: 50,
+    ahorra: 56,
+    ret: 70,
+    si: 84,
+    resto: 92,
+    people: 104,
+    link: 120,
   },
   mismo: {
     title: 0,
-    line: 8,
-    people: 14,
-    flows: 30,
-    dimLeft: 95,
+    line: 6,
+    people: 10,
+    flows: 22,
+    dimLeft: 72,
   },
   numeros: {
     intro: 0,
-    introOut: 52,
-    blocks: 62,
-    yearsStart: 78,
-    yearsEnd: 240,
-    base: 252,
+    introOut: 48,
+    blocks: 56,
+    yearsStart: 66,
+    yearsEnd: 220,
+    base: 228,
   },
   curva: {
     axes: 4,

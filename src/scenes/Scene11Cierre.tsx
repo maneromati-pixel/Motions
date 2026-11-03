@@ -9,7 +9,7 @@ import { BEATS, SCENES } from "../timing";
 const B = BEATS.cierre;
 const HANDLE = "@zerum00";
 
-export const Scene10Cierre: React.FC = () => {
+export const Scene11Cierre: React.FC = () => {
   const frame = useCurrentFrame();
   const t = enter(frame, B.title);
   const pill = pop(frame, B.pill);
@@ -20,7 +20,7 @@ export const Scene10Cierre: React.FC = () => {
   return (
     <Scene duration={SCENES.cierre} bg="night" fadeIn fadeOut={false}>
       <Text variant="title" y={600} size={56} glow style={{ opacity: t.opacity, transform: t.transform, fontWeight: 600 }}>
-        SEGUIME
+        SÍGUEME
       </Text>
       <div style={{ position: "absolute", left: 540 - 330, top: 740, opacity: pill.opacity, transform: pill.transform }}>
         <SearchPill text={typed} cursor={cursorOn} width={660} />

@@ -56,7 +56,7 @@ const Flow: React.FC<{ cx: number; steps: string[]; dim: number; frame: number }
   );
 };
 
-export const Scene07Mismo: React.FC = () => {
+export const Scene08Mismo: React.FC = () => {
   const frame = useCurrentFrame();
   const t = enter(frame, B.title);
   const line = progress(frame, B.line, B.line + 14);
@@ -82,8 +82,8 @@ export const Scene07Mismo: React.FC = () => {
         <PersonIcon size={110} glow halo={0.6 + 0.4 * dim} />
       </div>
 
-      <Flow cx={LEFT_X} steps={["COBRO", "GASTOS", "AHORRO"]} dim={dim} frame={frame} />
-      <Flow cx={RIGHT_X} steps={["COBRO", "AHORRO", "GASTOS"]} dim={0} frame={frame} />
+      <Flow cx={LEFT_X} steps={["INGRESO", "GASTOS", "AHORRO"]} dim={dim} frame={frame} />
+      <Flow cx={RIGHT_X} steps={["INGRESO", "AHORRO", "GASTOS"]} dim={0} frame={frame} />
 
       <div
         style={{

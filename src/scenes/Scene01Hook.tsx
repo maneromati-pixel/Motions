@@ -58,7 +58,7 @@ export const Scene01Hook: React.FC = () => {
         glow
         style={{ opacity: sub.opacity, transform: sub.transform }}
       >
-        Y NO SOS VOS
+        Y NO ERES TÚ
       </Text>
     </Scene>
   );

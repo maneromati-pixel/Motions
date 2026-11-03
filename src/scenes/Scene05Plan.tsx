@@ -15,7 +15,7 @@ const HEAD = { x: 540, y: GROUND_Y - PERSON * 1.15 + 20 };
 
 /** Lo que te dicen las empresas: cada mensaje es un plan para tu plata. */
 const PILLS: { text: string; x: number; y: number }[] = [
-  { text: "12 CUOTAS SIN INTERÉS", x: 540, y: 400 },
+  { text: "12 MESES SIN INTERESES", x: 540, y: 400 },
   { text: "ENVÍO GRATIS", x: 330, y: 482 },
   { text: "PRE-APROBADO", x: 730, y: 482 },
   { text: "RENOVACIÓN AUTOMÁTICA", x: 540, y: 564 },
@@ -23,7 +23,7 @@ const PILLS: { text: string; x: number; y: number }[] = [
   { text: "ÚLTIMAS UNIDADES", x: 720, y: 646 },
 ];
 
-export const Scene04Plan: React.FC = () => {
+export const Scene05Plan: React.FC = () => {
   const frame = useCurrentFrame();
   const t = enter(frame, B.title);
   const person = enter(frame, B.person - 30);
@@ -35,10 +35,10 @@ export const Scene04Plan: React.FC = () => {
   return (
     <Scene duration={SCENES.plan}>
       <div style={{ opacity: t.opacity, transform: t.transform }}>
-        <Title>{"ELLOS PLANEAN\nTU PLATA"}</Title>
+        <Title>{"ELLOS PLANEAN\nTU DINERO"}</Title>
       </div>
 
-      <Ground y={GROUND_Y} progress={ground} caption="VOS" captionOpacity={person.opacity} />
+      <Ground y={GROUND_Y} progress={ground} caption="TÚ" captionOpacity={person.opacity} />
 
       {/* hilos finos desde cada mensaje hasta la cabeza */}
       <svg width={1080} height={1920} style={{ position: "absolute", left: 0, top: 0 }}>
@@ -86,7 +86,7 @@ export const Scene04Plan: React.FC = () => {
         {"ELLOS SABEN CUÁNTO\nVAS A GASTAR"}
       </Text>
       <Text variant="figure" y={1070} size={110} glow style={{ opacity: t2.opacity, transform: t2.transform }}>
-        VOS NO
+        TÚ NO
       </Text>
     </Scene>
   );

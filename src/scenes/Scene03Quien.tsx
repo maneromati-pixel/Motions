@@ -9,7 +9,7 @@ import { C, enter, progress, type } from "../theme";
 import { BEATS, SCENES } from "../timing";
 
 const B = BEATS.quien;
-const ITEMS = ["SUSCRIPCIONES", "CUOTAS", "DELIVERY", "BANCO"];
+const ITEMS = ["SUSCRIPCIONES", "MENSUALIDADES", "APPS DE COMIDA", "BANCO"];
 
 const BAR_X = 150;
 const BAR_W = 110;
