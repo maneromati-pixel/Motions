@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render ClientePerfecto out/cliente-perfecto.mp4 --codec h264 --crf 18 --muted --concurrency 2 --timeout 120000",
+    "render": "remotion render ClientePerfecto out/mezcla.mp4 --codec h264 --crf 18 --concurrency 2 --timeout 120000 && npm run master",
     "frame0": "remotion still ClientePerfecto out/frame0.png --frame 0",
-    "shots": "remotion still ClientePerfecto out/captura-escena01.png --frame 100 && remotion still ClientePerfecto out/captura-escena03.png --frame 420 && remotion still ClientePerfecto out/captura-escena04.png --frame 600 && remotion still ClientePerfecto out/captura-escena06.png --frame 940 && remotion still ClientePerfecto out/captura-escena07.png --frame 1110 && remotion still ClientePerfecto out/captura-escena09.png --frame 1515 && remotion still ClientePerfecto out/captura-escena11.png --frame 1795",
-    "typecheck": "tsc --noEmit"
+    "shots": "remotion still ClientePerfecto out/captura-escena01.png --frame 100 && remotion still ClientePerfecto out/captura-escena03.png --frame 390 && remotion still ClientePerfecto out/captura-escena04.png --frame 600 && remotion still ClientePerfecto out/captura-escena06.png --frame 900 && remotion still ClientePerfecto out/captura-escena07.png --frame 1080 && remotion still ClientePerfecto out/captura-escena09.png --frame 1400 && remotion still ClientePerfecto out/captura-escena11.png --frame 1650",
+    "typecheck": "tsc --noEmit",
+    "master": "ffmpeg -v error -y -i out/mezcla.mp4 -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 192k -ar 48000 out/cliente-perfecto.mp4 && rm out/mezcla.mp4"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.300",

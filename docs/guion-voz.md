@@ -19,6 +19,7 @@ ajustá la duración de esa escena ahí y volvé a renderizar.
 | 11 | 0:56–1:00 | SÍGUEME · @zerum00 | Sígueme para aprender a hacerlo. |
 
 ## Notas de grabación
+- Voz grabada: public/audio/voz.mp3 (los cortes de escena en src/timing.ts están medidos sobre ese archivo).
 - Tono: calmado y directo, como una confidencia; subir la energía en "y no eres tú" y en "Tú no".
 - Pausas marcadas con "…": dejá ~0,3 s.
 - En la escena 9 la voz puede ir apenas por detrás del contador: el número final ($48.000) aparece cerca de 0:49.
