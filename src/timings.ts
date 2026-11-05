@@ -29,7 +29,7 @@ export const FINAL_HOLD = 2;
 /** Duración del cierre "Sígueme". */
 export const OUTRO_SECONDS = 5;
 /** Usuario que se escribe en la barra de búsqueda del cierre. */
-export const USERNAME = '@TU_USUARIO';
+export const USERNAME = '@zerum00';
 
 export type SceneId =
   | 'hook'
