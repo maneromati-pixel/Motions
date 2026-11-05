@@ -1,0 +1,34 @@
+{
+  "name": "hagakure-siete-respiraciones",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Video explicativo 1080x1920 en Remotion: Hagakure / siete respiraciones",
+  "scripts": {
+    "dev": "remotion studio",
+    "sfx": "node scripts/generate-audio.mjs",
+    "analyze-voice": "tsx scripts/analyze-voice.ts",
+    "review": "node scripts/review-stills.mjs",
+    "render:preview": "remotion render Video out/preview.mp4 --scale=0.4 --crf=26",
+    "render": "remotion render Video out/video.raw.mp4 --codec=h264 --crf=18 --audio-codec=aac --audio-bitrate=320k && node scripts/loudnorm.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.540",
+    "@remotion/cli": "^4.0.540",
+    "@remotion/fonts": "^4.0.540",
+    "@remotion/media": "^4.0.540",
+    "@remotion/motion-blur": "^4.0.540",
+    "@remotion/paths": "^4.0.540",
+    "@remotion/renderer": "^4.0.540",
+    "flubber": "^0.4.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.540"
+  },
+  "devDependencies": {
+    "@types/flubber": "^0.4.0",
+    "@types/react": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
