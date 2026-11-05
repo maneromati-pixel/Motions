@@ -17,9 +17,13 @@ import {TRANSITIONS} from '../transitions';
 import {OUTRO_TYPING} from '../scenes/S16Outro';
 
 /** Niveles de mezcla (lineal). La voz manda: todo lo demás va bien por debajo. */
+/** Música de fondo: archivo y desde qué segundo de la canción arranca (7 s adelantada). */
+export const MUSIC = {file: 'music/fondo.mp3', startAtSecond: 7};
+
 export const MIX = {
   voice: 1,
-  drone: 0.28, // ≈ -11 dB sobre un archivo con RMS ≈ -17 dBFS → pad ≈ -28 dB
+  music: 0.13, // música de fondo (public/music/fondo.mp3, RMS ≈ -11 dBFS) → ≈ -29 dB, leve
+  drone: 0.12, // pad oscuro bajado para que no choque con la música
   droneDuck: 0.45, // ≈ -7 dB extra mientras habla la voz
   whoosh: 0.32,
   tick: 0.38,
@@ -82,6 +86,16 @@ const duck = (frame: number) => {
 export const SoundDesign: React.FC = () => (
   <>
     {HAS_VOICE && VOICE && <Audio src={staticFile(VOICE.file)} volume={MIX.voice} />}
+    {/* música de fondo: arranca en el segundo 7 de la canción, con ducking bajo la voz */}
+    <Audio
+      src={staticFile(MUSIC.file)}
+      trimBefore={MUSIC.startAtSecond * 30}
+      volume={(f) =>
+        MIX.music *
+        duck(f) *
+        interpolate(f, [0, 15, TOTAL_FRAMES - 60, TOTAL_FRAMES], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
+      }
+    />
     <Audio
       src={sfx('drone.mp3')}
       volume={(f) =>

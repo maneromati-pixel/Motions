@@ -44,6 +44,8 @@ timestamps de una transcripción (whisper.cpp) en el mismo formato.
 
 ## Sonido
 
+Música de fondo: `public/music/fondo.mp3`, arranca en el segundo 7 de la canción (`MUSIC.startAtSecond`) a volumen leve (`MIX.music`).
+
 `npm run sfx` regenera los SFX sintéticos y el pad en `public/sfx` (ffmpeg).
 Reemplazá cualquier archivo por uno propio con el mismo nombre. Los niveles de
 mezcla están en `MIX` (`src/audio/SoundDesign.tsx`).
