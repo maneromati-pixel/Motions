@@ -15,6 +15,7 @@ import {VOICE} from '../voice.generated';
 import {BIGS} from '../components/BigWord';
 import {TRANSITIONS} from '../transitions';
 import {OUTRO_TYPING} from '../scenes/S16Outro';
+import {KATANA_DRAW} from '../scenes/S04Warrior';
 
 /** Niveles de mezcla (lineal). La voz manda: todo lo demás va bien por debajo. */
 /** Música de fondo: archivo y desde qué segundo de la canción arranca (7 s adelantada). */
@@ -25,10 +26,10 @@ export const MIX = {
   music: 0.13, // música de fondo (public/music/fondo.mp3, RMS ≈ -11 dBFS) → ≈ -29 dB, leve
   drone: 0.12, // pad oscuro bajado para que no choque con la música
   droneDuck: 0.45, // ≈ -7 dB extra mientras habla la voz
-  whoosh: 0.32,
+  whoosh: 0.16, // transiciones: bajadas para no competir con la voz
   tick: 0.38,
   shing: 0.55,
-  thud: 0.95,
+  thud: 0.7,
   accent: 0.5,
   clink: 0.42,
   click: 0.3,
@@ -48,9 +49,12 @@ const buildCues = (): Cue[] => {
   });
   // tick en cada círculo de respiración
   BREATHS.forEach((b) => cues.push({file: 'tick.wav', at: b, vol: MIX.tick}));
-  // katana: tajo + brillo metálico
-  cues.push({file: 'whoosh.wav', at: CUES.katanaDraw + 2, vol: MIX.whoosh * 0.9});
-  cues.push({file: 'shing.wav', at: CUES.katanaShine, vol: MIX.shing});
+  // katana: tajo + brillo metálico (solo si la escena está en el guion)
+  const warrior = SCENES.find((s) => s.id === 'warrior');
+  if (warrior) {
+    cues.push({file: 'whoosh.wav', at: warrior.start + KATANA_DRAW, vol: MIX.whoosh * 0.9});
+    cues.push({file: 'shing.wav', at: warrior.start + Math.round((warrior.end - warrior.start) * 0.4), vol: MIX.shing});
+  }
   // golpe grave en los cortes a negro
   BLACK_CUTS.forEach((c) => cues.push({file: 'thud.wav', at: c.at, vol: MIX.thud}));
   // espiral que se rompe

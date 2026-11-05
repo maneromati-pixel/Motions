@@ -12,7 +12,7 @@ import {TopLabel} from '../components/TopLabel';
 import {BigNumber} from '../components/BigNumber';
 import {useScene} from '../components/SceneContext';
 import {anticipate, breathe, drawGlow, drift, mix, prog} from '../lib/anim';
-import {CUES, chunkStart, f} from '../timings';
+import {CUES} from '../timings';
 import {DUR, EASE} from '../theme';
 import {KATANA_TSUBA_PATH} from './S04Warrior';
 
@@ -27,8 +27,9 @@ const FALL_ORDER = [0, 6, 3, 8, 1, 7, 4]; // orden "humano" en que se caen
 export const S05Calm: React.FC = () => {
   const {t, dur, L} = useScene();
   const fall = L(CUES.bowlsFall);
-  const calm = L(f(chunkStart(7)));
-  const morph = prog(t, 0, 20, EASE.stroke);
+  const calm = L(CUES.calm);
+  // el círculo 7 de la escena anterior llega a la posición de la tsuba en t≈10 y ahí se transforma
+  const morph = prog(t, 10, 20, EASE.stroke);
   const exit = prog(t, dur - 8, 10, EASE.out);
 
   return (
@@ -58,7 +59,7 @@ export const S05Calm: React.FC = () => {
                   transform={`translate(0 ${bob}) rotate(${rot} ${pivotX} ${pivotY}) translate(${x} ${y}) scale(${k}) translate(${-x} ${-y})`}
                   opacity={mix(dim, 1, 0.18)}
                 >
-                  {i === 0 && t < 20 ? (
+                  {i === 0 && t < 10 ? null : i === 0 && t < 30 ? (
                     <MorphPath from={KATANA_TSUBA_PATH} to={bowl(x, y)} p={morph} mode="flubber" g={1} />
                   ) : (
                     <LineDraw d={bowl(x, y)} p={i === 0 ? 1 : d.p} g={(i === 0 ? 1 : d.g) * (0.55 + lit * 0.9)} />

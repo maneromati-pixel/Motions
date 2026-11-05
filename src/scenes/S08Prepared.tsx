@@ -9,7 +9,7 @@ import {LineDraw} from '../components/LineDraw';
 import {TopLabel} from '../components/TopLabel';
 import {useScene} from '../components/SceneContext';
 import {anticipate, drawGlow, mix, prog} from '../lib/anim';
-import {CUES, chunkStart, f} from '../timings';
+import {CUES} from '../timings';
 import {EASE} from '../theme';
 
 const W = 350;
@@ -21,7 +21,7 @@ const XR = 520 + W / 2 + 22;
 export const S08Prepared: React.FC = () => {
   const {t, dur, L} = useScene();
   const impulse = L(CUES.impulse);
-  const prepAppear = L(f(chunkStart(13))) - 4;
+  const prepAppear = L(CUES.preparedAppear) - 4;
   const prepared = L(CUES.prepared);
   // IMPULSO: entra activo, titila en "impulso" y se apaga
   const flicker = t > impulse && t < impulse + 14 ? (Math.floor((t - impulse) / 2) % 2 === 0 ? 0.25 : 1) : 1;

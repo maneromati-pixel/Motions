@@ -39,8 +39,8 @@ Tipo de transición de cada corte: `src/transitions.ts`.
    `src/voice.generated.ts`. Todo el video se re-sincroniza.
 3. `npm run review` (frames clave en `/review`) y `npm run render`.
 
-Para precisión de palabra exacta, se puede reemplazar el reparto por sílabas con
-timestamps de una transcripción (whisper.cpp) en el mismo formato.
+Si existe `public/voz.words.json` (transcripción con tiempos por palabra, ver `scripts/transcribe.py`),
+se usan esos tiempos reales; si no, se alinea por silencios.
 
 ## Sonido
 

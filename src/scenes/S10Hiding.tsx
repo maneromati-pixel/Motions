@@ -8,7 +8,7 @@ import {LineDraw} from '../components/LineDraw';
 import {TopLabel} from '../components/TopLabel';
 import {useScene} from '../components/SceneContext';
 import {breathe, drawGlow, mix, prog, settle} from '../lib/anim';
-import {CUES, cue} from '../timings';
+import {CUES} from '../timings';
 import {DUR, EASE} from '../theme';
 
 const WALL = {x: 300, y: 720, w: 440, h: 330};
@@ -31,7 +31,7 @@ const bricks = (() => {
 
 export const S10Hiding: React.FC = () => {
   const {t, dur, L} = useScene();
-  const peekUp = L(cue('cuidadoso', 16)) - 6;
+  const peekUp = L(CUES.peekUp) - 6;
   const hide = L(CUES.peek) - 10;
   // asoma despacio con desconfianza, se esconde rápido
   const up = t < hide ? settle(t, peekUp) : 1 - prog(t, hide, 7, EASE.out);

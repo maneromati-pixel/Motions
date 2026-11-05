@@ -10,7 +10,6 @@ import {TopLabel} from '../components/TopLabel';
 import {MotionBlur} from '../components/MotionBlur';
 import {useScene} from '../components/SceneContext';
 import {breathe, drawGlow, mix, prog, settle} from '../lib/anim';
-import {CUES} from '../timings';
 import {EASE} from '../theme';
 import {TSUBA} from './S03Breaths';
 
@@ -33,11 +32,13 @@ const WRAPS = Array.from({length: 6}, (_, i) => {
 });
 const tsubaPath = `M ${T.x} ${T.y - TSUBA.r} A ${TSUBA.r} ${TSUBA.r} 0 1 1 ${T.x - 0.01} ${T.y - TSUBA.r}`;
 export const KATANA_TSUBA_PATH = tsubaPath;
+/** frame local en que se dibuja la katana (y suena el tajo) */
+export const KATANA_DRAW = 10;
 
 /** La parte que se mueve rápido: lee el frame adentro para el motion blur. */
 const Blade: React.FC = () => {
-  const {t, dur, L} = useScene();
-  const draw = L(CUES.katanaDraw) + 6;
+  const {t, dur} = useScene();
+  const draw = KATANA_DRAW;
   const swing = settle(t, draw);
   const rot = mix(swing, -38, 0);
   const stroke = prog(t, draw, 9, EASE.stroke);
@@ -58,9 +59,9 @@ const Blade: React.FC = () => {
 };
 
 export const S04Warrior: React.FC = () => {
-  const {t, dur, L} = useScene();
-  const draw = L(CUES.katanaDraw) + 6;
-  const shine = L(CUES.katanaShine);
+  const {t, dur} = useScene();
+  const draw = KATANA_DRAW;
+  const shine = Math.round(dur * 0.4);
   // estela del tajo: arco que se dibuja y se borra muy rápido
   const arcP = prog(t, draw - 1, 7, EASE.in);
   const arcTail = prog(t, draw + 3, 9, EASE.in);
