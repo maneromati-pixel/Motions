@@ -125,9 +125,9 @@ const Friend: React.FC<{ seat: Seat }> = ({ seat }) => {
           <OCircle cx={-50 + hunch * 0.6} cy={-126 + hunch * 0.5} r={30} color={fill} outline={outline} />
           {isStayer ? (
             <path
-              d="M -28 196 L -8 -30 Q -4 -62 18 -58 Q 36 -54 31 -34"
+              d="M -15 72 L -7 -32 Q -4 -50 9 -48 Q 21 -46 19 -34"
               stroke={CANE}
-              strokeWidth={9}
+              strokeWidth={7}
               strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
@@ -173,9 +173,9 @@ const ProtagonistCane: React.FC = () => {
   return (
     <g>
       <path
-        d="M 428 1240 L 470 1008 Q 476 978 496 984 Q 512 990 507 1010"
+        d="M 442 1162 L 468 1010 Q 472 992 485 995 Q 496 998 494 1011"
         stroke={CANE}
-        strokeWidth={9}
+        strokeWidth={7}
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
