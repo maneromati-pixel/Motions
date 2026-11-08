@@ -13,7 +13,8 @@ export const BestFriends: React.FC = () => {
       <Overlay />
       <Fade />
       <Audio
-        src={staticFile("audio.m4a")}
+        src={staticFile("cancion.mp3")}
+        trimBefore={7 * fps}
         volume={(f) =>
           interpolate(f, [0, 0.3 * fps, durationInFrames - 1 * fps, durationInFrames], [0, 1, 1, 0], {
             extrapolateLeft: "clamp",
