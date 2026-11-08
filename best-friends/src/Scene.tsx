@@ -120,6 +120,10 @@ const Friend: React.FC<{ seat: Seat }> = ({ seat }) => {
             <OLine d={leg(-legSwing)} w={15} color={fill} outline={outline} />
           </g>
         ) : null}
+        {isStayer ? (
+          // seated legs in profile: thigh toward the table, shin down to the floor
+          <OLine d="M -58 14 L -12 18 L -16 98" w={17} color={fill} outline={outline} />
+        ) : null}
         <g transform={`rotate(${hunch} ${hip[0]} ${hip[1]})`}>
           <OLine d="M -55 -86 L -58 12" w={40} color={fill} outline={outline} />
           <OCircle cx={-50 + hunch * 0.6} cy={-126 + hunch * 0.5} r={30} color={fill} outline={outline} />
