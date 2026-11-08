@@ -12,6 +12,7 @@ const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ease = Easing.bezier(0.45, 0, 0.2, 1);
 
 const OUTLINE = "#0b0a0d";
+const CANE = "#605f66";
 
 const rowT = (row: number) => 0.085 + row * 0.135;
 const yAt = (t: number) => TABLE_TOP + t * (TABLE_BOTTOM - TABLE_TOP);
@@ -103,7 +104,11 @@ const Friend: React.FC<{ seat: Seat }> = ({ seat }) => {
   // ageing hunch (only matters for the one who stayed)
   const hunch = isStayer ? a * 16 : 0;
 
-  const arm = `M -50 -62 L ${pt([-22, -12], [-46, -10], stand)} L ${pt([14, -14], [-36, 34], stand)}`;
+  // the one who stayed grabs a hooked cane while ageing
+  const c = isStayer ? interpolate(a, [0.25, 0.6], [0, 1], { ...clamp, easing: ease }) : 0;
+  const elbow: [number, number] = [lerp(-22, -32, c), lerp(-12, -22, c)];
+  const hand: [number, number] = [lerp(14, -8, c), lerp(-14, -26, c)];
+  const arm = `M -50 -62 L ${pt(elbow, [-46, -10], stand)} L ${pt(hand, [-36, 34], stand)}`;
 
   return (
     <g transform={`translate(${x} ${y}) scale(${-seat.side * s} ${s})`} opacity={fade}>
@@ -118,14 +123,19 @@ const Friend: React.FC<{ seat: Seat }> = ({ seat }) => {
         <g transform={`rotate(${hunch} ${hip[0]} ${hip[1]})`}>
           <OLine d="M -55 -86 L -58 12" w={40} color={fill} outline={outline} />
           <OCircle cx={-50 + hunch * 0.6} cy={-126 + hunch * 0.5} r={30} color={fill} outline={outline} />
+          {isStayer ? (
+            <path
+              d="M -28 196 L -8 -30 Q -4 -62 18 -58 Q 36 -54 31 -34"
+              stroke={CANE}
+              strokeWidth={9}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+              opacity={c}
+            />
+          ) : null}
           <OLine d={arm} w={15} color={fill} outline={outline} />
         </g>
-        {isStayer ? (
-          <g opacity={interpolate(a, [0.25, 0.6], [0, 1], clamp)}>
-            <path d="M -92 -10 L -125 205" stroke="#8a8990" strokeWidth={7} strokeLinecap="round" />
-            <OLine d="M -60 -50 Q -96 -40 -92 -10" w={13} color={fill} />
-          </g>
-        ) : null}
       </g>
     </g>
   );
@@ -137,9 +147,6 @@ const Protagonist: React.FC = () => {
   const a = ageProgress(frame);
   const color = interpolateColors(z, [0, 1], ["#e9e9ec", "#ffffff"]);
   const drop = a * 12;
-  const cane = interpolate(a, [0.25, 0.6], [0, 1], clamp);
-  // left arm moves from resting on the table to holding the cane
-  const leftArm = `M 516 ${1002 + drop} L ${pt([498, 1046], [470, 1030], cane)} L ${pt([514, 1070], [490, 1002], cane)}`;
   return (
     <g>
       {/* chair */}
@@ -150,7 +157,6 @@ const Protagonist: React.FC = () => {
       <OLine d={`M 540 ${996 + drop} L 540 1060`} w={50} color={color} />
       <path d={`M 540 ${992 + drop} L 540 1062`} stroke="#121115" strokeWidth={9} />
       <OCircle cx={540 + a * 4} cy={958 + drop * 1.6} r={31} color={color} />
-      <OLine d={leftArm} w={15} color={color} />
       <OLine d={`M 564 ${1002 + drop} L 582 1046 L 566 1070`} w={15} color={color} />
     </g>
   );
@@ -158,9 +164,25 @@ const Protagonist: React.FC = () => {
 
 const ProtagonistCane: React.FC = () => {
   const frame = useCurrentFrame();
-  const cane = interpolate(ageProgress(frame), [0.25, 0.6], [0, 1], clamp);
+  const a = ageProgress(frame);
+  const color = interpolateColors(zoomProgress(frame), [0, 1], ["#e9e9ec", "#ffffff"]);
+  const drop = a * 12;
+  const cane = interpolate(a, [0.25, 0.6], [0, 1], { ...clamp, easing: ease });
+  // left arm goes from resting on the table to a "V" holding the cane's hook
+  const leftArm = `M 516 ${1002 + drop} L ${pt([498, 1046], [494, 1048], cane)} L ${pt([514, 1070], [469, 1018], cane)}`;
   return (
-    <path d="M 480 1004 L 432 1235" stroke="#8a8990" strokeWidth={7} strokeLinecap="round" opacity={cane} />
+    <g>
+      <path
+        d="M 428 1240 L 470 1008 Q 476 978 496 984 Q 512 990 507 1010"
+        stroke={CANE}
+        strokeWidth={9}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity={cane}
+      />
+      <OLine d={leftArm} w={15} color={color} />
+    </g>
   );
 };
 

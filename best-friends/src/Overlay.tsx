@@ -85,7 +85,7 @@ const AgeCounter: React.FC = () => {
   const next = String(Math.min(70, n + 1)).padStart(2, "0");
   return (
     <div style={{ fontSize: 72, letterSpacing: 6, display: "flex", justifyContent: "center", gap: 26 }}>
-      <span style={{ color: "#a9a8ae" }}>AGE</span>
+      <span style={{ color: "#a9a8ae" }}>EDAD</span>
       <span style={{ color: "#ffffff", fontWeight: 700 }}>
         <Digit from={cur[0]} to={next[0]} p={p} />
         <Digit from={cur[1]} to={next[1]} p={p} />
@@ -110,7 +110,7 @@ export const Overlay: React.FC = () => {
       }}
     >
       <Typewriter
-        lines={["AT 18, YOU HAVE", "10 BEST FRIENDS."]}
+        lines={["A LOS 18, TIENES", "10 MEJORES AMIGOS."]}
         range={T.text1}
         style={{
           fontSize: 54,
@@ -120,7 +120,7 @@ export const Overlay: React.FC = () => {
         }}
       />
       <Typewriter
-        lines={["AT 30, YOU HAVE", "THE ONE WHO STAYED."]}
+        lines={["A LOS 30, TIENES", "A QUIEN SE QUEDÓ."]}
         range={T.text2}
         style={{ fontSize: 54, letterSpacing: 5, lineHeight: 1.25, marginTop: 18, minHeight: 136 }}
       />
