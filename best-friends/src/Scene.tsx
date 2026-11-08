@@ -120,10 +120,6 @@ const Friend: React.FC<{ seat: Seat }> = ({ seat }) => {
             <OLine d={leg(-legSwing)} w={15} color={fill} outline={outline} />
           </g>
         ) : null}
-        {isStayer ? (
-          // seated legs in profile: thigh toward the table, shin down to the floor
-          <OLine d="M -58 14 L -12 18 L -16 98" w={17} color={fill} outline={outline} />
-        ) : null}
         <g transform={`rotate(${hunch} ${hip[0]} ${hip[1]})`}>
           <OLine d="M -55 -86 L -58 12" w={40} color={fill} outline={outline} />
           <OCircle cx={-50 + hunch * 0.6} cy={-126 + hunch * 0.5} r={30} color={fill} outline={outline} />
@@ -141,6 +137,22 @@ const Friend: React.FC<{ seat: Seat }> = ({ seat }) => {
           <OLine d={arm} w={15} color={fill} outline={outline} />
         </g>
       </g>
+    </g>
+  );
+};
+
+/** Seated legs of the one who stayed: drawn before the table so they go under it. */
+const StayerLegs: React.FC = () => {
+  const frame = useCurrentFrame();
+  const seat = SEATS.find((x) => x.leaveAt === null) as Seat;
+  const t = rowT(seat.row);
+  const s = scaleAt(t);
+  const x = CX + seat.side * hwAt(t);
+  const seatedColor = interpolateColors(seat.row, [0, 4], ["#c4c3c9", "#8d8c93"]);
+  const fill = interpolateColors(zoomProgress(frame), [0, 1], [seatedColor, "#f5f5f5"]);
+  return (
+    <g transform={`translate(${x} ${yAt(t)}) scale(${-seat.side * s} ${s})`}>
+      <OLine d="M -58 10 L 22 12 L 20 100" w={17} color={fill} />
     </g>
   );
 };
@@ -318,6 +330,7 @@ export const Scene: React.FC = () => {
       <Camera>
         <Lamps />
         <Protagonist />
+        <StayerLegs />
         <path
           d={`M ${CX - HW_TOP} ${TABLE_TOP} L ${CX + HW_TOP} ${TABLE_TOP} L ${CX + HW_BOTTOM} ${TABLE_BOTTOM} L ${CX - HW_BOTTOM} ${TABLE_BOTTOM} Z`}
           fill="url(#tableFill)"
