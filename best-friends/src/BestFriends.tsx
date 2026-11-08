@@ -1,9 +1,10 @@
 import React from "react";
-import { AbsoluteFill, interpolate, staticFile, useVideoConfig } from "remotion";
+import { AbsoluteFill, interpolate, Sequence, staticFile, useVideoConfig } from "remotion";
 import { Audio } from "@remotion/media";
 import { Scene } from "./Scene";
 import { Overlay } from "./Overlay";
 import { Fade } from "./Fade";
+import { EndCard } from "./EndCard";
 
 export const BestFriends: React.FC = () => {
   const { fps, durationInFrames } = useVideoConfig();
@@ -12,6 +13,9 @@ export const BestFriends: React.FC = () => {
       <Scene />
       <Overlay />
       <Fade />
+      <Sequence from={14 * fps} name="Instagram">
+        <EndCard handle="@zerum00" />
+      </Sequence>
       <Audio
         src={staticFile("cancion.mp3")}
         trimBefore={7 * fps}
