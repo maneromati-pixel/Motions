@@ -13,7 +13,7 @@ export const BestFriends: React.FC = () => {
       <Scene />
       <Overlay />
       <Fade />
-      <Sequence from={14 * fps} name="Instagram">
+      <Sequence from={14 * fps} name="TikTok">
         <EndCard handle="@zerum00" />
       </Sequence>
       <Audio

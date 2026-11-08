@@ -7,15 +7,18 @@ loadFont({ family: "Space Mono", url: staticFile("SpaceMono-Bold.woff2"), weight
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ease = Easing.bezier(0.16, 1, 0.3, 1);
 
-const InstagramIcon: React.FC<{ size: number }> = ({ size }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-    <rect x={4} y={4} width={40} height={40} rx={12} stroke="#ffffff" strokeWidth={4} />
-    <circle cx={24} cy={24} r={9} stroke="#ffffff" strokeWidth={4} />
-    <circle cx={35} cy={13} r={2.6} fill="#d9232c" />
+const NOTE =
+  "M25 5 h7 c0.6 4.6 3.9 8 8.6 8.4 v7.2 c-3.2 0.1 -6.2 -0.9 -8.6 -2.6 V31 a10.5 10.5 0 1 1 -10.5 -10.5 c0.6 0 1.2 0.05 1.8 0.15 v7.4 a3.4 3.4 0 1 0 1.7 2.95 Z";
+
+const TikTokIcon: React.FC<{ size: number }> = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 48 48">
+    <path d={NOTE} fill="#25f4ee" transform="translate(-1.6 -1.6)" />
+    <path d={NOTE} fill="#fe2c55" transform="translate(1.6 1.6)" />
+    <path d={NOTE} fill="#ffffff" />
   </svg>
 );
 
-/** Closing card: "SEGUINOS" + Instagram handle. Lives inside a <Sequence>, so frame 0 = card start. */
+/** Closing card: "SEGUINOS" + TikTok handle. Lives inside a <Sequence>, so frame 0 = card start. */
 export const EndCard: React.FC<{ handle: string }> = ({ handle }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -51,7 +54,7 @@ export const EndCard: React.FC<{ handle: string }> = ({ handle }) => {
           scale: interpolate(frame, [0.3 * fps, 0.8 * fps], [0.85, 1], { ...clamp, easing: ease }),
         }}
       >
-        <InstagramIcon size={104} />
+        <TikTokIcon size={104} />
         <div style={{ fontFamily: "Space Mono", fontSize: 84, fontWeight: 700, letterSpacing: 2, color: "#ffffff" }}>
           {handle.split("").map((ch, i) => (
             <span key={i} style={{ opacity: i < typed ? 1 : 0 }}>
