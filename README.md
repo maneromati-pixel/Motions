@@ -1,6 +1,6 @@
 # Alquimia · MAK Power Floc Gel — motion graphics 9:16
 
-Video explicativo de 38 s, 1080×1920 a 30 fps, hecho con Remotion (React + TypeScript).
+Video explicativo de 50 s, 1080×1920 a 30 fps, hecho con Remotion (React + TypeScript).
 
 - Render final: `out/video_9x16.mp4` (H.264)
 - Un frame por escena para revisión: `out/frames/`
@@ -13,7 +13,9 @@ Video explicativo de 38 s, 1080×1920 a 30 fps, hecho con Remotion (React + Type
 | `src/Video.tsx` | Arma la línea de tiempo: fondo, escenas, cortinas "M" y música opcional |
 | `src/scenes/*.tsx` | Una escena por componente (Gancho, Problema, Presentacion, ComoActua, Beneficios, ComoSeUsa, Cierre) |
 | `src/components/` | Fondo vivo, títulos, cortina con el trazo de la M, partículas y helpers de animación |
-| `src/icons/LineIcons.tsx` | Íconos de línea fina para beneficios y pasos |
+| `src/icons/LineIcons.tsx` | Íconos de línea con volumen (vidrio, esferas, sombras) para beneficios y pasos |
+| `src/icons/PhotoSteps.tsx` | Pasos 2 y 3 con las fotos reales: la tapa se despega y el gel cae al canasto |
+| `src/components/Materials.tsx` / `RealObject.tsx` | Materiales SVG (esferas, arena, vidrio) y tratamiento 3D/brillo de las fotos del producto |
 | `src/mPath.ts` | Trazo de la "M" del logo, vectorizado con potrace |
 | `scripts/cutouts.py` | Recorta la cápsula y el disco de gel de `assets/producto.png` (con sombra propia) |
 | `scripts/logo_assets.py` | Genera el logo para fondo oscuro y vectoriza la M (`pip install potracer pillow numpy`) |

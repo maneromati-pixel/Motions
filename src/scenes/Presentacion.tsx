@@ -1,5 +1,6 @@
 import React from "react";
-import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
+import { RealObject } from "../components/RealObject";
 import { COLORS, TEXTS } from "../config";
 import { Title } from "../components/Text";
 import { prog, softSpring } from "../components/anim";
@@ -32,16 +33,17 @@ export const Presentacion: React.FC = () => {
           opacity: glow,
         }}
       />
-      <Img
-        src={staticFile("img/capsula.png")}
-        style={{
-          position: "absolute",
-          width: size,
-          left: 540 - size / 2,
-          top: 800 - (size * 627) / 635 / 2 + ty + float,
-          transform: `rotate(${rot}deg) scale(${sc})`,
-          opacity: enter,
-        }}
+      <RealObject
+        kind="capsula"
+        width={size}
+        x={540}
+        y={800 + ty + float}
+        rotate={rot}
+        scale={sc}
+        tiltX={interpolate(enter, [0, 1], [28, 8]) + Math.sin(frame / 30) * 3}
+        tiltY={interpolate(enter, [0, 1], [-22, -6]) + Math.cos(frame / 34) * 4}
+        sheen={prog(frame, 30, 80)}
+        opacity={enter}
       />
       <Title y={1225} size={92} inAt={26} lineHeight={1.08}>
         {TEXTS.producto}

@@ -1,5 +1,6 @@
 import React from "react";
 import { COLORS } from "../config";
+import { MaterialDefs } from "../components/Materials";
 
 /**
  * Íconos de línea fina (crema semitransparente) con acento azul mínimo.
@@ -32,8 +33,13 @@ const Stroke: React.FC<{ d: string; draw: number; width?: number; opacity?: numb
 
 const Svg: React.FC<{ size?: number; children: React.ReactNode }> = ({ size = 380, children }) => (
   <svg width={size} height={size} viewBox="0 0 400 400" style={{ overflow: "visible" }}>
-    {children}
+    <MaterialDefs />
+    <g filter="url(#drop)">{children}</g>
   </svg>
+);
+
+const Glass: React.FC<{ d: string; draw: number }> = ({ d, draw }) => (
+  <path d={d} fill="url(#glass)" opacity={draw} />
 );
 
 const TANK = "M120,140 C120,95 155,70 200,70 C245,70 280,95 280,140 L280,320 Q280,340 260,340 L140,340 Q120,340 120,320 Z";
@@ -88,13 +94,21 @@ export const IconFilterLayers: React.FC<IconProps> = ({ draw, anim, size }) => {
     for (let y = L.y0 + L.r + 4; y < L.y1 - L.r; y += L.gap * 0.8, row++) {
       for (let x = 132 + L.r + (row % 2) * (L.gap / 2); x < 268 - L.r; x += L.gap) {
         dots.push(
-          <circle key={`${li}-${x}-${y}`} cx={x} cy={y} r={L.r} fill="none" stroke={LINE} strokeOpacity={0.6 * show} strokeWidth={3} />,
+          <circle
+            key={`${li}-${x}-${y}`}
+            cx={x}
+            cy={y}
+            r={L.r}
+            fill={li === 0 ? "url(#sph-sand)" : li === 1 ? "url(#sph-cream)" : "url(#sph-grey)"}
+            opacity={(li === 1 ? 0.75 : 0.95) * show}
+          />,
         );
       }
     }
   });
   return (
     <Svg size={size}>
+      <Glass d={TANK} draw={draw} />
       <Stroke d={TANK} draw={draw} />
       <Stroke d="M120,165 L280,165" draw={draw} width={4} opacity={0.6} />
       <Stroke d="M120,228 L280,228" draw={draw} width={3} opacity={0.45} />
@@ -115,6 +129,8 @@ export const IconNoAgota: React.FC<IconProps> = ({ draw, anim, frame, size }) =>
   const hand = frame * 3;
   return (
     <Svg size={size}>
+      <circle cx={200} cy={200} r={140} fill="url(#glass)" opacity={draw} />
+      <circle cx={200} cy={200} r={128} fill="none" stroke={LINE} strokeOpacity={0.18 * draw} strokeWidth={10} />
       <Stroke d="M200,60 A140,140 0 1 1 199.9,60" draw={draw} />
       {[0, 90, 180, 270].map((a) => {
         const rad = (a * Math.PI) / 180;
@@ -135,7 +151,7 @@ export const IconNoAgota: React.FC<IconProps> = ({ draw, anim, frame, size }) =>
       </g>
       {/* sello con tilde */}
       <g opacity={anim}>
-        <circle cx={310} cy={310} r={52 * anim} fill={COLORS.azulGel} />
+        <circle cx={310} cy={310} r={52 * anim} fill="url(#sph-blue)" />
         <Stroke d="M287,312 L303,328 L335,294" draw={anim} width={8} opacity={1} />
       </g>
     </Svg>
@@ -148,7 +164,7 @@ export const IconRobot: React.FC<IconProps> = ({ draw, anim, frame, size }) => {
   const spin = frame * 6 * anim;
   const wheel = (cx: number) => (
     <g key={cx} transform={`rotate(${spin} ${cx + dx} 300)`}>
-      <circle cx={cx + dx} cy={300} r={30} fill="none" stroke={LINE} strokeOpacity={0.9 * draw} strokeWidth={W} />
+      <circle cx={cx + dx} cy={300} r={30} fill="#2A0A0C" fillOpacity={0.6 * draw} stroke={LINE} strokeOpacity={0.9 * draw} strokeWidth={W} />
       <line x1={cx + dx - 18} y1={300} x2={cx + dx + 18} y2={300} stroke={LINE} strokeOpacity={0.6 * draw} strokeWidth={4} strokeLinecap="round" />
       <line x1={cx + dx} y1={282} x2={cx + dx} y2={318} stroke={LINE} strokeOpacity={0.6 * draw} strokeWidth={4} strokeLinecap="round" />
     </g>
@@ -158,6 +174,8 @@ export const IconRobot: React.FC<IconProps> = ({ draw, anim, frame, size }) => {
       <Stroke d="M30,335 L370,335" draw={draw} width={4} opacity={0.5} />
       <g transform={`translate(${dx} 0)`}>
         {/* carcasa baja tipo limpiafondos, con manija */}
+        <path d="M70,292 L70,245 Q70,200 120,198 L280,198 Q330,200 330,245 L330,292 Z" fill="url(#glass)" opacity={draw} />
+        <path d="M74,288 L326,288 L326,262 L74,262 Z" fill="#1E0204" opacity={0.25 * draw} />
         <Stroke d="M70,292 L70,245 Q70,200 120,198 L280,198 Q330,200 330,245 L330,292 Z" draw={draw} />
         <Stroke d="M150,198 Q150,150 200,150 Q250,150 250,198" draw={draw} width={6} />
         <Stroke d="M95,240 L305,240" draw={draw} width={4} opacity={0.5} />
@@ -168,7 +186,7 @@ export const IconRobot: React.FC<IconProps> = ({ draw, anim, frame, size }) => {
       {wheel(275)}
       {/* partículas de fondo que levanta */}
       {[0, 1, 2].map((i) => (
-        <circle key={i} cx={40 + i * 14 + dx * 0.4} cy={322 - i * 9} r={4} fill={COLORS.azulGel} opacity={anim * 0.9} />
+        <circle key={i} cx={40 + i * 14 + dx * 0.4} cy={322 - i * 9} r={5} fill="url(#sph-blue)" opacity={anim * 0.9} />
       ))}
     </Svg>
   );
@@ -180,6 +198,7 @@ export const IconRobot: React.FC<IconProps> = ({ draw, anim, frame, size }) => {
 export const IconFiltroEnMarcha: React.FC<IconProps> = ({ draw, anim, frame, size }) => (
   <Svg size={size}>
     <g transform="translate(200 205) scale(0.72) translate(-200 -205)">
+      <Glass d={TANK} draw={draw} />
       <Stroke d={TANK} draw={draw} />
       <Stroke d="M200,20 L200,70" draw={draw} />
       <Stroke d="M120,200 L280,200" draw={draw} width={4} opacity={0.5} />
@@ -239,6 +258,7 @@ export const IconSkimmer: React.FC<IconProps> = ({ draw, anim, size }) => {
 export const IconFiltradoCompleto: React.FC<IconProps> = ({ draw, anim, size }) => (
   <Svg size={size}>
     <g transform="translate(200 205) scale(0.72) translate(-200 -205)">
+      <Glass d={TANK} draw={draw} />
       <Stroke d={TANK} draw={draw} />
       <Stroke d="M200,20 L200,70" draw={draw} />
     </g>

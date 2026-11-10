@@ -1,5 +1,7 @@
 import React from "react";
-import { AbsoluteFill, Img, interpolate, random, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
+import { MaterialDefs, Sphere } from "../components/Materials";
+import { RealObject } from "../components/RealObject";
 import { COLORS, TEXTS, TIMING } from "../config";
 import { Title } from "../components/Text";
 import { clamp01, easeInOut, easeOut, lerp, prog } from "../components/anim";
@@ -79,20 +81,23 @@ export const ComoActua: React.FC = () => {
         }}
       />
       {/* disco de gel azul */}
-      <Img
-        src={staticFile("img/gel.png")}
-        style={{
-          position: "absolute",
-          width: 380,
-          left: GEL.x - 190,
-          top: GEL.y - (380 * 590) / 565 / 2,
-          opacity: gelIn * (1 - dissolve),
-          transform: `scale(${(0.9 + 0.1 * gelIn) * (1 - dissolve * 0.75)}) rotate(${dissolve * 25}deg)`,
-          filter: `blur(${dissolve * 10}px)`,
-        }}
+      <RealObject
+        kind="gel"
+        width={400}
+        x={GEL.x}
+        y={GEL.y}
+        opacity={gelIn * (1 - dissolve)}
+        scale={(0.9 + 0.1 * gelIn) * (1 - dissolve * 0.75)}
+        rotate={dissolve * 25}
+        tiltX={18 + Math.sin(frame / 26) * 4}
+        tiltY={-10 + Math.cos(frame / 30) * 5}
+        sheen={prog(frame, 4, 40)}
+        contact={1 - dissolve}
+        style={{ filter: `blur(${dissolve * 10}px)` }}
       />
       <svg width={1080} height={1920} style={{ position: "absolute" }}>
-        {/* filtro (línea fina) */}
+        <MaterialDefs />
+        {/* filtro: carcasa de vidrio con lecho de arena */}
         <g opacity={filterIn * (1 - filterOut * 0.85)}>
           <rect
             x={FILTER.x0}
@@ -100,16 +105,28 @@ export const ComoActua: React.FC = () => {
             width={FILTER.x1 - FILTER.x0}
             height={FILTER.bot - FILTER.top}
             rx={28}
-            fill={COLORS.crema}
-            fillOpacity={0.04 + filterGlow * 0.12}
+            fill="url(#glass)"
             stroke={COLORS.crema}
             strokeOpacity={0.6}
             strokeWidth={3}
           />
+          <rect x={FILTER.x0} y={FILTER.top} width={FILTER.x1 - FILTER.x0} height={FILTER.bot - FILTER.top} rx={28} fill="#FFF1E6" opacity={filterGlow * 0.18} />
           {GRAINS.map((g, i) => (
-            <circle key={i} cx={g.x} cy={g.y} r={14} fill="none" stroke={COLORS.crema} strokeOpacity={0.35} strokeWidth={2} />
+            <g key={i}>
+              <circle cx={g.x + 2} cy={g.y + 3} r={14} fill="#1E0204" opacity={0.3} />
+              <circle cx={g.x} cy={g.y} r={14} fill="url(#sph-sand)" />
+            </g>
           ))}
         </g>
+        {/* halo gelatinoso de cada flóculo mientras se forma */}
+        {CLUSTERS.map((c, i) => {
+          const delay = (i % 4) * 0.18 + Math.floor(i / 4) * 0.1;
+          const fall = prog(t, T.retencion[0] + delay, T.retencion[1] - 0.5 + delay * 0.4, easeInOut);
+          const hx = lerp(c.x, lerp(FILTER.x0 + 70, FILTER.x1 - 70, (c.x - 250) / 580), fall);
+          const hy = lerp(c.y, FILTER.top - 8, fall);
+          const absorbed = prog(t, T.retencion[1] - 0.3, T.retencion[1] + 0.7);
+          return <circle key={`h${i}`} cx={hx} cy={hy} r={70 * floc * (1 - fall * 0.4)} fill="url(#floc-halo)" opacity={floc * (1 - absorbed)} />;
+        })}
         {ALL.map((p, i) => {
           // 1) posición flotante
           const fp = floatPos(p, t + 2, 22);
@@ -142,13 +159,14 @@ export const ComoActua: React.FC = () => {
           const absorbed = prog(t, T.retencion[1] - 0.3, T.retencion[1] + 0.7);
           const r = p.r * (1 + floc * 0.25) * (1 - absorbed * 0.6);
           return (
-            <circle
+            <Sphere
               key={i}
               cx={x}
               cy={y}
               r={r}
-              fill={p.blue ? COLORS.azulGel : COLORS.gris}
-              opacity={o * (p.blue ? 0.95 : 0.55 + 0.35 * p.depth) * (1 - absorbed)}
+              kind={p.blue ? "blue" : "grey"}
+              opacity={o * (p.blue ? 0.95 : 0.7 + 0.3 * p.depth) * (1 - absorbed)}
+              blur={p.depth < 0.2 && floc < 0.5}
             />
           );
         })}

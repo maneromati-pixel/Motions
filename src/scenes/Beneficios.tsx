@@ -20,9 +20,9 @@ export const Beneficios: React.FC = () => {
         const end = t0 + (i + 1) * per;
         const last = i === TEXTS.beneficios.length - 1;
         const local = frame - start;
-        if (frame < start - 2 || (!last && frame > end + 2)) return null;
-        const inP = prog(frame, start, start + 16);
-        const outP = last ? 0 : prog(frame, end - 12, end);
+        if (frame < start - 8 || (!last && frame > end + 4)) return null;
+        const inP = prog(frame, start - 6, start + 12);
+        const outP = last ? 0 : prog(frame, end - 8, end + 3);
         const Icon = ICONS[i];
         return (
           <AbsoluteFill key={i}>
@@ -37,9 +37,9 @@ export const Beneficios: React.FC = () => {
                 transform: `translateY(${(1 - inP) * 30 - outP * 20}px) scale(${0.94 + 0.06 * inP})`,
               }}
             >
-              <Icon draw={prog(frame, start, start + 26)} anim={prog(frame, start + 12, start + 34)} frame={local} size={520} />
+              <Icon draw={prog(frame, start, start + TIMING.iconos.dibujo * fps)} anim={prog(frame, start + TIMING.iconos.accion[0] * fps, start + TIMING.iconos.accion[1] * fps)} frame={local} size={520} />
             </div>
-            <Title y={1200} size={70} inAt={start + 8} outAt={last ? undefined : end - 12} maxWidth={860}>
+            <Title y={1200} size={70} inAt={start} outAt={last ? undefined : end - 10} maxWidth={860}>
               {txt}
             </Title>
           </AbsoluteFill>

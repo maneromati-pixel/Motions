@@ -11,15 +11,15 @@ export const s = (seconds: number) => Math.round(seconds * FPS);
 /** Escenas: inicio y fin en segundos. */
 export const SCENES = {
   gancho: { from: 0, to: 4 },
-  problema: { from: 4, to: 9 },
-  presentacion: { from: 9, to: 14 },
-  comoActua: { from: 14, to: 21 },
-  beneficios: { from: 21, to: 27 },
-  comoSeUsa: { from: 27, to: 34 },
-  cierre: { from: 34, to: 38 },
+  problema: { from: 4, to: 11 },
+  presentacion: { from: 11, to: 16 },
+  comoActua: { from: 16, to: 26 },
+  beneficios: { from: 26, to: 35 },
+  comoSeUsa: { from: 35, to: 46 },
+  cierre: { from: 46, to: 50 },
 } as const;
 
-export const TOTAL_SECONDS = 38;
+export const TOTAL_SECONDS = 50;
 
 /** Fundido cruzado entre escenas (s). */
 export const CROSSFADE = 0.4;
@@ -33,13 +33,15 @@ export const M_TRANSITIONS = [
 /** Tiempos internos (segundos relativos al inicio de cada escena). */
 export const TIMING = {
   comoActua: {
-    textos: [0.9, 3.3, 5.3], // "Aglomera" → "El filtro retiene" → "Agua cristalina"
-    disolucion: [0.5, 2.0], // el gel se deshace en partículas azules
-    floculacion: [1.8, 3.4], // las partículas se agrupan
-    retencion: [3.4, 5.0], // los flóculos bajan y el filtro los retiene
+    textos: [1.2, 4.9, 8.0], // "Aglomera" → "El filtro retiene" → "Agua cristalina"
+    disolucion: [0.8, 3.0], // el gel se deshace en partículas azules
+    floculacion: [2.8, 5.0], // las partículas se agrupan
+    retencion: [5.2, 7.6], // los flóculos bajan y el filtro los retiene
   },
-  beneficios: { inicio: 0.75, porItem: 1.75 },
-  comoSeUsa: { pasos: [0.2, 1.5, 2.8, 4.1], dosis: 4.7, nota: 5.2 },
+  /** duración de la animación de dibujo/acción de cada ícono (s) */
+  iconos: { dibujo: 0.9, accion: [0.4, 1.4] },
+  beneficios: { inicio: 0.75, porItem: 2.75 },
+  comoSeUsa: { pasos: [0.3, 2.3, 4.3, 6.3], dosis: 7.3, nota: 8.1 },
   cierre: { haz: [0.1, 1.6], titulo: 0.4, tarjeta: 1.9 },
 };
 

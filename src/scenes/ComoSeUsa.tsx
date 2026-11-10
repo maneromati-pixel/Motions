@@ -3,15 +3,12 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, FONT, TEXTS, TIMING } from "../config";
 import { Title } from "../components/Text";
 import { prog } from "../components/anim";
-import {
-  IconDestapar,
-  IconFiltradoCompleto,
-  IconFiltroEnMarcha,
-  IconProps,
-  IconSkimmer,
-} from "../icons/LineIcons";
+import { IconFiltradoCompleto, IconFiltroEnMarcha, IconProps } from "../icons/LineIcons";
+import { StepDestapar, StepSkimmer } from "../icons/PhotoSteps";
 
-const ICONS: React.FC<IconProps>[] = [IconFiltroEnMarcha, IconDestapar, IconSkimmer, IconFiltradoCompleto];
+// pasos 2 y 3 con las fotos reales del producto
+const ICONS: React.FC<IconProps>[] = [IconFiltroEnMarcha, StepDestapar, StepSkimmer, IconFiltradoCompleto];
+const IC = TIMING.iconos;
 const T = TIMING.comoSeUsa;
 
 /** 6. Cómo se usa: 4 pasos numerados, uno por vez, con dosis y nota al pie. */
@@ -67,9 +64,9 @@ export const ComoSeUsa: React.FC = () => {
       {TEXTS.pasos.map((txt, i) => {
         const start = starts[i];
         const end = i < starts.length - 1 ? starts[i + 1] : Infinity;
-        if (frame < start - 2 || frame > end + 2) return null;
-        const inP = prog(frame, start, start + 14);
-        const outP = end === Infinity ? 0 : prog(frame, end - 10, end);
+        if (frame < start - 8 || frame > end + 4) return null;
+        const inP = prog(frame, start - 6, start + 10);
+        const outP = end === Infinity ? 0 : prog(frame, end - 8, end + 3);
         const Icon = ICONS[i];
         return (
           <AbsoluteFill key={i}>
@@ -84,9 +81,9 @@ export const ComoSeUsa: React.FC = () => {
                 transform: `translateY(${(1 - inP) * 26 - outP * 18}px)`,
               }}
             >
-              <Icon draw={prog(frame, start, start + 20)} anim={prog(frame, start + 8, start + 26)} frame={frame - start} size={480} />
+              <Icon draw={prog(frame, start, start + IC.dibujo * fps)} anim={prog(frame, start + IC.accion[0] * fps, start + IC.accion[1] * fps)} frame={frame - start} size={480} />
             </div>
-            <Title y={995} size={72} inAt={start + 4} outAt={end === Infinity ? undefined : end - 10} maxWidth={860}>
+            <Title y={995} size={72} inAt={start} outAt={end === Infinity ? undefined : end - 10} maxWidth={860}>
               {txt}
             </Title>
           </AbsoluteFill>

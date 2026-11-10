@@ -3,6 +3,8 @@ import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoCo
 import { COLORS, FONT, TEXTS, TIMING } from "../config";
 import { clamp01, easeInOut, prog, softSpring } from "../components/anim";
 import { floatPos, makeParticles } from "../components/particles";
+import { MaterialDefs, Sphere } from "../components/Materials";
+import { RealObject } from "../components/RealObject";
 
 const T = TIMING.cierre;
 const PARTS = makeParticles("cierre", 40, { x0: 40, x1: 1040, y0: 280, y1: 1600 }, 3, 9);
@@ -31,12 +33,13 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
     <AbsoluteFill>
       {/* partículas residuales que se desvanecen al paso del haz */}
       <svg width={1080} height={1920} style={{ position: "absolute" }}>
+        <MaterialDefs />
         {PARTS.map((p, i) => {
           const { x, y } = floatPos(p, t + 5);
           const u = x + 0.6 * y;
           const gone = clamp01((beamU - u + 60) / 220);
           return (
-            <circle key={i} cx={x} cy={y} r={p.r * (1 - gone * 0.7)} fill={COLORS.gris} opacity={(0.25 + 0.3 * p.depth) * (1 - gone) * prog(frame, 0, 8)} />
+            <Sphere key={i} cx={x} cy={y} r={p.r * (1 - gone * 0.7)} kind="grey" opacity={(0.35 + 0.35 * p.depth) * (1 - gone) * prog(frame, 0, 8)} />
           );
         })}
       </svg>
@@ -108,16 +111,16 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
       </div>
 
       {/* cápsula al lado (debajo de la tarjeta en formato vertical) */}
-      <Img
-        src={staticFile("img/capsula.png")}
-        style={{
-          position: "absolute",
-          width: 460,
-          left: 540 - 230,
-          top: 1150 - 228,
-          opacity: caps,
-          transform: `translateY(${(1 - caps) * 80}px) rotate(${interpolate(caps, [0, 1], [-16, -6])}deg)`,
-        }}
+      <RealObject
+        kind="capsula"
+        width={480}
+        x={540}
+        y={1150 + (1 - caps) * 80}
+        opacity={caps}
+        rotate={interpolate(caps, [0, 1], [-16, -6])}
+        tiltX={interpolate(caps, [0, 1], [30, 10])}
+        tiltY={-8 + Math.sin(frame / 30) * 3}
+        sheen={prog(frame, T.tarjeta * fps + 24, T.tarjeta * fps + 64)}
       />
 
       {/* contacto (editable) */}
