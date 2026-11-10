@@ -32,7 +32,7 @@ npm run assets     # regenera recortes, logo y trazo M desde ./assets
 
 ### Props
 
-- `telefono` / `instagram` (string): datos de contacto del cierre. Por defecto son `3364 51-9437` y `@alquimia382`, definidos en `CONTACTO` dentro de `src/config.ts`.
+- `telefono` / `instagram` (string): datos de contacto del cierre. Por defecto son `3364 51-9437` y `@alquimia583`, definidos en `CONTACTO` dentro de `src/config.ts`.
 - `musicSrc` (string, opcional): puede ser una URL o un archivo dentro de `public/`. Ejemplo:
   `npx remotion render PowerFloc-9x16 out/video_9x16.mp4 --props='{"musicSrc":"musica.mp3"}'`.
   Sin música, el video funciona igual. Con música, el audio entra y sale con un fundido.

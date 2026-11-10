@@ -76,7 +76,7 @@ export const TEXTS = {
 /** Datos de contacto del cierre (editables también como props `telefono` e `instagram`). */
 export const CONTACTO = {
   telefono: "3364 51-9437",
-  instagram: "@alquimia382",
+  instagram: "@alquimia583",
 };
 
 /** Paleta cerrada (muestreada de los assets). */
