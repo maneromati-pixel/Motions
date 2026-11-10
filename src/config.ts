@@ -53,7 +53,7 @@ export const TEXTS = {
   ganchoDestacada: "turbia?",
   solucion: "Tenemos la solución",
   producto: "MAK Power Floc Gel",
-  productoSub: "Floculación en filtro",
+  productoSub: "Clarificador en gel",
   comoActua: ["Aglomera", "El filtro retiene", "Agua cristalina"],
   beneficios: [
     "Potencia filtros de arena, cuarzo y antracita",
