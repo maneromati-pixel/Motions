@@ -103,7 +103,7 @@ export const ComoSeUsa: React.FC = () => {
           opacity: prog(frame, T.dosis * fps, T.dosis * fps + 14),
         }}
       />
-      <Title y={1240} size={58} weight={600} inAt={T.dosis * fps} maxWidth={900} lineHeight={1.3}>
+      <Title y={1240} size={54} weight={600} inAt={T.dosis * fps} maxWidth={900} lineHeight={1.3}>
         {dosisA}
         <br />
         <span style={{ fontWeight: 400 }}>{dosisB}</span>

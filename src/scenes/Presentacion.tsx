@@ -46,14 +46,14 @@ export const Presentacion: React.FC = () => {
         opacity={enter}
       />
       {/* "Tenemos la solución" con acento rojo mínimo */}
-      <Title y={350} size={78} inAt={TIMING.presentacion.solucion * fps}>
+      <Title y={335} size={78} inAt={TIMING.presentacion.solucion * fps}>
         {TEXTS.solucion}
       </Title>
       <div
         style={{
           position: "absolute",
           left: 540 - 7,
-          top: 418,
+          top: 448,
           width: 14,
           height: 14,
           borderRadius: 7,

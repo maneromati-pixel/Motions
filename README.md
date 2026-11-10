@@ -10,9 +10,9 @@ Video explicativo de 44 s, 1080×1920 a 30 fps, hecho con Remotion (React + Type
 | Ruta | Qué contiene |
 | --- | --- |
 | `src/config.ts` | **Archivo único de configuración**: tiempos de escenas y animaciones, textos, contacto y paleta |
-| `src/Video.tsx` | Arma la línea de tiempo: fondo, escenas, cortinas "M" y música opcional |
+| `src/Video.tsx` | Arma la línea de tiempo: fondo, escenas, transiciones (definidas en `TRANSITIONS`) y música opcional |
 | `src/scenes/*.tsx` | Una escena por componente (Gancho, Presentacion, ComoActua, Beneficios, ComoSeUsa, Cierre) |
-| `src/components/` | Fondo vivo, títulos, cortina con el trazo de la M, partículas y helpers de animación |
+| `src/components/` | Fondo vivo, títulos, transiciones (ola, burbujas y trazo de la M), pileta, partículas y helpers de animación |
 | `src/icons/LineIcons.tsx` | Íconos de línea con volumen (vidrio, esferas, sombras) para beneficios y pasos |
 | `src/icons/PhotoSteps.tsx` | Pasos 2 y 3 con las fotos reales: la tapa se despega y el gel cae al canasto |
 | `src/components/Materials.tsx` / `RealObject.tsx` | Materiales SVG (esferas, arena, vidrio) y tratamiento 3D/brillo de las fotos del producto |

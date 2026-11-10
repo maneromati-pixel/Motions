@@ -47,7 +47,8 @@ export const Gancho: React.FC = () => {
   const [l1, l2] = TEXTS.gancho;
   const words1 = l1.split(" ");
   const words2 = l2.split(" ");
-  const start = T.palabras * fps;
+  const che = T.palabras * fps; // "Che," entra primero
+  const start = che + T.entrePalabras * fps * 2;
   const step = T.entrePalabras * fps;
   const lastAt = start + (words1.length + words2.length - 1) * step;
 
@@ -124,6 +125,9 @@ export const Gancho: React.FC = () => {
           textShadow: "0 4px 30px rgba(40,4,6,0.55)",
         }}
       >
+        <div style={{ fontSize: 96, fontWeight: 600, lineHeight: 1.1, letterSpacing: -1, marginBottom: 4 }}>
+          <Word at={che}>{TEXTS.ganchoPrevio}</Word>
+        </div>
         <div style={{ fontSize: 76, fontWeight: 400, lineHeight: 1.1, letterSpacing: -0.5 }}>
           {words1.map((w, i) => (
             <Word key={i} at={start + i * step}>

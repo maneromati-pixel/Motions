@@ -23,10 +23,19 @@ export const TOTAL_SECONDS = 44;
 /** Fundido cruzado entre escenas (s). */
 export const CROSSFADE = 0.4;
 
-/** Transiciones con el trazo de la "M": momento del corte (s) y duración total (s). */
-export const M_TRANSITIONS = [
-  { at: SCENES.presentacion.from, duration: 1.4 },
-  { at: SCENES.beneficios.from, duration: 1.4 },
+/**
+ * Transiciones entre escenas: momento del corte (s), duración total (s) y tipo.
+ * - "ola": una ola de agua cruza la pantalla de abajo hacia arriba
+ * - "burbujas": una tanda de burbujas sube y tapa el corte
+ * - "trazoM": el trazo de la "M" del logo (firma de marca)
+ */
+export type TransitionType = "ola" | "burbujas" | "trazoM";
+export const TRANSITIONS: { at: number; duration: number; tipo: TransitionType }[] = [
+  { at: SCENES.presentacion.from, duration: 1.3, tipo: "ola" },
+  { at: SCENES.comoActua.from, duration: 1.2, tipo: "burbujas" },
+  { at: SCENES.beneficios.from, duration: 1.3, tipo: "ola" },
+  { at: SCENES.comoSeUsa.from, duration: 1.2, tipo: "burbujas" },
+  { at: SCENES.cierre.from, duration: 1.4, tipo: "trazoM" },
 ];
 
 /** Tiempos internos (segundos relativos al inicio de cada escena). */
@@ -49,28 +58,29 @@ export const TIMING = {
 
 export const TEXTS = {
   /** Hook en dos líneas; la palabra destacada ondula como agua turbia. */
-  gancho: ["¿El agua de tu pileta", "está turbia?"],
+  ganchoPrevio: "Che,",
+  gancho: ["¿el agua de tu pileta", "está turbia?"],
   ganchoDestacada: "turbia?",
-  solucion: "Tenemos la solución",
+  solucion: "Tranqui, tenemos la solución",
   producto: "MAK Power Floc Gel",
   productoSub: "Clarificador en gel",
-  comoActua: ["Aglomera", "El filtro retiene", "Agua cristalina"],
+  comoActua: ["Junta la mugre", "El filtro la atrapa", "¡Y queda cristalina!"],
   beneficios: [
-    "Potencia filtros de arena, cuarzo y antracita",
-    "No agota el filtro antes de tiempo",
+    "Le saca el jugo a tu filtro de arena, cuarzo o antracita",
+    "Tu filtro no se gasta antes de tiempo",
   ],
   pasos: [
-    "Filtro limpio y en marcha",
+    "Filtro limpio y prendido",
     "Destapá la cápsula",
-    "Al canasto del skimmer",
-    "Filtrado completo",
+    "Mandala al canasto del skimmer",
+    "Dejá filtrar un ciclo completo",
   ],
-  dosis: "1 cápsula = hasta 150.000 L · Una por semana",
-  notaAlternativa: "Sin skimmer: canaleta de desborde o canasto de la bomba.",
+  dosis: "1 cápsula rinde hasta 150.000 L · Una por semana y listo",
+  notaAlternativa: "¿No tenés skimmer? Va en la canaleta de desborde o en el canasto de la bomba.",
   /** Eslogan de Alquimia */
   eslogan: "Tenemos lo que necesitás",
   contactoLlamado: "Contactanos al",
-  contactoLocal: "o pasá por el local",
+  contactoLocal: "o pasate por el local",
 };
 
 /** Datos de contacto del cierre (editables también como props `telefono` e `instagram`). */

@@ -2,10 +2,11 @@ import React from "react";
 import { AbsoluteFill, Sequence, interpolate, staticFile, useVideoConfig } from "remotion";
 import { Audio } from "@remotion/media";
 import { loadFont } from "@remotion/fonts";
-import { CONTACTO, CROSSFADE, FONT, M_TRANSITIONS, SCENES, s } from "./config";
+import { CONTACTO, CROSSFADE, FONT, SCENES, TRANSITIONS, s } from "./config";
 import { Background } from "./components/Background";
 import { SceneFade } from "./components/SceneFade";
 import { MTransition } from "./components/MTransition";
+import { BurbujasTransition, OlaTransition } from "./components/WaterTransitions";
 import { Gancho } from "./scenes/Gancho";
 import { Presentacion } from "./scenes/Presentacion";
 import { ComoActua } from "./scenes/ComoActua";
@@ -36,8 +37,9 @@ const ORDER: { key: keyof typeof SCENES; C: React.FC<ContactProps> }[] = [
   { key: "cierre", C: Cierre },
 ];
 
-// escenas cuyo inicio está cubierto por el trazo de la M
-const M_CUTS = new Set<number>(M_TRANSITIONS.map((m) => m.at));
+// cortes cubiertos por una transición (ola, burbujas o trazo M)
+const M_CUTS = new Set<number>(TRANSITIONS.map((m) => m.at));
+const TRANSITION_C = { ola: OlaTransition, burbujas: BurbujasTransition, trazoM: MTransition };
 
 export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, telefono = CONTACTO.telefono, instagram = CONTACTO.instagram }) => {
   const { durationInFrames } = useVideoConfig();
@@ -51,7 +53,7 @@ export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, telefono = C
         const sc = SCENES[key];
         const first = i === 0;
         const last = i === ORDER.length - 1;
-        // con la cortina M el fundido es más largo y queda oculto detrás del trazo
+        // con una transición el fundido es más largo y queda oculto detrás de ella
         const inHalf = M_CUTS.has(sc.from) ? s(0.35) : half;
         const nextFrom = last ? null : SCENES[ORDER[i + 1].key].from;
         const outHalf = nextFrom !== null && M_CUTS.has(nextFrom) ? s(0.35) : half;
@@ -65,11 +67,14 @@ export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, telefono = C
           </Sequence>
         );
       })}
-      {M_TRANSITIONS.map((m, i) => (
-        <Sequence key={`m${i}`} name={`Trazo M ${i + 1}`} from={s(m.at - m.duration / 2)} durationInFrames={s(m.duration)}>
-          <MTransition />
-        </Sequence>
-      ))}
+      {TRANSITIONS.map((m, i) => {
+        const T = TRANSITION_C[m.tipo];
+        return (
+          <Sequence key={`t${i}`} name={`Transición ${m.tipo}`} from={s(m.at - m.duration / 2)} durationInFrames={s(m.duration)}>
+            <T />
+          </Sequence>
+        );
+      })}
       {musicSrc ? (
         <Audio
           src={resolveSrc(musicSrc)}
