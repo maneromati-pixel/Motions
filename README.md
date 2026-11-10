@@ -18,6 +18,7 @@ Video explicativo de 41,5 s, 1080×1920 a 30 fps, hecho con Remotion (React + Ty
 | `src/components/Materials.tsx` / `RealObject.tsx` | Materiales SVG (esferas, arena, vidrio) y tratamiento 3D/brillo de las fotos del producto |
 | `src/mPath.ts` | Trazo de la "M" del logo, vectorizado con potrace |
 | `scripts/cutouts.py` | Recorta la cápsula y el disco de gel de `assets/producto.png` (con sombra propia) |
+| `scripts/sfx.py` | Sintetiza los sonidos sutiles de las transiciones → `public/sfx/` |
 | `scripts/logo_assets.py` | Genera el logo para fondo oscuro y vectoriza la M (`pip install potracer pillow numpy`) |
 | `public/` | Assets que se usan en el video: imágenes procesadas y la tipografía Montserrat 400/600 |
 

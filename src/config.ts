@@ -38,6 +38,15 @@ export const TRANSITIONS: { at: number; duration: number; tipo: TransitionType }
   { at: SCENES.cierre.from, duration: 1.4, tipo: "trazoM" },
 ];
 
+/** Sonidos sutiles de cada tipo de transición (archivos en public/sfx, generados con scripts/sfx.py). */
+export const SFX: Record<TransitionType, string> = {
+  ola: "sfx/ola.wav",
+  reflejo: "sfx/reflejo.wav",
+  trazoM: "sfx/trazo_m.wav",
+};
+/** Volumen de los efectos (0–1). */
+export const SFX_VOLUME = 0.55;
+
 /** Tiempos internos (segundos relativos al inicio de cada escena). */
 export const TIMING = {
   comoActua: {
@@ -70,7 +79,7 @@ export const TEXTS = {
   pasos: [
     "Filtro limpio y prendido",
     "Destapá la cápsula",
-    "Mandala al canasto del skimmer",
+    "Ponela en el canasto del skimmer",
     "Dejá filtrar un ciclo completo",
   ],
   dosis: "1 cápsula rinde hasta 150.000 L · Una por semana y listo",

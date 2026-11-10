@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, Sequence, interpolate, staticFile, useVideoConfig } from "remotion";
 import { Audio } from "@remotion/media";
 import { loadFont } from "@remotion/fonts";
-import { CONTACTO, CROSSFADE, FONT, SCENES, TRANSITIONS, s } from "./config";
+import { CONTACTO, CROSSFADE, FONT, SCENES, SFX, SFX_VOLUME, TRANSITIONS, s } from "./config";
 import { Background } from "./components/Background";
 import { SceneFade } from "./components/SceneFade";
 import { MTransition } from "./components/MTransition";
@@ -72,6 +72,8 @@ export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, telefono = C
         return (
           <Sequence key={`t${i}`} name={`Transición ${m.tipo}`} from={s(m.at - m.duration / 2)} durationInFrames={s(m.duration)}>
             <T />
+            {/* sonido sutil de la transición */}
+            <Audio src={staticFile(SFX[m.tipo])} volume={SFX_VOLUME} />
           </Sequence>
         );
       })}
