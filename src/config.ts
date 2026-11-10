@@ -16,10 +16,10 @@ export const SCENES = {
   comoActua: { from: 16, to: 26 },
   beneficios: { from: 26, to: 35 },
   comoSeUsa: { from: 35, to: 46 },
-  cierre: { from: 46, to: 50 },
+  cierre: { from: 46, to: 51.5 },
 } as const;
 
-export const TOTAL_SECONDS = 50;
+export const TOTAL_SECONDS = 51.5;
 
 /** Fundido cruzado entre escenas (s). */
 export const CROSSFADE = 0.4;
@@ -42,11 +42,16 @@ export const TIMING = {
   iconos: { dibujo: 0.9, accion: [0.4, 1.4] },
   beneficios: { inicio: 0.75, porItem: 2.75 },
   comoSeUsa: { pasos: [0.3, 2.3, 4.3, 6.3], dosis: 7.3, nota: 8.1 },
-  cierre: { haz: [0.1, 1.6], titulo: 0.4, tarjeta: 1.9 },
+  gancho: { estallido: [0, 0.7], palabras: 0.15, entrePalabras: 0.12, golpe: 2.2 },
+  presentacion: { solucion: 0.15 },
+  cierre: { haz: [0.1, 1.6], titulo: 0.4, tarjeta: 1.9, eslogan: 2.5, contacto: 3.1 },
 };
 
 export const TEXTS = {
-  gancho: "¿Agua turbia aunque filtrás?",
+  /** Hook en dos líneas; la palabra destacada ondula como agua turbia. */
+  gancho: ["¿El agua de tu pileta", "está turbia?"],
+  ganchoDestacada: "turbia?",
+  solucion: "Tenemos la solución",
   problema: "Las partículas más finas atraviesan el filtro.",
   producto: "MAK Power Floc Gel",
   productoSub: "Floculación en filtro",
@@ -65,6 +70,8 @@ export const TEXTS = {
   dosis: "1 cápsula = hasta 150.000 L · Una por semana",
   notaAlternativa: "Sin skimmer: canaleta de desborde o canasto de la bomba.",
   cierre: "Transparencia superlativa.",
+  /** Eslogan de Alquimia */
+  eslogan: "Tenemos lo que necesitás",
 };
 
 /** Texto de contacto por defecto (editable también como prop `contacto`). */

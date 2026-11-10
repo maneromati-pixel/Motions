@@ -1,6 +1,6 @@
 # Alquimia · MAK Power Floc Gel — motion graphics 9:16
 
-Video explicativo de 50 s, 1080×1920 a 30 fps, hecho con Remotion (React + TypeScript).
+Video explicativo de 51,5 s, 1080×1920 a 30 fps, hecho con Remotion (React + TypeScript).
 
 - Render final: `out/video_9x16.mp4` (H.264)
 - Un frame por escena para revisión: `out/frames/`

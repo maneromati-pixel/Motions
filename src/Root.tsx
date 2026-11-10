@@ -8,7 +8,7 @@ export const RemotionRoot: React.FC = () => {
     <Composition
       id="PowerFloc-9x16"
       component={AlquimiaPowerFloc}
-      durationInFrames={TOTAL_SECONDS * FPS}
+      durationInFrames={Math.round(TOTAL_SECONDS * FPS)}
       fps={FPS}
       width={WIDTH}
       height={HEIGHT}

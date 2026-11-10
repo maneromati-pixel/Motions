@@ -22,12 +22,13 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
 
   const titleIn = prog(frame, T.titulo * fps, T.titulo * fps + 18);
   const toTop = softSpring(frame, fps, T.tarjeta * fps, 30);
-  const titleY = interpolate(toTop, [0, 1], [960, 380]);
-  const titleScale = interpolate(toTop, [0, 1], [1, 0.74]);
+  const titleY = interpolate(toTop, [0, 1], [960, 330]);
+  const titleScale = interpolate(toTop, [0, 1], [1, 0.7]);
 
   const card = softSpring(frame, fps, T.tarjeta * fps + 6, 30);
-  const caps = softSpring(frame, fps, T.tarjeta * fps + 14, 34);
-  const contact = prog(frame, T.tarjeta * fps + 24, T.tarjeta * fps + 42);
+  const caps = softSpring(frame, fps, T.eslogan * fps + 6, 34);
+  const contact = prog(frame, T.contacto * fps, T.contacto * fps + 18);
+  const slogan = prog(frame, T.eslogan * fps, T.eslogan * fps + 18);
 
   return (
     <AbsoluteFill>
@@ -96,10 +97,10 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
       <div
         style={{
           position: "absolute",
-          left: 100,
-          width: 880,
-          top: 560,
-          padding: "56px 50px",
+          left: 80,
+          width: 920,
+          top: 450,
+          padding: "50px 44px",
           borderRadius: 40,
           background: COLORS.crema,
           boxShadow: "0 30px 70px rgba(30,2,4,0.45)",
@@ -107,20 +108,43 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
           transform: `translateY(${(1 - card) * 60}px) scale(${0.95 + 0.05 * card})`,
         }}
       >
-        <Img src={staticFile("img/logo_color.png")} style={{ width: 780, display: "block" }} />
+        {/* logo PNG original de Alquimia, a todo color */}
+        <Img src={staticFile("img/logo_color.png")} style={{ width: 832, display: "block" }} />
+      </div>
+
+      {/* eslogan de Alquimia */}
+      <div
+        style={{
+          position: "absolute",
+          left: 90,
+          right: 90,
+          top: 905,
+          transform: `translateY(-50%) translateY(${(1 - slogan) * 24}px)`,
+          textAlign: "center",
+          fontFamily: FONT,
+          fontWeight: 600,
+          fontSize: 66,
+          letterSpacing: -0.5,
+          color: COLORS.crema,
+          opacity: slogan,
+          filter: `blur(${(1 - slogan) * 6}px)`,
+          textShadow: "0 2px 24px rgba(40,4,6,0.4)",
+        }}
+      >
+        {TEXTS.eslogan}
       </div>
 
       {/* cápsula al lado (debajo de la tarjeta en formato vertical) */}
       <RealObject
         kind="capsula"
-        width={480}
+        width={440}
         x={540}
-        y={1150 + (1 - caps) * 80}
+        y={1170 + (1 - caps) * 80}
         opacity={caps}
         rotate={interpolate(caps, [0, 1], [-16, -6])}
         tiltX={interpolate(caps, [0, 1], [30, 10])}
         tiltY={-8 + Math.sin(frame / 30) * 3}
-        sheen={prog(frame, T.tarjeta * fps + 24, T.tarjeta * fps + 64)}
+        sheen={prog(frame, T.eslogan * fps + 20, T.eslogan * fps + 60)}
       />
 
       {/* contacto (editable) */}
@@ -129,7 +153,7 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
           position: "absolute",
           left: 90,
           right: 90,
-          top: 1440,
+          top: 1445,
           transform: `translateY(-50%) translateY(${(1 - contact) * 20}px)`,
           textAlign: "center",
           fontFamily: FONT,

@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { RealObject } from "../components/RealObject";
-import { COLORS, TEXTS } from "../config";
+import { COLORS, TEXTS, TIMING } from "../config";
 import { Title } from "../components/Text";
 import { prog, softSpring } from "../components/anim";
 
@@ -44,6 +44,22 @@ export const Presentacion: React.FC = () => {
         tiltY={interpolate(enter, [0, 1], [-22, -6]) + Math.cos(frame / 34) * 4}
         sheen={prog(frame, 30, 80)}
         opacity={enter}
+      />
+      {/* "Tenemos la solución" con acento rojo mínimo */}
+      <Title y={350} size={78} inAt={TIMING.presentacion.solucion * fps}>
+        {TEXTS.solucion}
+      </Title>
+      <div
+        style={{
+          position: "absolute",
+          left: 540 - 7,
+          top: 418,
+          width: 14,
+          height: 14,
+          borderRadius: 7,
+          background: COLORS.rojo,
+          opacity: prog(frame, TIMING.presentacion.solucion * fps + 10, TIMING.presentacion.solucion * fps + 22),
+        }}
       />
       <Title y={1225} size={92} inAt={26} lineHeight={1.08}>
         {TEXTS.producto}
