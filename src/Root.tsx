@@ -1,7 +1,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { AlquimiaPowerFloc, VideoProps } from "./Video";
-import { DEFAULT_CONTACT, FPS, HEIGHT, TOTAL_SECONDS, WIDTH } from "./config";
+import { CONTACTO, FPS, HEIGHT, TOTAL_SECONDS, WIDTH } from "./config";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ export const RemotionRoot: React.FC = () => {
       fps={FPS}
       width={WIDTH}
       height={HEIGHT}
-      defaultProps={{ musicSrc: undefined, contacto: DEFAULT_CONTACT } satisfies VideoProps}
+      defaultProps={{ musicSrc: undefined, telefono: CONTACTO.telefono, instagram: CONTACTO.instagram } satisfies VideoProps}
     />
   );
 };

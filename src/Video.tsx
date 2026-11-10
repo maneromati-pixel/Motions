@@ -2,12 +2,11 @@ import React from "react";
 import { AbsoluteFill, Sequence, interpolate, staticFile, useVideoConfig } from "remotion";
 import { Audio } from "@remotion/media";
 import { loadFont } from "@remotion/fonts";
-import { CROSSFADE, DEFAULT_CONTACT, FONT, M_TRANSITIONS, SCENES, s } from "./config";
+import { CONTACTO, CROSSFADE, FONT, M_TRANSITIONS, SCENES, s } from "./config";
 import { Background } from "./components/Background";
 import { SceneFade } from "./components/SceneFade";
 import { MTransition } from "./components/MTransition";
 import { Gancho } from "./scenes/Gancho";
-import { Problema } from "./scenes/Problema";
 import { Presentacion } from "./scenes/Presentacion";
 import { ComoActua } from "./scenes/ComoActua";
 import { Beneficios } from "./scenes/Beneficios";
@@ -17,16 +16,19 @@ import { Cierre } from "./scenes/Cierre";
 loadFont({ family: FONT, url: staticFile("fonts/montserrat-latin-400-normal.woff2"), weight: "400" });
 loadFont({ family: FONT, url: staticFile("fonts/montserrat-latin-600-normal.woff2"), weight: "600" });
 
+export type ContactProps = { telefono: string; instagram: string };
+
 export type VideoProps = {
   /** Música opcional (URL o ruta dentro de /public, p. ej. "musica.mp3"). Sin audio el video funciona igual. */
   musicSrc?: string;
-  /** Texto de contacto del cierre. */
-  contacto?: string;
+  /** Teléfono del cierre. */
+  telefono?: string;
+  /** Usuario de Instagram del cierre. */
+  instagram?: string;
 };
 
-const ORDER: { key: keyof typeof SCENES; C: React.FC<{ contacto: string }> }[] = [
+const ORDER: { key: keyof typeof SCENES; C: React.FC<ContactProps> }[] = [
   { key: "gancho", C: Gancho },
-  { key: "problema", C: Problema },
   { key: "presentacion", C: Presentacion },
   { key: "comoActua", C: ComoActua },
   { key: "beneficios", C: Beneficios },
@@ -37,7 +39,7 @@ const ORDER: { key: keyof typeof SCENES; C: React.FC<{ contacto: string }> }[] =
 // escenas cuyo inicio está cubierto por el trazo de la M
 const M_CUTS = new Set<number>(M_TRANSITIONS.map((m) => m.at));
 
-export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, contacto = DEFAULT_CONTACT }) => {
+export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, telefono = CONTACTO.telefono, instagram = CONTACTO.instagram }) => {
   const { durationInFrames } = useVideoConfig();
   const half = s(CROSSFADE / 2);
   const resolveSrc = (src: string) => (/^(https?:|data:|blob:)/.test(src) ? src : staticFile(src));
@@ -58,7 +60,7 @@ export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, contacto = D
         return (
           <Sequence key={key} name={key} from={from} durationInFrames={to - from}>
             <SceneFade fadeIn={first ? 0 : inHalf * 2} fadeOut={last ? 0 : outHalf * 2}>
-              <C contacto={contacto} />
+              <C telefono={telefono} instagram={instagram} />
             </SceneFade>
           </Sequence>
         );

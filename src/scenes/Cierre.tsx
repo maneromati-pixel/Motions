@@ -5,12 +5,64 @@ import { clamp01, easeInOut, prog, softSpring } from "../components/anim";
 import { floatPos, makeParticles } from "../components/particles";
 import { MaterialDefs, Sphere } from "../components/Materials";
 import { RealObject } from "../components/RealObject";
+import type { ContactProps } from "../Video";
 
 const T = TIMING.cierre;
 const PARTS = makeParticles("cierre", 40, { x0: 40, x1: 1040, y0: 280, y1: 1600 }, 3, 9);
 
-/** 7. Cierre: las partículas desaparecen con un haz de luz, título, tarjeta con logo + cápsula y contacto. */
-export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
+/** Línea de texto del cierre que entra con fade, subida y desenfoque. */
+const Line: React.FC<{ y: number; p: number; size: number; weight?: 400 | 600; children: React.ReactNode; opacity?: number }> = ({
+  y,
+  p,
+  size,
+  weight = 600,
+  children,
+  opacity = 1,
+}) => (
+  <div
+    style={{
+      position: "absolute",
+      left: 90,
+      right: 90,
+      top: y,
+      transform: `translateY(-50%) translateY(${(1 - p) * 22}px)`,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 18,
+      fontFamily: FONT,
+      fontWeight: weight,
+      fontSize: size,
+      letterSpacing: -0.3,
+      color: COLORS.crema,
+      opacity: p * opacity,
+      filter: `blur(${(1 - p) * 6}px)`,
+      textShadow: "0 2px 24px rgba(40,4,6,0.4)",
+      whiteSpace: "nowrap",
+    }}
+  >
+    {children}
+  </div>
+);
+
+/** Ícono de línea de Instagram (genérico: cámara redondeada). */
+const IgIcon: React.FC<{ size: number }> = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" stroke={COLORS.crema} strokeWidth={3.6}>
+    <rect x={5} y={5} width={38} height={38} rx={11} />
+    <circle cx={24} cy={24} r={9} />
+    <circle cx={35} cy={13} r={1.6} fill={COLORS.crema} stroke="none" />
+  </svg>
+);
+
+/** Ícono de línea de teléfono (auricular). */
+const PhoneIcon: React.FC<{ size: number }> = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" stroke={COLORS.crema} strokeWidth={3.6} strokeLinejoin="round">
+    <path d="M14 6 L20 6 L23 15 L18 19 Q22 27 29 30 L33 25 L42 28 L42 34 Q42 42 34 42 Q8 38 6 14 Q6 6 14 6 Z" />
+  </svg>
+);
+
+/** 6. Cierre: haz de luz que limpia las últimas partículas, logo, eslogan, cápsula y contacto. */
+export const Cierre: React.FC<ContactProps> = ({ telefono, instagram }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -20,15 +72,10 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
   const uMax = 1080 + 0.6 * 1920;
   const beamU = interpolate(beam, [0, 1], [-500, uMax + 500]);
 
-  const titleIn = prog(frame, T.titulo * fps, T.titulo * fps + 18);
-  const toTop = softSpring(frame, fps, T.tarjeta * fps, 30);
-  const titleY = interpolate(toTop, [0, 1], [960, 330]);
-  const titleScale = interpolate(toTop, [0, 1], [1, 0.7]);
-
-  const card = softSpring(frame, fps, T.tarjeta * fps + 6, 30);
-  const caps = softSpring(frame, fps, T.eslogan * fps + 6, 34);
-  const contact = prog(frame, T.contacto * fps, T.contacto * fps + 18);
+  const card = softSpring(frame, fps, T.tarjeta * fps, 30);
   const slogan = prog(frame, T.eslogan * fps, T.eslogan * fps + 18);
+  const caps = softSpring(frame, fps, T.eslogan * fps + 6, 34);
+  const [c1, c2, c3] = T.contacto.map((c) => prog(frame, c * fps, c * fps + 16));
 
   return (
     <AbsoluteFill>
@@ -64,42 +111,18 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
       {/* luminosidad general tras el haz */}
       <AbsoluteFill
         style={{
-          background: "radial-gradient(ellipse 80% 55% at 50% 45%, rgba(255,232,220,0.22) 0%, rgba(255,232,220,0) 70%)",
+          background: "radial-gradient(ellipse 80% 55% at 50% 40%, rgba(255,232,220,0.22) 0%, rgba(255,232,220,0) 70%)",
           opacity: beam,
         }}
       />
 
-      {/* título */}
-      <div
-        style={{
-          position: "absolute",
-          left: 90,
-          right: 90,
-          top: titleY,
-          transform: `translateY(-50%) translateY(${(1 - titleIn) * 28}px) scale(${titleScale})`,
-          textAlign: "center",
-          fontFamily: FONT,
-          fontWeight: 600,
-          fontSize: 96,
-          lineHeight: 1.12,
-          letterSpacing: -0.5,
-          color: COLORS.crema,
-          opacity: titleIn,
-          filter: `blur(${(1 - titleIn) * 6}px)`,
-          textWrap: "balance",
-          textShadow: "0 2px 24px rgba(40,4,6,0.35)",
-        }}
-      >
-        {TEXTS.cierre}
-      </div>
-
-      {/* tarjeta crema con el logo a todo color */}
+      {/* tarjeta crema con el logo PNG original de Alquimia, a todo color */}
       <div
         style={{
           position: "absolute",
           left: 80,
           width: 920,
-          top: 450,
+          top: 300,
           padding: "50px 44px",
           borderRadius: 40,
           background: COLORS.crema,
@@ -108,38 +131,20 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
           transform: `translateY(${(1 - card) * 60}px) scale(${0.95 + 0.05 * card})`,
         }}
       >
-        {/* logo PNG original de Alquimia, a todo color */}
         <Img src={staticFile("img/logo_color.png")} style={{ width: 832, display: "block" }} />
       </div>
 
-      {/* eslogan de Alquimia */}
-      <div
-        style={{
-          position: "absolute",
-          left: 90,
-          right: 90,
-          top: 905,
-          transform: `translateY(-50%) translateY(${(1 - slogan) * 24}px)`,
-          textAlign: "center",
-          fontFamily: FONT,
-          fontWeight: 600,
-          fontSize: 66,
-          letterSpacing: -0.5,
-          color: COLORS.crema,
-          opacity: slogan,
-          filter: `blur(${(1 - slogan) * 6}px)`,
-          textShadow: "0 2px 24px rgba(40,4,6,0.4)",
-        }}
-      >
+      {/* eslogan */}
+      <Line y={760} p={slogan} size={68}>
         {TEXTS.eslogan}
-      </div>
+      </Line>
 
-      {/* cápsula al lado (debajo de la tarjeta en formato vertical) */}
+      {/* cápsula */}
       <RealObject
         kind="capsula"
-        width={440}
+        width={380}
         x={540}
-        y={1170 + (1 - caps) * 80}
+        y={1000 + (1 - caps) * 70}
         opacity={caps}
         rotate={interpolate(caps, [0, 1], [-16, -6])}
         tiltX={interpolate(caps, [0, 1], [30, 10])}
@@ -147,25 +152,34 @@ export const Cierre: React.FC<{ contacto: string }> = ({ contacto }) => {
         sheen={prog(frame, T.eslogan * fps + 20, T.eslogan * fps + 60)}
       />
 
-      {/* contacto (editable) */}
+      {/* contacto */}
+      <Line y={1225} p={c1} size={58}>
+        <PhoneIcon size={52} />
+        <span>
+          <span style={{ fontWeight: 400 }}>{TEXTS.contactoLlamado} </span>
+          {telefono}
+        </span>
+      </Line>
+      <Line y={1305} p={c2} size={54} weight={400} opacity={0.9}>
+        {TEXTS.contactoLocal}
+      </Line>
+      {/* punto rojo mínimo */}
       <div
         style={{
           position: "absolute",
-          left: 90,
-          right: 90,
-          top: 1445,
-          transform: `translateY(-50%) translateY(${(1 - contact) * 20}px)`,
-          textAlign: "center",
-          fontFamily: FONT,
-          fontWeight: 600,
-          fontSize: 58,
-          letterSpacing: 0.5,
-          color: COLORS.crema,
-          opacity: contact,
+          left: 540 - 7,
+          top: 1366,
+          width: 14,
+          height: 14,
+          borderRadius: 7,
+          background: COLORS.rojo,
+          opacity: c3,
         }}
-      >
-        {contacto}
-      </div>
+      />
+      <Line y={1450} p={c3} size={62}>
+        <IgIcon size={58} />
+        {instagram}
+      </Line>
     </AbsoluteFill>
   );
 };
