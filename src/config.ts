@@ -12,13 +12,13 @@ export const s = (seconds: number) => Math.round(seconds * FPS);
 export const SCENES = {
   gancho: { from: 0, to: 4 },
   presentacion: { from: 4, to: 9 },
-  comoActua: { from: 9, to: 19 },
-  beneficios: { from: 19, to: 28 },
-  comoSeUsa: { from: 28, to: 39 },
-  cierre: { from: 39, to: 45.5 },
+  comoActua: { from: 9, to: 20 },
+  beneficios: { from: 20, to: 26.5 },
+  comoSeUsa: { from: 26.5, to: 37.5 },
+  cierre: { from: 37.5, to: 44 },
 } as const;
 
-export const TOTAL_SECONDS = 45.5;
+export const TOTAL_SECONDS = 44;
 
 /** Fundido cruzado entre escenas (s). */
 export const CROSSFADE = 0.4;
@@ -36,6 +36,7 @@ export const TIMING = {
     disolucion: [0.8, 3.0], // el gel se deshace en partículas azules
     floculacion: [2.8, 5.0], // las partículas se agrupan
     retencion: [5.2, 7.6], // los flóculos bajan y el filtro los retiene
+    pileta: 7.9, // entra la pileta con agua cristalina
   },
   /** duración de la animación de dibujo/acción de cada ícono (s) */
   iconos: { dibujo: 0.9, accion: [0.4, 1.4] },
@@ -57,7 +58,6 @@ export const TEXTS = {
   beneficios: [
     "Potencia filtros de arena, cuarzo y antracita",
     "No agota el filtro antes de tiempo",
-    "Ideal con limpiafondos automático",
   ],
   pasos: [
     "Filtro limpio y en marcha",

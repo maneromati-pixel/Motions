@@ -158,40 +158,6 @@ export const IconNoAgota: React.FC<IconProps> = ({ draw, anim, frame, size }) =>
   );
 };
 
-/** Limpiafondos automático (vista lateral) sobre el fondo de la pileta. */
-export const IconRobot: React.FC<IconProps> = ({ draw, anim, frame, size }) => {
-  const dx = Math.sin(frame / 18) * 14 * anim;
-  const spin = frame * 6 * anim;
-  const wheel = (cx: number) => (
-    <g key={cx} transform={`rotate(${spin} ${cx + dx} 300)`}>
-      <circle cx={cx + dx} cy={300} r={30} fill="#2A0A0C" fillOpacity={0.6 * draw} stroke={LINE} strokeOpacity={0.9 * draw} strokeWidth={W} />
-      <line x1={cx + dx - 18} y1={300} x2={cx + dx + 18} y2={300} stroke={LINE} strokeOpacity={0.6 * draw} strokeWidth={4} strokeLinecap="round" />
-      <line x1={cx + dx} y1={282} x2={cx + dx} y2={318} stroke={LINE} strokeOpacity={0.6 * draw} strokeWidth={4} strokeLinecap="round" />
-    </g>
-  );
-  return (
-    <Svg size={size}>
-      <Stroke d="M30,335 L370,335" draw={draw} width={4} opacity={0.5} />
-      <g transform={`translate(${dx} 0)`}>
-        {/* carcasa baja tipo limpiafondos, con manija */}
-        <path d="M70,292 L70,245 Q70,200 120,198 L280,198 Q330,200 330,245 L330,292 Z" fill="url(#glass)" opacity={draw} />
-        <path d="M74,288 L326,288 L326,262 L74,262 Z" fill="#1E0204" opacity={0.25 * draw} />
-        <Stroke d="M70,292 L70,245 Q70,200 120,198 L280,198 Q330,200 330,245 L330,292 Z" draw={draw} />
-        <Stroke d="M150,198 Q150,150 200,150 Q250,150 250,198" draw={draw} width={6} />
-        <Stroke d="M95,240 L305,240" draw={draw} width={4} opacity={0.5} />
-        {/* cable flotante */}
-        <Stroke d="M200,150 C200,100 255,110 268,66 C276,38 306,28 330,28" draw={draw} width={5} opacity={0.6} />
-      </g>
-      {wheel(125)}
-      {wheel(275)}
-      {/* partículas de fondo que levanta */}
-      {[0, 1, 2].map((i) => (
-        <circle key={i} cx={40 + i * 14 + dx * 0.4} cy={322 - i * 9} r={5} fill="url(#sph-blue)" opacity={anim * 0.9} />
-      ))}
-    </Svg>
-  );
-};
-
 /* ---------------- Pasos de uso ---------------- */
 
 /** ① Filtro limpio y en marcha. */

@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import { MaterialDefs, Sphere } from "../components/Materials";
 import { RealObject } from "../components/RealObject";
+import { Pool } from "../components/Pool";
 import { COLORS, TEXTS, TIMING } from "../config";
 import { Title } from "../components/Text";
 import { clamp01, easeInOut, easeOut, lerp, prog } from "../components/anim";
@@ -69,7 +70,8 @@ export const ComoActua: React.FC = () => {
   const filterIn = prog(frame, f(T.retencion[0] - 0.8), f(T.retencion[0]));
   const filterGlow = prog(frame, f(T.retencion[1] - 0.6), f(T.retencion[1])) * (1 - prog(frame, f(T.retencion[1] + 0.2), f(T.retencion[1] + 1.2)));
   const clean = prog(frame, f(T.retencion[1]), f(T.retencion[1] + 1.2));
-  const filterOut = prog(frame, f(T.retencion[1] + 0.4), f(T.retencion[1] + 1.4));
+  const filterOut = prog(frame, f(T.retencion[1] + 0.1), f(T.retencion[1] + 0.6));
+  const pool = prog(frame, f(T.pileta), f(T.pileta + 1.0));
 
   return (
     <AbsoluteFill>
@@ -98,7 +100,7 @@ export const ComoActua: React.FC = () => {
       <svg width={1080} height={1920} style={{ position: "absolute" }}>
         <MaterialDefs />
         {/* filtro: carcasa de vidrio con lecho de arena */}
-        <g opacity={filterIn * (1 - filterOut * 0.85)}>
+        <g opacity={filterIn * (1 - filterOut)}>
           <rect
             x={FILTER.x0}
             y={FILTER.top}
@@ -177,7 +179,9 @@ export const ComoActua: React.FC = () => {
       <Title y={400} size={96} inAt={f(T.textos[1])} outAt={f(T.textos[2]) - 8}>
         {TEXTS.comoActua[1]}
       </Title>
-      <Title y={940} size={100} inAt={f(T.textos[2])}>
+      {/* pileta con agua cristalina */}
+      <Pool p={pool} frame={frame} cy={1180} />
+      <Title y={760} size={100} inAt={f(T.textos[2])}>
         {TEXTS.comoActua[2]}
       </Title>
     </AbsoluteFill>

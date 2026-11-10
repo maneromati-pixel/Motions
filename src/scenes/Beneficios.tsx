@@ -3,11 +3,11 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, TEXTS, TIMING } from "../config";
 import { Title } from "../components/Text";
 import { prog } from "../components/anim";
-import { IconFilterLayers, IconNoAgota, IconProps, IconRobot } from "../icons/LineIcons";
+import { IconFilterLayers, IconNoAgota, IconProps } from "../icons/LineIcons";
 
-const ICONS: React.FC<IconProps>[] = [IconFilterLayers, IconNoAgota, IconRobot];
+const ICONS: React.FC<IconProps>[] = [IconFilterLayers, IconNoAgota];
 
-/** 5. Beneficios: 3 íconos de línea, uno por vez. */
+/** Beneficios: íconos con volumen, uno por vez. */
 export const Beneficios: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
