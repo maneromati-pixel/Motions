@@ -79,40 +79,64 @@ export const OlaTransition: React.FC = () => {
   );
 };
 
-/** Burbujas: una tanda de burbujas sube a toda velocidad y tapa el cambio de escena. */
-export const BurbujasTransition: React.FC = () => {
+/**
+ * Reflejo: un haz ancho de luz refractada por el agua (cáusticas) cruza en diagonal,
+ * de izquierda a derecha. En el centro del recorrido cubre la pantalla con un velo luminoso
+ * y ahí ocurre el cambio de escena. Sobrio, sin elementos sueltos.
+ */
+export const ReflejoTransition: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames: d } = useVideoConfig();
-  const N = 120;
+  const p = prog(frame, 0, d, easeInOut);
+  // la banda recorre de -1600 a +1600 px en diagonal
+  const x = -1700 + p * 3400;
+  const peak = Math.sin(p * Math.PI);
   return (
-    <AbsoluteFill style={{ pointerEvents: "none" }}>
+    <AbsoluteFill style={{ pointerEvents: "none", overflow: "hidden" }}>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
         <defs>
-          <radialGradient id="burbuja" cx="35%" cy="30%" r="70%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.95} />
-            <stop offset="30%" stopColor="#BFEAFF" stopOpacity={0.35} />
-            <stop offset="75%" stopColor={COLORS.azulGel} stopOpacity={0.35} />
-            <stop offset="100%" stopColor="#E6F7FF" stopOpacity={0.8} />
-          </radialGradient>
+          <linearGradient id="reflejo-banda" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#B4544F" stopOpacity={0} />
+            <stop offset="30%" stopColor="#B4544F" stopOpacity={0.9} />
+            <stop offset="46%" stopColor="#F3D9CC" stopOpacity={0.97} />
+            <stop offset="54%" stopColor="#F3D9CC" stopOpacity={0.97} />
+            <stop offset="70%" stopColor="#B4544F" stopOpacity={0.9} />
+            <stop offset="100%" stopColor="#B4544F" stopOpacity={0} />
+          </linearGradient>
+          <filter id="reflejo-causticas" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves={1} seed={3} />
+            <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1 0 0 0 0" />
+            <feComponentTransfer>
+              <feFuncA type="table" tableValues="0 0 0 0 0 0.8 0 0 0 0.8 0 0 0 0 0" />
+            </feComponentTransfer>
+            <feGaussianBlur stdDeviation="1.4" />
+          </filter>
+          <linearGradient id="reflejo-mask-g" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#000" />
+            <stop offset="30%" stopColor="#fff" />
+            <stop offset="70%" stopColor="#fff" />
+            <stop offset="100%" stopColor="#000" />
+          </linearGradient>
+          <mask id="reflejo-mask" maskUnits="userSpaceOnUse" x="-2000" y="-2000" width="6000" height="6000">
+            <rect x={-600} y={-1200} width={2400} height={4400} fill="url(#reflejo-mask-g)" />
+          </mask>
         </defs>
-        {/* velo azul suave en el pico de la transición */}
-        <rect width={1080} height={1920} fill="#7FD6F6" opacity={Math.sin((frame / d) * Math.PI) * 0.18} />
-        {new Array(N).fill(0).map((_, i) => {
-          const delay = random(`bb-d-${i}`) * d * 0.45;
-          const life = d * (0.45 + random(`bb-l-${i}`) * 0.3);
-          const t = (frame - delay) / life;
-          if (t < 0 || t > 1) return null;
-          const r = 14 + random(`bb-r-${i}`) ** 2 * 90;
-          const x0 = random(`bb-x-${i}`) * 1080;
-          const x = x0 + Math.sin(t * 6 + i) * 18;
-          const y = 1920 + r - t * (1920 + r * 2 + 200);
-          return (
-            <g key={i}>
-              <circle cx={x} cy={y} r={r} fill="url(#burbuja)" />
-              <circle cx={x} cy={y} r={r} fill="none" stroke="#FFFFFF" strokeOpacity={0.6} strokeWidth={2} />
-            </g>
-          );
-        })}
+        <g transform={`translate(${x} 0) rotate(18 540 960)`}>
+          {/* velo luminoso cálido */}
+          <rect x={-600} y={-1200} width={2400} height={4400} fill="url(#reflejo-banda)" />
+          {/* red de luz cáustica, como sol atravesando el agua */}
+          <g mask="url(#reflejo-mask)" style={{ mixBlendMode: "screen" }} opacity={0.3}>
+            <rect
+              x={-600}
+              y={-1200 - frame * 3}
+              width={2400}
+              height={4800}
+              filter="url(#reflejo-causticas)"
+            />
+          </g>
+        </g>
+        {/* leve destello general en el pico */}
+        <rect width={1080} height={1920} fill="#FFF3EA" opacity={peak * 0.12} />
       </svg>
     </AbsoluteFill>
   );

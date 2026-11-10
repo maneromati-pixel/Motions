@@ -3,9 +3,9 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, TEXTS, TIMING } from "../config";
 import { Title } from "../components/Text";
 import { prog } from "../components/anim";
-import { IconFilterLayers, IconNoAgota, IconProps } from "../icons/LineIcons";
+import { IconNoAgota, IconProps } from "../icons/LineIcons";
 
-const ICONS: React.FC<IconProps>[] = [IconFilterLayers, IconNoAgota];
+const ICONS: React.FC<IconProps>[] = [IconNoAgota];
 
 /** Beneficios: íconos con volumen, uno por vez. */
 export const Beneficios: React.FC = () => {
@@ -45,8 +45,8 @@ export const Beneficios: React.FC = () => {
           </AbsoluteFill>
         );
       })}
-      {/* indicador 1/3 — el activo en rojo (detalle mínimo) */}
-      <div style={{ position: "absolute", top: 1420, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 22, opacity: prog(frame, t0, t0 + 14) }}>
+      {/* indicador de ítems (solo si hay más de uno) — el activo en rojo */}
+      <div style={{ position: "absolute", top: 1420, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 22, opacity: TEXTS.beneficios.length > 1 ? prog(frame, t0, t0 + 14) : 0 }}>
         {TEXTS.beneficios.map((_, i) => {
           const active = frame >= t0 + i * per && (frame < t0 + (i + 1) * per || i === TEXTS.beneficios.length - 1);
           return (

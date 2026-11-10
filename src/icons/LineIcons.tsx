@@ -80,50 +80,6 @@ const CircularArrow: React.FC<{ progress: number; rot?: number; r?: number; cx?:
 
 /* ---------------- Beneficios ---------------- */
 
-/** Filtro con capas de arena, cuarzo y antracita. */
-export const IconFilterLayers: React.FC<IconProps> = ({ draw, anim, size }) => {
-  const dots: React.ReactNode[] = [];
-  const layers = [
-    { y0: 170, y1: 225, r: 5, gap: 18 },
-    { y0: 232, y1: 282, r: 8, gap: 26 },
-    { y0: 290, y1: 332, r: 11, gap: 34 },
-  ];
-  layers.forEach((L, li) => {
-    const show = Math.max(0, Math.min(1, anim * 3 - li));
-    let row = 0;
-    for (let y = L.y0 + L.r + 4; y < L.y1 - L.r; y += L.gap * 0.8, row++) {
-      for (let x = 132 + L.r + (row % 2) * (L.gap / 2); x < 268 - L.r; x += L.gap) {
-        dots.push(
-          <circle
-            key={`${li}-${x}-${y}`}
-            cx={x}
-            cy={y}
-            r={L.r}
-            fill={li === 0 ? "url(#sph-sand)" : li === 1 ? "url(#sph-cream)" : "url(#sph-grey)"}
-            opacity={(li === 1 ? 0.75 : 0.95) * show}
-          />,
-        );
-      }
-    }
-  });
-  return (
-    <Svg size={size}>
-      <Glass d={TANK} draw={draw} />
-      <Stroke d={TANK} draw={draw} />
-      <Stroke d="M120,165 L280,165" draw={draw} width={4} opacity={0.6} />
-      <Stroke d="M120,228 L280,228" draw={draw} width={3} opacity={0.45} />
-      <Stroke d="M120,286 L280,286" draw={draw} width={3} opacity={0.45} />
-      <Stroke d="M200,20 L200,70" draw={draw} />
-      {dots}
-      {/* flechas de potencia */}
-      <g opacity={anim}>
-        <Stroke d="M320,250 L320,150 M300,172 L320,150 L340,172" draw={anim} width={6} />
-        <Stroke d="M80,250 L80,150 M60,172 L80,150 L100,172" draw={anim} width={6} />
-      </g>
-    </Svg>
-  );
-};
-
 /** Reloj con ciclo completo y tilde: no agota el filtro antes de tiempo. */
 export const IconNoAgota: React.FC<IconProps> = ({ draw, anim, frame, size }) => {
   const hand = frame * 3;

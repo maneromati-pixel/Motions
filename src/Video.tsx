@@ -6,7 +6,7 @@ import { CONTACTO, CROSSFADE, FONT, SCENES, TRANSITIONS, s } from "./config";
 import { Background } from "./components/Background";
 import { SceneFade } from "./components/SceneFade";
 import { MTransition } from "./components/MTransition";
-import { BurbujasTransition, OlaTransition } from "./components/WaterTransitions";
+import { OlaTransition, ReflejoTransition } from "./components/WaterTransitions";
 import { Gancho } from "./scenes/Gancho";
 import { Presentacion } from "./scenes/Presentacion";
 import { ComoActua } from "./scenes/ComoActua";
@@ -39,7 +39,7 @@ const ORDER: { key: keyof typeof SCENES; C: React.FC<ContactProps> }[] = [
 
 // cortes cubiertos por una transición (ola, burbujas o trazo M)
 const M_CUTS = new Set<number>(TRANSITIONS.map((m) => m.at));
-const TRANSITION_C = { ola: OlaTransition, burbujas: BurbujasTransition, trazoM: MTransition };
+const TRANSITION_C = { ola: OlaTransition, reflejo: ReflejoTransition, trazoM: MTransition };
 
 export const AlquimiaPowerFloc: React.FC<VideoProps> = ({ musicSrc, telefono = CONTACTO.telefono, instagram = CONTACTO.instagram }) => {
   const { durationInFrames } = useVideoConfig();

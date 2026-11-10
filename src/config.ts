@@ -13,12 +13,12 @@ export const SCENES = {
   gancho: { from: 0, to: 4 },
   presentacion: { from: 4, to: 9 },
   comoActua: { from: 9, to: 20 },
-  beneficios: { from: 20, to: 26.5 },
-  comoSeUsa: { from: 26.5, to: 37.5 },
-  cierre: { from: 37.5, to: 44 },
+  beneficios: { from: 20, to: 24 },
+  comoSeUsa: { from: 24, to: 35 },
+  cierre: { from: 35, to: 41.5 },
 } as const;
 
-export const TOTAL_SECONDS = 44;
+export const TOTAL_SECONDS = 41.5;
 
 /** Fundido cruzado entre escenas (s). */
 export const CROSSFADE = 0.4;
@@ -26,15 +26,15 @@ export const CROSSFADE = 0.4;
 /**
  * Transiciones entre escenas: momento del corte (s), duración total (s) y tipo.
  * - "ola": una ola de agua cruza la pantalla de abajo hacia arriba
- * - "burbujas": una tanda de burbujas sube y tapa el corte
+ * - "reflejo": un haz de luz refractada por el agua cruza en diagonal y tapa el corte
  * - "trazoM": el trazo de la "M" del logo (firma de marca)
  */
-export type TransitionType = "ola" | "burbujas" | "trazoM";
+export type TransitionType = "ola" | "reflejo" | "trazoM";
 export const TRANSITIONS: { at: number; duration: number; tipo: TransitionType }[] = [
   { at: SCENES.presentacion.from, duration: 1.3, tipo: "ola" },
-  { at: SCENES.comoActua.from, duration: 1.2, tipo: "burbujas" },
+  { at: SCENES.comoActua.from, duration: 1.2, tipo: "reflejo" },
   { at: SCENES.beneficios.from, duration: 1.3, tipo: "ola" },
-  { at: SCENES.comoSeUsa.from, duration: 1.2, tipo: "burbujas" },
+  { at: SCENES.comoSeUsa.from, duration: 1.2, tipo: "reflejo" },
   { at: SCENES.cierre.from, duration: 1.4, tipo: "trazoM" },
 ];
 
@@ -58,15 +58,13 @@ export const TIMING = {
 
 export const TEXTS = {
   /** Hook en dos líneas; la palabra destacada ondula como agua turbia. */
-  ganchoPrevio: "Che,",
-  gancho: ["¿el agua de tu pileta", "está turbia?"],
+  gancho: ["¿El agua de tu pileta", "está turbia?"],
   ganchoDestacada: "turbia?",
   solucion: "Tranqui, tenemos la solución",
   producto: "MAK Power Floc Gel",
   productoSub: "Clarificador en gel",
-  comoActua: ["Junta la mugre", "El filtro la atrapa", "¡Y queda cristalina!"],
+  comoActua: ["Junta la suciedad", "El filtro la atrapa", "¡Y queda cristalina!"],
   beneficios: [
-    "Le saca el jugo a tu filtro de arena, cuarzo o antracita",
     "Tu filtro no se gasta antes de tiempo",
   ],
   pasos: [
